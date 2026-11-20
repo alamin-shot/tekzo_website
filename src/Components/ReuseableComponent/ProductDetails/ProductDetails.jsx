@@ -503,7 +503,9 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   return (
     <div className="">
       <ProductTopNav companySetting={activeCompanySetting} policies={activePolicies} />
+      <div className="hidden lg:block">
       <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} />
+      </div>
 
       <div className="my-rounded-t   lg:bg-[#E7E9EB] mt-3 lg:mt-5">
         <div className="my-rounded  bg-[#E7E9EB] lg:bg-dark pb-4 lg:pb-0">
