@@ -504,10 +504,9 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   return (
     <div className="">
       <ProductTopNav companySetting={activeCompanySetting} policies={activePolicies} />
-      <div className="lg:hidden"> 
+      {/* <div className="lg:hidden"> 
       <SearchBar />
-
-      </div>
+      </div> */}
       <div className="hidden lg:block">
       <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} />
       </div>
