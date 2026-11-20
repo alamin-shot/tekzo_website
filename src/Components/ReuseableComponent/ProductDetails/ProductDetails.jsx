@@ -19,13 +19,14 @@ import ProductRatingReviewsCards from "./ProductRatingReviewsCards";
 import ProductBenefits from "./ProductBenefits";
 import ShippingDetails from "./ShippingDetails";
 import GiftForUser from "./Gift/GiftForUser";
-import { Layers, Menu } from "lucide-react";
+import { Layers, Menu, Search } from "lucide-react";
 import SidebarFunction from "@/Components/Navbar/NavFunction/SidebarFunction";
 import Coupon from "./Coupon";
 import PreFetchLink from "../CustomUIComponent/PreFetchLink";
 import NoProductFound from "@/Components/ReuseableComponent/NoProductFound";
 import styles from "./ProductDetails.module.css";
 import { useCompare } from "@/context/CompareContext";
+import SearchBar from "../SearchBar";
 
 // Utility function to extract storage capacity and convert to bytes for sorting
 const getStorageInBytes = (storageString) => {
@@ -503,6 +504,10 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   return (
     <div className="">
       <ProductTopNav companySetting={activeCompanySetting} policies={activePolicies} />
+      <div className="lg:hidden"> 
+      <SearchBar />
+
+      </div>
       <div className="hidden lg:block">
       <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} />
       </div>
