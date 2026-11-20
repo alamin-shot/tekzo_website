@@ -91,7 +91,7 @@ const ProductTopNav = ({ companySetting, policies }) => {
   const policiesList = policies && policies.length > 0 ? policies : DEFAULT_POLICIES;
 
   return (
-    <div className="lg:hidden flex items-center justify-between bg-dark rounded-xl px-3 sm:px-3.5 h-11 sm:h-12 border border-gray-200/80 mb-3 shadow-none w-full gap-2 sm:gap-4">
+    <div className="hidden md:flex items-center justify-between bg-dark rounded-xl px-3 sm:px-3.5 h-11 sm:h-12 border border-gray-200/80 mb-3 shadow-none w-full gap-2 sm:gap-4">
       {/* 1. Logo at top left */}
       <PreFetchLink prefetch={false} href="/" aria-label={`${companyName} Home`} className="flex items-center shrink-0">
         <Image src={logoSrc} alt={companyName} width={100} height={24} className="h-5 sm:h-5.5 w-auto max-w-[85px] sm:max-w-[95px] object-contain" priority />
@@ -490,7 +490,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
       <>
         <title>No Products Found - Tekzo</title>
         <ProductTopNav companySetting={activeCompanySetting} policies={activePolicies} />
-        <Banner image={"/all-product-banner.webp"} title={"not found"} />
+        <Banner image={"/all-product-banner.webp"} title={"not found"} hideImageBelowLg />
         <NoProductFound></NoProductFound>
       </>
     );
@@ -503,7 +503,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   return (
     <div className="">
       <ProductTopNav companySetting={activeCompanySetting} policies={activePolicies} />
-      <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} />
+      <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} hideImageBelowLg />
 
       <div className="my-rounded-t   lg:bg-[#E7E9EB] mt-3 lg:mt-5">
         <div className="my-rounded  bg-[#E7E9EB] lg:bg-dark pb-4 lg:pb-0">

@@ -5,7 +5,8 @@ const ecommerceType = process.env.NEXT_PUBLIC_ECOMMERCE_TYPE;
 const About = () => {
   //   about links
   const aboutLinks = [
-    { title: "Our History", link: "/about-us" },
+    { title: "About Us", link: "/about-us" },
+    { title: "Contact Us", link: "/contact-us" },
     ...(ecommerceType && ecommerceType === "salamat"
       ? [{ title: "News", link: "/news" }]
       : [{ title: "Blog", link: "/blog" }]),
