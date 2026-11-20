@@ -1,0 +1,234 @@
+"use client";
+import React, { useState, useEffect, useRef, useCallback, useTransition } from "react";
+import Image from "next/image";
+import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
+import CategoryProducts from "./CategoryProducts";
+import { useRouter, useSearchParams } from "next/navigation";
+import { MdVerified } from "react-icons/md";
+import { IoSearchOutline } from "react-icons/io5";
+import Filter from "./Filter";
+
+const SingleCategory = ({
+  product,
+  activeCategory,
+  activeBrand,
+  fromCategory,
+  pagination,
+  currentPage,
+}) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentSearch = searchParams?.get("search") || "";
+  const [searchQuery, setSearchQuery] = useState(currentSearch);
+  const [isPending, startTransition] = useTransition();
+  const [isTyping, setIsTyping] = useState(false);
+  const isInitialMount = useRef(true);
+
+  // Sync state if URL changes externally (e.g. back/forward navigation)
+  useEffect(() => {
+    setSearchQuery(currentSearch);
+    setIsTyping(false);
+  }, [currentSearch]);
+
+  const updateSearchParam = useCallback(
+    (term) => {
+      setIsTyping(false);
+      const params = new URLSearchParams(window.location.search);
+      const trimmed = term.trim();
+      if (trimmed) {
+        params.set("search", trimmed);
+      } else {
+        params.delete("search");
+      }
+      params.set("page", "1");
+      const query = params.toString();
+      startTransition(() => {
+        router.replace(query ? `?${query}` : window.location.pathname, { scroll: false });
+      });
+    },
+    [router]
+  );
+
+  // Debounce URL update when searchQuery changes
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const currentParam = params.get("search") || "";
+      if (currentParam === searchQuery.trim()) return;
+      updateSearchParam(searchQuery);
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, updateSearchParam]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setIsTyping(true);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      updateSearchParam(searchQuery);
+    }
+  };
+
+  const tabBase =
+    "px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer";
+  const tabActive = "bg-secondary text-white shadow-md";
+  const tabInactive = "bg-[#F3F4F6] text-gray-600 hover:bg-gray-200";
+
+  // Pass currentFilters from URL to Filter component
+  const handleFilterChange = (filters) => {
+    // Filters are already handled by Filter component's router.push
+    // This is just to maintain component hierarchy
+  };
+
+  const handleFilter = (slug, type) => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (type === "category") {
+      if (slug === "all") {
+        params.delete("category");
+      } else {
+        params.set("category", slug);
+      }
+      params.delete("brand"); // mutual exclusion
+    } else if (type === "brand") {
+      if (slug === "all") {
+        params.delete("brand");
+      } else {
+        params.set("brand", slug);
+      }
+      params.delete("category"); // mutual exclusion
+    }
+
+    // Reset to page 1 when changing category/brand
+    params.set("page", "1");
+
+    const query = params.toString();
+    router.replace(query ? `?${query}` : "?", { scroll: false });
+  };
+
+  // Extracted to avoid duplicating JSX for desktop/mobile
+  const categoryTabs = product?.categories?.map((item) => (
+    <button
+      key={item.id}
+      onClick={() => handleFilter(item.slug, "category")}
+      className={`${tabBase} ${activeCategory === item.slug ? tabActive : tabInactive}`}
+    >
+      {item.name}
+    </button>
+  ));
+
+  const brandTabs = product?.brands?.map((item) => (
+    <button
+      key={item.id}
+      title={item?.name}
+      onClick={() => handleFilter(item.slug, "brand")}
+      className={`px-5 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${activeBrand === item.slug ? "bg-secondary text-white shadow-md" : "bg-gray-100"}`}
+    >
+      {item.name === "All Products" ? (
+        <span>All Products</span>
+      ) : (
+        <Image
+          src={item?.primary_logo}
+          alt={item?.name}
+          title={item?.name}
+          width={128}
+          height={96}
+          className="w-12 h-auto"
+        />
+      )}
+    </button>
+  ));
+
+  return (
+    <div>
+      <Breadcrumbs />
+      <header className="w-full">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+          <div className="flex items-center gap-3 lg:gap-5">
+            {/* Logo */}
+            <div className="w-17 h-17 lg:w-26 lg:h-26 p-2 shrink-0 rounded-full border-2 lg:border-4 border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50">
+              {product?.logo && (
+                <Image
+                  src={product.logo}
+                  alt={product.name || "Product Logo"}
+                  width={60}
+                  height={60}
+                  className="object-contain w-12 h-12 lg:w-17 lg:h-17"
+                />
+              )}
+            </div>
+
+            <div className="lg:space-y-2.5">
+              <div>
+                <h1 className="text-lg lg:text-xl xl:text-2xl font-semibold text-gray-700 capitalize flex gap-3 items-center">
+                  {product?.name}
+                  <MdVerified className="text-blue-500" />
+                </h1>
+                <p className="mt-px italic text-xs font-medium uppercase tracking-widest text-slate-500">
+                  {product?.tagline}
+                </p>
+              </div>
+              {/* Desktop tabs */}
+              <div className="hidden lg:flex flex-wrap gap-2 overflow-x-auto no-scrollbar">
+                {categoryTabs}
+                {brandTabs}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Search Bar */}
+          <div className="hidden xl:flex items-center relative shrink-0">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+              className="w-64 px-4 py-2 pr-10 bg-dark border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-teal-300 focus:border-transparent transition-all text-sm"
+            />
+            <IoSearchOutline className="absolute right-3 text-gray-400 text-xl pointer-events-none" />
+          </div>
+
+          {/* Mobile tabs */}
+          <div className="flex lg:hidden flex-wrap gap-2 overflow-x-auto no-scrollbar">
+            {categoryTabs}
+            {brandTabs}
+          </div>
+        </div>
+
+        {/* Mobile Search Bar */}
+        <div className="xl:hidden mt-4 relative">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+            className="w-full px-4 py-2 pr-10 border bg-dark border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-teal-300 focus:border-transparent transition-all text-sm"
+          />
+          <IoSearchOutline className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl pointer-events-none" />
+        </div>
+      </header>
+      <div className="h-6 2xl:h-8"></div>
+      <Filter></Filter>
+      <CategoryProducts
+        fromCategory={fromCategory}
+        product={product}
+        onFiltersChange={handleFilterChange}
+        pagination={pagination}
+        currentPage={currentPage}
+        isSearching={isPending || isTyping}
+      />
+    </div>
+  );
+};
+
+export default SingleCategory;

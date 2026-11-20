@@ -1,0 +1,57 @@
+.nav-item {
+  display: flex; /* flex */
+  flex-direction: column; /* flex-col */
+  justify-content: center; /* justify-center */
+  align-items: center; /* items-center */
+  gap: 3px;
+  font-size: 0.75rem; /* text-xs (12px by default) */
+  color: white;
+}
+
+.nav-icon {
+  font-size: 21px;
+  color: white;
+}
+
+/* nav for large scree */
+.nav-item-lg {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 0.875rem;
+}
+.nav-item-lg:hover {
+  transition: 0.3s;
+  color: #c95516;
+}
+
+.text-hover:hover {
+  transition: 0.3s;
+  color: #ee8045;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* popup scrollbar */
+
+/* For Firefox (Note: Firefox doesn't support the 20px offset easily) */
+.scrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #e6e6e6;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #f16a23;
+  border-radius: 9999px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e76016;
+}

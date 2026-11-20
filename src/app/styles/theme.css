@@ -1,0 +1,334 @@
+@theme {
+  /* Darkened from #fe762d/#18ac8f — the originals failed WCAG AA contrast
+     (~2.7-2.9:1 against white text on buttons/badges, ~2.1:1 for
+     text-secondary against the #DCDEE3 category-link background). These
+     keep the same hue but land at ~5:1+ in both those cases. */
+  --color-primary: #e55a40;
+  --color-secondary: #0e7a80;
+  --color-dark: #f3f2f7;
+  --font-sans: var(--font-switzer), var(--font-bornomala), sans-serif;
+  --font-switzer: var(--font-switzer), var(--font-bornomala), sans-serif;
+  --font-bornomala: var(--font-bornomala), var(--font-switzer), sans-serif;
+  --font-bengali: var(--font-bornomala), var(--font-switzer), sans-serif;
+  --font-bangla: var(--font-bornomala), var(--font-switzer), sans-serif;
+  /* Dashboard Semantic Color Tokens */
+  --color-dash-bg: var(--dash-bg);
+  --color-dash-bg-subtle: var(--dash-bg-subtle);
+  --color-dash-surface: var(--dash-surface);
+  --color-dash-card: var(--dash-card);
+  --color-dash-card-hover: var(--dash-card-hover);
+  --color-dash-elevated: var(--dash-elevated);
+  --color-dash-nav-bg: var(--dash-nav-bg);
+  --color-dash-border: var(--dash-border);
+  --color-dash-border-subtle: var(--dash-border-subtle);
+  --color-dash-border-focus: var(--dash-border-focus);
+  --color-dash-text-primary: var(--dash-text-primary);
+  --color-dash-text-secondary: var(--dash-text-secondary);
+  --color-dash-text-muted: var(--dash-text-muted);
+  --color-dash-pill-bg: var(--dash-pill-bg);
+  --color-dash-pill-bg-hover: var(--dash-pill-bg-hover);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   DASHBOARD THEME CONFIGURATION
+   Dark Theme: Sophisticated Deep Midnight Navy
+   Light Theme: Clean, High-Contrast White / Slate (Apple & Linear Inspired)
+   ========================================================================== */
+
+/* Light / White Theme (Default) */
+:root,
+.dashboard-root,
+.dashboard-root.light {
+  --dash-bg: #f8fafc;
+  --dash-bg-subtle: #f1f5f9;
+  --dash-surface: #ffffff;
+  --dash-card: #ffffff;
+  --dash-card-hover: #f8fafc;
+  --dash-elevated: #ffffff;
+  --dash-nav-bg: #ffffff;
+  --dash-surface-glass: #ffffff;
+  --dash-surface-glass-border: rgba(0, 0, 0, 0.08);
+  --dash-border: rgba(0, 0, 0, 0.08);
+  --dash-border-subtle: rgba(0, 0, 0, 0.04);
+  --dash-border-focus: rgba(2, 132, 199, 0.5);
+  --dash-text-primary: #0f172a;
+  --dash-text-secondary: #475569;
+  --dash-text-muted: #94a3b8;
+  --dash-shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --dash-shadow-glass: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  --dash-shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+  --dash-inner-stroke: inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  --dash-pill-bg: #f1f5f9;
+  --dash-pill-bg-hover: #e2e8f0;
+  --dash-bg-gradient: radial-gradient(ellipse 90% 55% at 50% -20%, rgba(14, 165, 233, 0.07), transparent 75%),
+                      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(59, 130, 246, 0.04), transparent 60%),
+                      #f8fafc;
+}
+
+/* Dark Theme */
+.dashboard-root.dark {
+  --dash-bg: #070b14;
+  --dash-bg-subtle: #0a101f;
+  --dash-surface: #0c1424;
+  --dash-card: #0f182c;
+  --dash-card-hover: #14213d;
+  --dash-elevated: #172646;
+  --dash-nav-bg: #0c1424;
+  --dash-surface-glass: #0c1424;
+  --dash-surface-glass-border: rgba(255, 255, 255, 0.08);
+  --dash-border: rgba(255, 255, 255, 0.08);
+  --dash-border-subtle: rgba(255, 255, 255, 0.04);
+  --dash-border-focus: rgba(59, 130, 246, 0.5);
+  --dash-text-primary: #f8fafc;
+  --dash-text-secondary: #94a3b8;
+  --dash-text-muted: #64748b;
+  --dash-shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.55), 0 2px 8px -2px rgba(0, 0, 0, 0.35);
+  --dash-shadow-glass: 0 12px 36px 0 rgba(0, 0, 0, 0.5);
+  --dash-shadow-float: 0 20px 40px -10px rgba(0, 0, 0, 0.65);
+  --dash-inner-stroke: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  --dash-pill-bg: rgba(255, 255, 255, 0.06);
+  --dash-pill-bg-hover: rgba(255, 255, 255, 0.1);
+  --dash-bg-gradient: radial-gradient(ellipse 90% 55% at 50% -20%, rgba(29, 78, 216, 0.18), transparent 75%),
+                      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(14, 165, 233, 0.1), transparent 60%),
+                      #070b14;
+}
+
+/* Light Theme: Contrast & Readability Enhancements */
+.dashboard-root.light .text-emerald-400 {
+  color: #059669 !important;
+}
+.dashboard-root.light .text-sky-400 {
+  color: #0284c7 !important;
+}
+.dashboard-root.light .text-amber-400 {
+  color: #d97706 !important;
+}
+.dashboard-root.light .text-rose-400 {
+  color: #e11d48 !important;
+}
+.dashboard-root.light .text-purple-400 {
+  color: #7c3aed !important;
+}
+.dashboard-root.light .text-indigo-400 {
+  color: #4f46e5 !important;
+}
+.dashboard-root.light .text-pink-400 {
+  color: #db2777 !important;
+}
+.dashboard-root.light .text-cyan-400 {
+  color: #0891b2 !important;
+}
+.dashboard-root.light .text-blue-400 {
+  color: #2563eb !important;
+}
+.dashboard-root.light .text-white\/90,
+.dashboard-root.light .text-white\/95 {
+  color: #0f172a !important;
+}
+
+/* Light Theme: Subtle translucent pill overrides */
+.dashboard-root.light .bg-white\/\[0\.04\],
+.dashboard-root.light .bg-white\/\[0\.06\],
+.dashboard-root.light .bg-white\/\[0\.07\],
+.dashboard-root.light .bg-white\/\[0\.08\] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+.dashboard-root.light .hover\:bg-white\/\[0\.06\]:hover,
+.dashboard-root.light .hover\:bg-white\/\[0\.07\]:hover,
+.dashboard-root.light .hover\:bg-white\/\[0\.08\]:hover {
+  background-color: #e2e8f0 !important;
+}
+
+/* Light Theme: Badge & Alert Overrides */
+.dashboard-root.light .bg-emerald-500\/10,
+.dashboard-root.light .bg-emerald-500\/15,
+.dashboard-root.light .bg-emerald-500\/20 {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+.dashboard-root.light .bg-sky-500\/10,
+.dashboard-root.light .bg-sky-500\/15,
+.dashboard-root.light .bg-sky-500\/20 {
+  background-color: rgba(14, 165, 233, 0.12) !important;
+  border-color: rgba(14, 165, 233, 0.3) !important;
+}
+.dashboard-root.light .bg-amber-500\/10,
+.dashboard-root.light .bg-amber-500\/15,
+.dashboard-root.light .bg-amber-500\/20 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+.dashboard-root.light .bg-rose-500\/10,
+.dashboard-root.light .bg-rose-500\/15,
+.dashboard-root.light .bg-rose-500\/20 {
+  background-color: rgba(244, 63, 94, 0.12) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+.dashboard-root.light .bg-purple-500\/10,
+.dashboard-root.light .bg-purple-500\/15,
+.dashboard-root.light .bg-purple-500\/20 {
+  background-color: rgba(168, 85, 247, 0.12) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+}
+
+/* ==========================================================================
+   iOS-INSPIRED CRAFT UTILITIES
+   ========================================================================== */
+
+/* iOS continuous rounded squircle container */
+.ios-squircle {
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.ios-squircle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--dash-inner-stroke, inset 0 1px 1px rgba(255, 255, 255, 0.12));
+  pointer-events: none;
+}
+
+.ios-squircle-sm {
+  border-radius: 11px;
+}
+
+.ios-squircle-lg {
+  border-radius: 20px;
+}
+
+/* Frosted iOS Glass */
+.ios-glass {
+  background: var(--dash-surface-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--dash-surface-glass-border);
+}
+
+/* iOS Segmented Pill Controls */
+.ios-segmented-control {
+  background: var(--dash-pill-bg);
+  padding: 3px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--dash-border-subtle);
+}
+
+.ios-segmented-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+  transition: all 0.15s ease-out;
+  color: var(--dash-text-secondary);
+}
+
+.ios-segmented-btn:hover:not(.active) {
+  color: var(--dash-text-primary);
+}
+
+.ios-segmented-btn.active {
+  background: var(--dash-surface);
+  color: var(--dash-text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-root.light input::placeholder,
+.dashboard-root.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   HIDE ALL SCROLLBARS FOR DASHBOARD (MAIN & NESTED)
+   ========================================================================== */
+
+/* Target <html> and <body> when rendering dashboard */
+html:has(.dashboard-root),
+body:has(.dashboard-root) {
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html:has(.dashboard-root)::-webkit-scrollbar,
+body:has(.dashboard-root)::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Also hide scrollbar for any container inside dashboard ecosystem */
+.dashboard-root,
+.dashboard-root *,
+html:has(.dashboard-root) * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.dashboard-root::-webkit-scrollbar,
+.dashboard-root *::-webkit-scrollbar,
+html:has(.dashboard-root) *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Global utility class for hiding scrollbars */
+.no-scrollbar,
+.no-scrollbar * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.no-scrollbar *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* ==========================================================================
+   CIRCULAR LIGHT / DARKNESS EMITTING VIEW TRANSITION
+   Originates physically from the toggle button and sweeps across the viewport.
+   ========================================================================== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+  animation: theme-light-expand 650ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes theme-light-expand {
+  from {
+    clip-path: circle(0px at var(--theme-origin-x, 50%) var(--theme-origin-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--theme-end-radius, 150vmax) at var(--theme-origin-x, 50%) var(--theme-origin-y, 50%));
+  }
+}
+
+.dashboard-root {
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s ease-out,
+              border-color 0.4s ease-out;
+}

@@ -1,0 +1,32 @@
+.custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #dcdcdc; /* gray-300 */
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #c0c0c0;
+}
+
+/* Dark mode scrollbar support */
+.dark .custom-scrollbar::-webkit-scrollbar-track,
+.dashboard-root.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: #0c1424;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb,
+.dashboard-root.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e293b;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+.dashboard-root.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}

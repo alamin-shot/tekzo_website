@@ -1,0 +1,125 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import clientFetchAPI from "@/utils/clientFetchAPI";
+import hasAuthCookie from "@/utils/hasAuthCookie";
+
+const CounterContext = createContext(null);
+
+export function CounterProvider({
+  children,
+  initialCartCount = 0,
+  initialWishlistCount = 0,
+}) {
+  const [cartCount, setCartCount] = useState(initialCartCount);
+  const [wishlistCount, setWishlistCount] = useState(initialWishlistCount);
+
+  const refreshCart = useCallback(async () => {
+    if (!hasAuthCookie()) return;
+    try {
+      const res = await clientFetchAPI("/customer/carts", "GET");
+      const items = res?.data?.cartItems ?? [];
+      setCartCount(items.length);
+    } catch {
+      // silently fail — user may not be logged in
+    }
+  }, []);
+
+  const refreshWishlist = useCallback(async () => {
+    if (!hasAuthCookie()) return;
+    try {
+      const res = await clientFetchAPI("/customer/wishlists", "GET");
+      const payload = res?.data ?? res ?? {};
+      const items =
+        payload.wishlists ??
+        payload.wishlistItems ??
+        payload.cartItems ??
+        payload.items ??
+        (Array.isArray(payload) ? payload : []);
+      setWishlistCount(Array.isArray(items) ? items.length : 0);
+    } catch {
+      // silently fail
+    }
+  }, []);
+
+  const incrementCart = useCallback(() => setCartCount((c) => c + 1), []);
+  const incrementWishlist = useCallback(
+    () => setWishlistCount((c) => c + 1),
+    [],
+  );
+  const decrementWishlist = useCallback(
+    () => setWishlistCount((c) => Math.max(0, c - 1)),
+    [],
+  );
+
+  // Fetch initial counts on mount (no server cookies needed)
+  useEffect(() => {
+    refreshCart();
+    refreshWishlist();
+  }, [refreshCart, refreshWishlist]);
+
+  // Listen for custom events fired from anywhere in the app
+  useEffect(() => {
+    const onCartAdd = () => incrementCart();
+    const onCartRemove = () => setCartCount((c) => Math.max(0, c - 1));
+    const onWishlistAdd = () => incrementWishlist();
+    const onWishlistRemove = () => decrementWishlist();
+
+    window.addEventListener("cart:added", onCartAdd);
+    window.addEventListener("cart:removed", onCartRemove);
+    window.addEventListener("wishlist:added", onWishlistAdd);
+    window.addEventListener("wishlist:removed", onWishlistRemove);
+
+    return () => {
+      window.removeEventListener("cart:added", onCartAdd);
+      window.removeEventListener("cart:removed", onCartRemove);
+      window.removeEventListener("wishlist:added", onWishlistAdd);
+      window.removeEventListener("wishlist:removed", onWishlistRemove);
+    };
+  }, [incrementCart, incrementWishlist, decrementWishlist]);
+
+  return (
+    <CounterContext.Provider
+      value={{
+        cartCount,
+        wishlistCount,
+        refreshCart,
+        refreshWishlist,
+        setCartCount,
+        setWishlistCount,
+      }}
+    >
+      {children}
+    </CounterContext.Provider>
+  );
+}
+
+export function useCounter() {
+  const ctx = useContext(CounterContext);
+  if (!ctx) throw new Error("useCounter must be used inside CounterProvider");
+  return ctx;
+}
+
+// Helper to fire events from anywhere (no import of context needed)
+export function fireCartAdded() {
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event("cart:added"));
+}
+export function fireCartRemoved() {
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event("cart:removed"));
+}
+export function fireWishlistAdded() {
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event("wishlist:added"));
+}
+export function fireWishlistRemoved() {
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event("wishlist:removed"));
+}

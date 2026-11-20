@@ -1,0 +1,38 @@
+/* normal bullets */
+.swiper-pagination-bullet {
+  width: 30px;
+  height: 3px;
+  background: rgb(218, 218, 218);
+  opacity: 1;
+  margin: 0 4px !important; /* spacing between bullets */
+  border-radius: 1px; /* fully round */
+  transition: all 0.3s ease-in-out; /* smooth animation */
+}
+
+/* active bullet */
+.swiper-pagination-bullet-active {
+  background: #03bb9c; /* Tailwind yellow-400 color */
+  transform: scale(1.2); /* bigger active bullet */
+}
+
+@media (max-width: 640px) {
+  .swiper-pagination-bullet {
+    width: 14px;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    margin: 0 2px !important; /* spacing between bullets */
+    border-radius: 0.5px; /* fully round */
+    transition: all 0.5s ease-in-out; /* smooth animation */
+  }
+  .swiper-pagination-bullet-active {
+    background: #03bb9c; /* Tailwind yellow-400 color */
+    transform: scale(1.3); /* bigger active bullet */
+  }
+}
+
+.mySwiper,
+.mySwiper .swiper-wrapper,
+.mySwiper .swiper-slide {
+  overflow: visible;
+}

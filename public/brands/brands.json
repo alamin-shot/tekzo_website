@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "image": "/brands/brand1.webp",
+    "logo": "/brands/brand-logo.svg",
+    "title": "Fastrack",
+    "link": "/"
+  },
+  {
+    "id": 2,
+    "image": "/brands/brand1.webp",
+    "logo": "/brands/brand-logo.svg",
+    "title": "Fastrack",
+    "link": "/"
+  },
+  {
+    "id": 3,
+    "image": "/brands/brand1.webp",
+    "logo": "/brands/brand-logo.svg",
+    "title": "Fastrack",
+    "link": "/"
+  },
+  {
+    "id": 4,
+    "image": "/brands/brand1.webp",
+    "logo": "/brands/brand-logo.svg",
+    "title": "Fastrack",
+    "link": "/"
+  },
+  {
+    "id": 5,
+    "image": "/brands/brand1.webp",
+    "logo": "/brands/brand-logo.svg",
+    "title": "Fastrack",
+    "link": "/"
+  },
+  {
+    "id": 6,
+    "image": "/brands/brand1.webp",
+    "logo": "/brands/brand-logo.svg",
+    "title": "Fastrack",
+    "link": "/"
+  }
+]

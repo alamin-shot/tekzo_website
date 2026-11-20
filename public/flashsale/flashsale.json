@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "category": "Wireless Charger",
+    "name": "VOLTME MagPak 3-in-1",
+    "description": "Qi2 Wireless Charger MFW Certified",
+    "price": 13049,
+    "originalPrice": 15999,
+    "discount": 15,
+    "image": "https://d2c2zgda4zwbg9.cloudfront.net/434/Revo-30-mini-2-C-Black.webp"
+  },
+  {
+    "id": 2,
+    "category": "Wireless Charger",
+    "name": "VOLTME MagPak 3-in-1",
+    "description": "Qi2 Wireless Charger MFW Certified",
+    "price": 11049,
+    "originalPrice": 14999,
+    "discount": 18,
+    "image": "https://d2c2zgda4zwbg9.cloudfront.net/434/Revo-30-mini-2-C-Black.webp"
+  },
+  {
+    "id": 3,
+    "category": "Wireless Charger",
+    "name": "VOLTME MagPak 3-in-1",
+    "description": "Qi2 Wireless Charger MFW Certified",
+    "price": 11049,
+    "originalPrice": 14999,
+    "discount": 18,
+    "image": "https://d2c2zgda4zwbg9.cloudfront.net/434/Revo-30-mini-2-C-Black.webp"
+  },
+  {
+    "id": 4,
+    "category": "Wireless Charger",
+    "name": "VOLTME MagPak 3-in-1",
+    "description": "Qi2 Wireless Charger MFW Certified",
+    "price": 11049,
+    "originalPrice": 14999,
+    "discount": 18,
+    "image": "https://d2c2zgda4zwbg9.cloudfront.net/434/Revo-30-mini-2-C-Black.webp"
+  },
+  {
+    "id": 5,
+    "category": "Wireless Charger",
+    "name": "VOLTME MagPak 3-in-1",
+    "description": "Qi2 Wireless Charger MFW Certified",
+    "price": 11049,
+    "originalPrice": 14999,
+    "discount": 18,
+    "image": "https://d2c2zgda4zwbg9.cloudfront.net/434/Revo-30-mini-2-C-Black.webp"
+  }
+]
