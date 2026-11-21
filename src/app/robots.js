@@ -8,11 +8,6 @@ export default function robots() {
                 allow: '/',
                 disallow: ['/admin/', '/api/', '/cart/', '/checkout/', '/undefined/', '/customer/'],
             },
-            {
-                // Specifically block AI crawlers
-                userAgent: ['GPTBot', 'ChatGPT-User', 'CCBot', 'Google-Extended'],
-                disallow: '/',
-            },
         ],
         sitemap: `${baseUrl}/sitemap.xml`,
     };

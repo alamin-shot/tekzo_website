@@ -8,6 +8,7 @@ import ShareButtons from "@/Components/Blog/ShareButtons";
 import PageDescription from "@/Components/ReuseableComponent/PageDescription";
 import { getBlogBySlug, getRecentBlogs } from "@/lib/api";
 import { formatHtml } from "@/lib/formatHtml";
+import { SITE_URL, absoluteUrl, serializeJsonLd, toIsoDate } from "@/lib/seo/jsonLd";
 
 // User model has no avatar field yet — first + last letter of the name
 // stands in until one exists.
@@ -74,8 +75,39 @@ export default async function BlogDetailsPage({ params }) {
     .slice(0, 4)
     .map(toRelatedPost);
 
+  // AI Schema Injection
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "url": post.seoData?.canonical || `${SITE_URL}/blog/${slug}`,
+    "mainEntityOfPage": post.seoData?.canonical || `${SITE_URL}/blog/${slug}`,
+    "image": absoluteUrl(post.banner || post.thumbnail || "/blog.jpeg"),
+    // published_at can be a display string; toIsoDate() drops unparseable values
+    "datePublished": toIsoDate(post.published_at),
+    "dateModified": toIsoDate(post.updated_at) || toIsoDate(post.published_at),
+    "author": {
+      "@type": "Person",
+      "name": post.author?.name || "TEKZO Admin",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "TEKZO",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${SITE_URL}/nav-logo.png`
+      }
+    }
+  };
+
   return (
     <div className="">
+      {/* AI Schema Script */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleSchema) }}
+      />
+      
       {/* Page Banner */}
       <Banner image={"/loginPage/contact-about-bg.webp"} title={"Blog Details"} />
 

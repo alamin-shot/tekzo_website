@@ -1,3 +1,5 @@
+import { getSocialProfiles, serializeJsonLd } from "@/lib/seo/jsonLd";
+
 const CompanyJsonLd = ({ companySetting, seo }) => {  // ✅ destructure props
     const canonical =
         seo?.canonical ||
@@ -48,7 +50,7 @@ const CompanyJsonLd = ({ companySetting, seo }) => {  // ✅ destructure props
                         closes: "20:00",
                     },
                 ],
-                sameAs: seo?.socialLink ?? [],
+                sameAs: getSocialProfiles(companySetting, seo?.socialLink),
                 contactPoint: [
                     {
                         "@type": "ContactPoint",
@@ -72,7 +74,7 @@ const CompanyJsonLd = ({ companySetting, seo }) => {  // ✅ destructure props
         <script
             id="structured-data"
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
     );
 };

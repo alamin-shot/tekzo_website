@@ -153,7 +153,7 @@ const ProductDetailsPage = async ({ params }) => {
 
   return (
     <div>
-      <ProductJsonLd seo={seo} />
+      <ProductJsonLd seo={seo} product={data} />
 
       <ProductViewTracker product={data} />
 
