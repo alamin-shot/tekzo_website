@@ -358,7 +358,7 @@ const CardMain = ({
               className="w-[calc(100%-34px)] lg:w-[calc(100%-52px)] xl:w-[calc(100%-76px)] inline-block rounded-full overflow-hidden p-px xl:p-[1.5px] gradient cursor-pointer"
             >
               <div className="bg-white rounded-full flex items-center justify-center text-xs lg:text-sm  2xl:text-lg gap-1 lg:gap-2 py-[3px] lg:py-1.5 xl:py-2.5 font-semibold">
-                <span className="bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent">{isComparing ? "Adding..." : "Compare"}</span>
+                <span className="bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent">{isComparing ? "Adding..." : "Add to Compare"}</span>
                 <MdArrowForwardIos className="text-primary" />
               </div>
             </button>
@@ -377,7 +377,7 @@ const CardMain = ({
                     aria-label="Add to cart"
                     className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary"
                   >
-                    <Eye size="1em" />
+                     <ShoppingBagIcon size="1em" />
                     <span>{rating}</span>
                   </div>
                 </div>
