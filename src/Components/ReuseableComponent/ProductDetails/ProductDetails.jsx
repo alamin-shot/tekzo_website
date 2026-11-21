@@ -491,7 +491,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
       <>
         <title>No Products Found - Tekzo</title>
         <ProductTopNav companySetting={activeCompanySetting} policies={activePolicies} />
-        <Banner image={"/all-product-banner.webp"} title={"not found"} />
+        <Banner image={"/all-product-banner.webp"} title={"not found"} hideImageOnMobile={true} />
         <NoProductFound></NoProductFound>
       </>
     );
@@ -508,7 +508,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
       <SearchBar />
       </div> */}
       <div className="hidden lg:block">
-      <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} />
+      <Banner image={productDetails?.brand?.shop_banner || "/all-product-banner.webp"} title={productDetails?.brand?.name} logo={productDetails?.brand?.primary_logo} hideImageOnMobile={true} />
       </div>
 
       <div className="my-rounded-t   lg:bg-[#E7E9EB] mt-3 lg:mt-5">

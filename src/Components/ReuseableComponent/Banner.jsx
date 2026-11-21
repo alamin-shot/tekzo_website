@@ -10,12 +10,14 @@ import SearchBar from "./SearchBar";
 // prop check doesn't stop the chunk from being requested. Splitting the
 // homepage hero into its own top-level component (HomeBanner, rendered
 // only by HomePage.jsx) is what actually keeps swiper off these routes.
-const Banner = ({ image, title }) => {
+// hideImageOnMobile: hides only the banner image below lg (phones + tablets);
+// the SearchBar above it stays visible.
+const Banner = ({ image, title, hideImageOnMobile = false }) => {
   return (
     <div className="relative">
       <SearchBar />
 
-      <div className="relative">
+      <div className={`${hideImageOnMobile ? "hidden lg:block " : ""}relative`}>
         <div className="h-30 md:h-40 xl:h-65 rounded-2xl lg:rounded-[40px] overflow-hidden">
           <Image
             src={image || "/placeholder.jpg"}
