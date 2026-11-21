@@ -88,7 +88,8 @@ export default async function BlogDetailsPage({ params }) {
     "dateModified": toIsoDate(post.updated_at) || toIsoDate(post.published_at),
     "author": {
       "@type": "Person",
-      "name": post.author?.name || "TEKZO Admin",
+      "name": post.author?.name || "TEKZO Editorial Team",
+      "url": absoluteUrl(post.author?.profile_url) || `${SITE_URL}/about-us`,
     },
     "publisher": {
       "@type": "Organization",
@@ -133,7 +134,7 @@ export default async function BlogDetailsPage({ params }) {
               </div>
             )}
             {post.author?.name && post.published_at && <span className="text-stone-300">•</span>}
-            {post.published_at && <time dateTime={post.published_at}>{post.published_at}</time>}
+            {post.published_at && <time dateTime={toIsoDate(post.published_at)}>{post.published_at}</time>}
             {post.reading_time && <span className="text-stone-300">•</span>}
             {post.reading_time && <span>{post.reading_time} min read</span>}
           </div>
