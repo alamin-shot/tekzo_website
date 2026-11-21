@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { MdArrowForwardIos } from "react-icons/md";
-import { FaStar } from "react-icons/fa";
+import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useCompare } from "@/context/CompareContext";
 import PreFetchLink from "./CustomUIComponent/PreFetchLink";
 
 // framer-motion + the modal UI only ship once the user actually opens it,
@@ -49,7 +51,44 @@ const CardMain = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasOpenedCart, setHasOpenedCart] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isComparing, setIsComparing] = useState(false);
   const imageRef = useRef(null);
+  const router = useRouter();
+  const { addToCompare } = useCompare();
+
+  // /compare renders specifications/variants/images, which listing data
+  // lacks — fetch the full product first (same endpoint the compare page uses).
+  const handleCompare = async () => {
+    if (isComparing) return;
+    setIsComparing(true);
+    let details = null;
+    try {
+      if (link) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/${link}`);
+        if (res.ok) details = (await res.json())?.data ?? null;
+      }
+    } catch (err) {
+      console.error("Compare fetch failed:", err);
+    }
+    try {
+      const toCompare = details || product || productData;
+      if (toCompare) {
+        addToCompare(toCompare);
+        router.push("/compare");
+      }
+    } finally {
+      setIsComparing(false);
+    }
+  };
+
+  // Eye icon: opens the existing CartModal (the old "Add To Bag" trigger).
+  const openCartModal = () => setIsModalOpen(true);
+  const handleEyeKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openCartModal();
+    }
+  };
 
   if (isModalOpen && !hasOpenedCart) {
     setHasOpenedCart(true);
@@ -312,17 +351,15 @@ const CardMain = ({
               </div>
             </PreFetchLink>
           ) : (
-            /* Standard product: open cart modal */
+            /* Standard product: add to compare, then go to /compare */
             <button
-              onClick={() => isStock && setIsModalOpen(true)}
-              disabled={!isStock}
-              className={`w-[calc(100%-34px)] lg:w-[calc(100%-52px)] xl:w-[calc(100%-76px)] inline-block rounded-full overflow-hidden p-px xl:p-[1.5px] ${
-                isStock ? "gradient cursor-pointer" : "bg-gray-300 cursor-not-allowed"
-              }`}
+              onClick={handleCompare}
+              disabled={isComparing}
+              className="w-[calc(100%-34px)] lg:w-[calc(100%-52px)] xl:w-[calc(100%-76px)] inline-block rounded-full overflow-hidden p-px xl:p-[1.5px] gradient cursor-pointer"
             >
               <div className="bg-white rounded-full flex items-center justify-center text-xs lg:text-sm  2xl:text-lg gap-1 lg:gap-2 py-[3px] lg:py-1.5 xl:py-2.5 font-semibold">
-                <span className={isStock ? "bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent" : "text-gray-500"}>{isStock ? "Add To Bag" : "Out of Stock"}</span>
-                {isStock && <MdArrowForwardIos className="text-primary" />}
+                <span className="bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent">{isComparing ? "Adding..." : "Compare"}</span>
+                <MdArrowForwardIos className="text-primary" />
               </div>
             </button>
           )}
@@ -332,8 +369,15 @@ const CardMain = ({
             <div className="pl-1.5 lg:pl-2.5 xl:pl-3">
               <div className="aspect-square w-8 lg:w-12 xl:w-17  ">
                 <div className="gradient p-px xl:p-[1.5px] rounded-full">
-                  <div className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary">
-                    <FaStar />
+                  <div
+                    onClick={openCartModal}
+                    onKeyDown={handleEyeKeyDown}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Add to cart"
+                    className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary"
+                  >
+                    <Eye size="1em" />
                     <span>{rating}</span>
                   </div>
                 </div>
@@ -346,8 +390,15 @@ const CardMain = ({
                 // className={`w-full h-full aspect-square p-[3px] lg:p-1 xl:p-[6px] rounded-full bg-white`}
               >
                 <div className="gradient p-px xl:p-[1.5px] rounded-full">
-                  <div className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary">
-                    <FaStar />
+                  <div
+                    onClick={openCartModal}
+                    onKeyDown={handleEyeKeyDown}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Add to cart"
+                    className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary"
+                  >
+                    <Eye size="1em" />
                     <span>{rating}</span>
                   </div>
                 </div>
