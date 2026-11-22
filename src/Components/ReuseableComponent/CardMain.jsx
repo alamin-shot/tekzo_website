@@ -354,18 +354,16 @@ const CardMain = ({
             </button>
           )}
 
-          {/* Buy action: outlined gradient pill (matches Add to Compare); hover fills it. Opens the cart modal. */}
-          <div className={`${ROW_HEIGHT} shrink-0 gradient p-px xl:p-[1.5px] rounded-full`}>
-            <button
-              type="button"
-              onClick={openCartModal}
-              aria-label={`Buy ${name}`}
-              className="w-full h-full flex gap-1 lg:gap-1.5 items-center justify-center rounded-full bg-[#F3F2F7] px-2.5 lg:px-4 xl:px-5 text-primary text-[11px] lg:text-sm 2xl:text-lg font-semibold whitespace-nowrap cursor-pointer hover:bg-transparent hover:text-white"
-            >
-              <span>Buy</span>
-              <ShoppingBag className="size-3 lg:size-4 2xl:size-5" />
-            </button>
-          </div>
+          {/* Buy action: solid gradient pill = primary action; opens the cart modal. */}
+          <button
+            type="button"
+            onClick={openCartModal}
+            aria-label={`Buy ${name}`}
+            className={`${ROW_HEIGHT} shrink-0 gradient rounded-full flex items-center justify-center gap-1 lg:gap-2 px-3 lg:px-5 xl:px-6 text-white text-[11px] lg:text-sm 2xl:text-lg font-semibold whitespace-nowrap cursor-pointer shadow-sm hover:brightness-110 hover:shadow-md`}
+          >
+            <span>Buy</span>
+            <ShoppingBag className="size-3 lg:size-4 2xl:size-5" strokeWidth={2.25} />
+          </button>
         </div>
       </div>
       {hasOpenedCart && <CartModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} name={name} currentPrice={currentPrice} image={image} slug={link} />}
