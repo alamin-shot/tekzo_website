@@ -12,7 +12,7 @@ const Franchise = () => {
 
   return (
     <div>
-      <Banner image={"/all-product-banner.webp"} title={"Become a Franchise"}></Banner>
+      <Banner h1="Become a TEKZO Franchise Partner" image={"/all-product-banner.webp"} title={"Become a Franchise"}></Banner>
       <main className="container">
         <Breadcrumbs></Breadcrumbs>
         <BusinessRegisterFormHeader title={title}></BusinessRegisterFormHeader>

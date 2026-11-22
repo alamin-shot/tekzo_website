@@ -12,7 +12,7 @@ const Corporate = () => {
 
   return (
     <div>
-      <Banner image={"/all-product-banner.webp"} title={"Become a Corporate"}></Banner>
+      <Banner h1="TEKZO Corporate Partnership" image={"/all-product-banner.webp"} title={"Become a Corporate"}></Banner>
       <main className="container">
         <Breadcrumbs></Breadcrumbs>
         <BusinessRegisterFormHeader title={title}></BusinessRegisterFormHeader>

@@ -1,15 +1,21 @@
 import { getSeoPage, getSettings } from "@/lib/api";
 
+// Checkout is a private, per-user step — keep it out of search results but
+// let crawlers follow its links.
+const NOINDEX = { index: false, follow: true, googleBot: { index: false, follow: true } };
+
 export async function generateMetadata() {
   const seoData = await getSeoPage("checkout");
   if (!seoData) {
     return {
       title: "Checkout | TEKZO",
       description: "Complete your purchase securely at TEKZO.",
+      robots: NOINDEX,
     };
   }
 
   return {
+    robots: NOINDEX,
     title: seoData.title,
     description: seoData.description,
     keywords: seoData.tags

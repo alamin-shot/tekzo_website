@@ -15,7 +15,7 @@ import { SITE_URL, serializeJsonLd } from "@/lib/seo/jsonLd";
  * @param quote    { text, author, context } — a real, attributable quote
  * @param path     page path, for the schema @id
  */
-export default function QuickAnswers({ title, items = [], sources = [], quote, path, collapseSources = false }) {
+export default function QuickAnswers({ title, items = [], sources = [], quote, path, collapseSources = true }) {
   const qa = items.filter((i) => i?.q && i?.a);
   if (!qa.length) return null;
 

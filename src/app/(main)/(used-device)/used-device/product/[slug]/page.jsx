@@ -31,9 +31,9 @@ export async function generateMetadata({ params, searchParams }) {
   const baseUrl = (process.env.NEXT_PUBLIC_URL || "https://www.tekzo.com.bd").replace(/\/$/, "");
   // Each preOwnedId is a distinct listing (own condition/price/SEO), so keep
   // it in the fallback canonical rather than collapsing to the bare slug.
-  const canonical =
-    seo?.canonical ||
-    `${baseUrl}/used-device/product/${slug}${preOwnedId ? `?preOwnedId=${preOwnedId}` : ""}`;
+  // Always this page's own URL — the API's seo.canonical used to point at
+  // /product/{slug}, a different page.
+  const canonical = `${baseUrl}/used-device/product/${slug}${preOwnedId ? `?preOwnedId=${preOwnedId}` : ""}`;
   const ogImage = seo?.ogImage || "/all-product-banner.webp";
   const siteName = seo?.siteName;
 

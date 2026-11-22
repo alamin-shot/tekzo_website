@@ -14,7 +14,7 @@ const Retailer = () => {
 
   return (
     <div>
-      <Banner image={"/all-product-banner.webp"} title={"Become a Retailer"}></Banner>
+      <Banner h1="Become a TEKZO Retailer" image={"/all-product-banner.webp"} title={"Become a Retailer"}></Banner>
       <main className="container">
         <Breadcrumbs></Breadcrumbs>
         <BusinessRegisterFormHeader title={title}></BusinessRegisterFormHeader>

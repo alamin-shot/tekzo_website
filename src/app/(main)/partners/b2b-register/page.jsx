@@ -14,7 +14,7 @@ const B2bregister = () => {
 
   return (
     <div>
-      <Banner image={"/all-product-banner.webp"} title={"Become a B2B Partner"}></Banner>
+      <Banner h1="Become a TEKZO B2B Partner" image={"/all-product-banner.webp"} title={"Become a B2B Partner"}></Banner>
       <main className="container">
         <Breadcrumbs></Breadcrumbs>
         <BusinessRegisterFormHeader title={title}></BusinessRegisterFormHeader>
