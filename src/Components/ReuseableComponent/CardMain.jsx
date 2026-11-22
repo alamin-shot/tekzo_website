@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { MdArrowForwardIos } from "react-icons/md";
-import { Eye, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -87,7 +87,7 @@ const CardMain = ({
     }
   };
 
-  // Eye icon: opens the existing CartModal (the old "Add To Bag" trigger).
+  // Buy button: opens the existing CartModal.
   const openCartModal = () => setIsModalOpen(true);
 
   if (isModalOpen && !hasOpenedCart) {
@@ -354,18 +354,16 @@ const CardMain = ({
             </button>
           )}
 
-          {/* Round action: opens the cart modal */}
-          <div className={`${ROW_HEIGHT} aspect-square shrink-0 gradient p-px xl:p-[1.5px] rounded-full`}>
-            <button
-              type="button"
-              onClick={openCartModal}
-              aria-label="Add to cart"
-              className="w-full h-full flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-primary text-sm lg:text-lg xl:text-xl cursor-pointer"
-            >
-              {from === "flashSale" ? <ShoppingBag size="1em" /> : <Eye size="1em" />}
-              {rating ? <span className="text-[10px] xl:text-sm">{rating}</span> : null}
-            </button>
-          </div>
+          {/* Buy action: solid gradient pill = primary action; opens the cart modal. */}
+          <button
+            type="button"
+            onClick={openCartModal}
+            aria-label={`Buy ${name}`}
+            className={`${ROW_HEIGHT} shrink-0 gradient rounded-full flex items-center justify-center gap-1 lg:gap-2 px-3 lg:px-5 xl:px-6 text-white text-[11px] lg:text-sm 2xl:text-lg font-semibold whitespace-nowrap cursor-pointer shadow-sm hover:brightness-110 hover:shadow-md`}
+          >
+            <span>Buy</span>
+            <ShoppingBag className="size-3 lg:size-4 2xl:size-5" strokeWidth={2.25} />
+          </button>
         </div>
       </div>
       {hasOpenedCart && <CartModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} name={name} currentPrice={currentPrice} image={image} slug={link} />}
