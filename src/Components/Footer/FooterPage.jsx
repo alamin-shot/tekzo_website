@@ -44,18 +44,26 @@ const FooterPage = async ({ companySetting }) => {
               <span className="mt-1 text-lg">
                 <FiPhone />
               </span>
-              <span className="text-gray-700 font-light">{companySetting?.primary_phone_number || ""}</span>
+              {companySetting?.primary_phone_number ? (
+                <a href={`tel:${companySetting.primary_phone_number.replace(/[^\d+]/g, "")}`} className="text-gray-700 font-light hover:text-primary transition">
+                  {companySetting.primary_phone_number}
+                </a>
+              ) : null}
             </div>
             <div className="flex items-start gap-3 text-sm leading-relaxed">
               <span className="mt-1 text-lg">
                 <GoMail />
               </span>
-              <span className="text-gray-700 font-light">{companySetting?.support_email || ""}</span>
+              {companySetting?.support_email ? (
+                <a href={`mailto:${companySetting.support_email}`} className="text-gray-700 font-light hover:text-primary transition">
+                  {companySetting.support_email}
+                </a>
+              ) : null}
             </div>
           </div>
           <div>
             <h3 className="font-semibold mb-3 text-base text-gray-800">Complain / Advice</h3>
-            <PreFetchLink prefetch={false} href="/contact-us" className="gradient text-white px-8 py-2 rounded-md text-sm hover:shadow-lg transition">
+            <PreFetchLink prefetch={false} href="/contact-us" aria-label="Contact us with feedback" className="gradient text-white px-8 py-2 rounded-md text-sm hover:shadow-lg transition">
               Feedback
             </PreFetchLink>
           </div>
