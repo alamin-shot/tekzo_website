@@ -21,7 +21,7 @@ export default function OurPartners() {
         <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16">
           {brands.map((brand) => (
             <div key={brand.name} className="relative w-32 h-16 transition-transform hover:scale-105">
-              <Image src={brand.src} alt={brand.name} fill style={{ objectFit: "contain" }} priority={false} />
+              <Image src={brand.src} alt={brand.name} fill sizes="128px" style={{ objectFit: "contain" }} priority={false} />
             </div>
           ))}
         </div>

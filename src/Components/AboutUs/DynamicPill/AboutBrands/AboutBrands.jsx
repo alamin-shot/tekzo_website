@@ -57,7 +57,7 @@ export default function AboutBrands() {
           {/* Logo Alignment */}
           <div className="flex justify-end mt-4">
             <div className="relative w-32 h-10">
-              <Image src={brand.logoSrc} alt={`${brand.title} logo`} fill className="object-contain object-right" />
+              <Image src={brand.logoSrc} alt={`${brand.title} logo`} fill sizes="128px" className="object-contain object-right" />
             </div>
           </div>
         </section>

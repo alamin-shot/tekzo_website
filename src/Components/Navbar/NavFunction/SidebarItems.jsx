@@ -62,7 +62,7 @@ const SidebarItems = ({ setIsSidebarOpen, categories, brands }) => {
             <Image
               src={item.image}
               alt={item.title}
-              fill
+              fill sizes="80px"
               className="object-contain"
             />
           </div>

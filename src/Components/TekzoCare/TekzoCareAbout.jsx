@@ -32,7 +32,7 @@ export default function TekzoCareAbout() {
             <Image
               src="/tekzo-care/mobile-repairing-technician.png" // Replace with your actual asset path
               alt="Tekzo Care professional technician repairing a smartphone"
-              fill
+              fill sizes="(max-width: 1023px) 100vw, 50vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority // Optional: adds preloading if this section sits high up on the page viewport
               fetchPriority="high"

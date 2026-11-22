@@ -12,7 +12,7 @@ const TeamMembers = ({ teams = [] }) => {
           <div key={leader.id} className="group bg-white rounded-2xl xl:rounded-4xl p-3 lg:p-6 border border-gray-100 lg:border-gray-200 flex flex-col md:flex-row gap-8 transition-all">
             <div className="shrink-0 w-full md:w-52 text-center">
               <div className="relative h-[350px] lg:h-64 w-full rounded-xl xl:rounded-2xl overflow-hidden bg-gray-100 mb-5">
-                <Image src={leader.profile_photo} alt={leader.name} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                <Image src={leader.profile_photo} alt={leader.name} fill sizes="(max-width: 1023px) 100vw, 50vw" className="object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div className="bg-slate-100 py-3 px-4 rounded-xl xl:rounded-2xl">
                 <h3 className="font-bold text-sm leading-tight">{leader.name}</h3>
@@ -29,7 +29,7 @@ const TeamMembers = ({ teams = [] }) => {
         {members.map((member) => (
           <div key={member.id} className="group bg-white rounded-2xl xl:rounded-4xl p-2 lg:p-3 xl:p-4 border border-gray-100 flex flex-col items-center transition-all h-full">
             <div className="relative h-44 w-full mb-3 lg:mb-4 rounded-xl xl:rounded-2xl overflow-hidden bg-gray-100 shrink-0">
-              <Image src={member.profile_photo} alt={member.name} fill className="object-contain group-hover:scale-105 transition-all duration-500" />
+              <Image src={member.profile_photo} alt={member.name} fill sizes="(max-width: 639px) 50vw, (max-width: 767px) 33vw, (max-width: 1023px) 25vw, 17vw" className="object-contain group-hover:scale-105 transition-all duration-500" />
             </div>
             <div className="flex-1 flex flex-col justify-center bg-slate-100 group-hover:bg-gray-100 p-3 rounded-xl xl:rounded-2xl w-full text-center transition-colors">
               <h3 className="font-bold text-gray-800 text-[11px] leading-tight">{member.name}</h3>

@@ -70,7 +70,7 @@ function Modal({ news, onClose }) {
             <Image
               src={news.image}
               alt={news.heading}
-              fill
+              fill sizes="(max-width: 1023px) 100vw, 50vw"
               className="object-cover"
               priority
             />
@@ -131,7 +131,7 @@ function NewsCard({ news, onClick }) {
         <Image
           src={news.image}
           alt={news.heading}
-          fill
+          fill sizes="(max-width: 1023px) 50vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300" />

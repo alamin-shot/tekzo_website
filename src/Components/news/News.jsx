@@ -98,7 +98,7 @@ function Modal({ news, index, onClose, totalCount }) {
               <Image
                 src={news.image}
                 alt={news.heading || news.name || ""}
-                fill
+                fill sizes="(max-width: 1023px) 100vw, 50vw"
                 className="object-cover"
                 priority
                 fetchPriority="high"
@@ -186,7 +186,7 @@ function NewsCard({ news, index, onClick, totalCount }) {
           <Image
             src={news.image}
             alt={news.heading || news.name || ""}
-            fill
+            fill sizes="(max-width: 1023px) 50vw, 25vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (

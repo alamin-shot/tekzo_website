@@ -333,7 +333,7 @@ export default function CartModal({
                           : "/placeholder.jpg"
                       }
                       alt={name}
-                      fill
+                      fill sizes="(max-width: 1023px) 90vw, 400px"
                       className="object-contain"
                     />
                   </div>
@@ -498,7 +498,7 @@ export default function CartModal({
                           : "/placeholder.jpg"
                       }
                       alt=""
-                      fill
+                      fill sizes="64px"
                       className="object-contain"
                     />
                   </div>

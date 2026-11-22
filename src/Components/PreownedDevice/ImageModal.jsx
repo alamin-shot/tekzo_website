@@ -349,7 +349,7 @@ export default function ImageModal({
                 <Image
                   src={currentImage?.image || currentImage}
                   alt={`Image ${currentIndex + 1}`}
-                  fill
+                  fill sizes="100vw"
                   className="object-contain select-none"
                   priority
                   fetchPriority="high"
@@ -413,7 +413,7 @@ export default function ImageModal({
                     <Image
                       src={img?.image || img}
                       alt={`Thumbnail ${idx + 1}`}
-                      fill
+                      fill sizes="(max-width: 1023px) 100vw, 33vw"
                       className="object-cover"
                     />
                   </motion.button>
