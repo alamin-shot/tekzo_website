@@ -76,7 +76,27 @@ export async function proxy(request) {
         }
     }
 
-    return NextResponse.next();
+    return syncAuthMarker(request, NextResponse.next(), token);
+}
+
+// Client components (checkout, navbar badges) read the non-httpOnly `has_auth`
+// marker to decide guest vs logged-in. Sessions created before the marker
+// existed only carry `auth_token`, which made checkout treat logged-in users
+// as guests. Keep the two cookies in sync on every page request.
+function syncAuthMarker(request, response, token) {
+    const hasMarker = request.cookies.has('has_auth');
+    if (token && !hasMarker) {
+        response.cookies.set('has_auth', '1', {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+        });
+    } else if (!token && hasMarker) {
+        response.cookies.delete('has_auth');
+    }
+    return response;
 }
 
 function redirectToLogin(request) {
@@ -87,20 +107,9 @@ function redirectToLogin(request) {
 }
 
 export const config = {
+    // Run on all page routes (needed for the has_auth sync above), skipping
+    // API routes, Next internals and static files.
     matcher: [
-        '/dashboard/:path*',
-        '/login',
-        '/register',
-        '/brand/:path*',
-        '/category/:path*',
-        '/career/:path*',
-        '/categories/details/:path*',
-        '/home',
-        '/all-brands',
-        '/all-categories',
-        '/all-products',
-        '/offers',
-        '/faqs',
-        '/preowned-device',
-    ]
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|txt|xml|js|css|map|woff2?)$).*)',
+    ],
 };
