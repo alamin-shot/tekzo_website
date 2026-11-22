@@ -47,7 +47,9 @@ export async function generateMetadata() {
 
     //  Canonical
     alternates: {
-      canonical: base,
+      // "./" resolves to each page's own path (against metadataBase), so pages
+      // without their own canonical point to themselves instead of the homepage.
+      canonical: "./",
     },
 
     // OpenGraph (Facebook, LinkedIn)
