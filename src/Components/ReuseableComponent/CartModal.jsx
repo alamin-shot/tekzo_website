@@ -111,15 +111,20 @@ export default function CartModal({
           initialVariants.find((v) => v.stock === true || v.stock === 1) ||
           initialVariants[0];
 
+        if (controller.signal.aborted) return;
         setProductData(data);
         setColors(colorOptions);
         setSelectedColorId(initialColorId);
         setVariantOptions(initialVariants);
         setSelectedVariant(firstInStock);
       } catch (error) {
+        // The cleanup below cancels the request when the modal closes or the
+        // product changes (and React Strict Mode runs effects twice in dev) —
+        // that's expected, not an error.
+        if (controller.signal.aborted || error?.name === "AbortError") return;
         console.error("CartModal Error:", error);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     };
 
