@@ -320,10 +320,11 @@ export default function HowToClaimClient({ seoData }) {
             <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
               {t.needHelp.description}
             </p>
-            <Link href="/contact">
-              <button className="bg-white text-gray-900 px-8 py-3 rounded-xl font-medium hover:bg-gray-100 transition-all shadow-lg">
-                {t.needHelp.button}
-              </button>
+            <Link
+              href="/contact-us"
+              className="inline-block bg-white text-gray-900 px-8 py-3 rounded-xl font-medium hover:bg-gray-100 transition-all shadow-lg"
+            >
+              {t.needHelp.button}
             </Link>
           </div>
 

@@ -28,7 +28,11 @@ const FooterPage = async ({ companySetting }) => {
         <div className="space-y-6">
           <Image src={companySetting?.company_logo || "/logo.png"} alt={companySetting?.company_name || "TEKZO"} width={180} height={60} className="w-32.5" />
           <div className="space-y-3">
-            <h3 className="font-semibold text-base text-gray-800">Contact</h3>
+            <h3 className="font-semibold text-base text-gray-800">
+              <PreFetchLink prefetch={false} href="/contact-us" className="hover:text-primary transition">
+                Contact Us
+              </PreFetchLink>
+            </h3>
 
             <div className="flex items-start gap-3 text-sm leading-relaxed">
               <span className="mt-1 text-lg">

@@ -24,7 +24,8 @@ const About = () => {
     // { title: "Investor", link: "/" },
   ];
   return (
-    <div className="bg-transparent">
+    // <nav> landmark so crawlers/audits recognise About Us + Contact Us as site navigation.
+    <nav aria-label="About and contact" className="bg-transparent">
       <h3 className="font-semibold  text-sm mb-4 text-gray-800">About</h3>
       <ul className="space-y-2 text-sm">
         {aboutLinks.map((link, index) => (
@@ -39,7 +40,7 @@ const About = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 };
 
