@@ -363,7 +363,7 @@ export default function HomeFAQ({ customerQuote }) {
     return (
       <div
         key={faq.id}
-        className={`break-inside-avoid mb-3.5 lg:mb-4 rounded-2xl md:rounded-3xl transition-all duration-300 bg-gradient-to-br from-secondary/20 to-secondary/5  ${
+        className={`rounded-2xl md:rounded-3xl transition-all duration-300 bg-gradient-to-br from-secondary/20 to-secondary/5  ${
           isOpen ? "border-secondary/40 shadow-md ring-1 ring-secondary/25" : "border-secondary/20 hover:border-secondary/35 shadow-xs hover:shadow-md"
         }`}
       >
@@ -374,7 +374,7 @@ export default function HomeFAQ({ customerQuote }) {
           aria-expanded={isOpen}
           aria-controls={`faq-answer-${index}`}
           id={`faq-trigger-${index}`}
-          className="w-full flex items-start justify-between gap-3 p-4 md:p-5 text-left cursor-pointer group select-none transition-colors"
+          className="w-full flex items-start justify-between gap-3 p-4 md:p-5 text-left cursor-pointer group select-none transition-colors rounded-2xl md:rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/60"
         >
           <div className="flex items-start gap-3 min-w-0">
             <span
@@ -421,10 +421,13 @@ export default function HomeFAQ({ customerQuote }) {
         <p className="text-xs md:text-base text-gray-600 max-w-2xl mx-auto px-4">Everything you need to know about our genuine tech, official warranties, and seamless customer care at TEKZO.</p>
       </div>
 
-      {/* One list for all screens: 1 column on mobile, 2 CSS columns on desktop
-          (FAQs 1-5 left, 6-10 right). Rendering it twice for mobile/desktop
-          doubled the page's word count for crawlers. */}
-      <div className="lg:columns-2 lg:gap-5">{faqs.map((faq, index) => renderFaqCard(faq, index))}</div>
+      {/* Two fixed columns (1-5 left, 6-10 right) so opening an answer never
+          moves cards between columns. Rendered once; on mobile the columns
+          simply stack in order. */}
+      <div className="grid gap-3.5 lg:grid-cols-2 lg:gap-5 items-start">
+        <div className="flex flex-col gap-3.5 lg:gap-4">{faqs.slice(0, 5).map((faq, index) => renderFaqCard(faq, index))}</div>
+        <div className="flex flex-col gap-3.5 lg:gap-4">{faqs.slice(5).map((faq, index) => renderFaqCard(faq, index + 5))}</div>
+      </div>
 
     </section>
   );
