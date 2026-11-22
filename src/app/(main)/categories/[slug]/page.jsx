@@ -1,4 +1,7 @@
 import { getCategoryInfo, getCategoryProductsBySlug } from "@/lib/api";
+import QuickAnswers from "@/Components/SEO/QuickAnswers";
+import { buildProductAnswers, buildListingAnswers } from "@/lib/seo/quickAnswers";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Banner from "@/Components/ReuseableComponent/Banner";
 import SingleCategory from "@/Components/Home/Categories/CategoryDetails/SingleCategory";
 import PageDescription from "@/Components/ReuseableComponent/PageDescription";
@@ -118,10 +121,21 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <div>
+      <ProductListJsonLd products={product?.products} path={`/categories/${slug}`} name={categoryInfo?.name} />
       <Banner image={categoryInfo?.banner || "/all-product-banner.webp"} title={categoryInfo?.name || "no product found"} />
       {product ? (
         <>
           <SingleCategory fromCategory={"fromCategory"} product={product} activeBrand={brand} pagination={product?.pagination} currentPage={currentPage} />
+          {(() => {
+            const qa = buildListingAnswers({
+              kind: "category",
+              entity: { name: categoryInfo?.name, slug },
+              products: product?.products,
+              total: product?.pagination?.total,
+              path: `/categories/${slug}`,
+            });
+            return qa ? <QuickAnswers {...qa} /> : null;
+          })()}
           <PageDescription title={categoryInfo?.name ? `Learn More About ${categoryInfo.name}` : "Learn More About This Category"} description={product?.description || categoryInfo?.description} />
         </>
       ) : (

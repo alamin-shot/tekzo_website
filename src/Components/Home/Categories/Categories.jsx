@@ -54,7 +54,7 @@ const Categories = ({ slidersData, categoriesData }) => {
                     <Image
                       src={card?.image || "/placeholder.jpg"}
                       alt={card?.heading || "banner image"}
-                      className="w-full rounded-2xl lg:rounded-[40px]"
+                      className="w-full h-auto rounded-2xl lg:rounded-[40px]"
                       width={800}
                       height={600}
                       sizes="(max-width: 1023px) 50vw, 33vw"

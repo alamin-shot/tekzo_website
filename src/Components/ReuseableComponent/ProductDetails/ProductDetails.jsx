@@ -131,7 +131,7 @@ const ProductTopNav = ({ companySetting, policies }) => {
 
 const MobileProductTopNav = ProductTopNav;
 
-export default function ProductDetails({ productDetails, relatedProductsData, reviewsData, supportPhone, companySetting, policies = [] }) {
+export default function ProductDetails({ productDetails, relatedProductsData, reviewsData, supportPhone, companySetting, policies = [], afterDetails }) {
   const [internalSetting, setInternalSetting] = useState(companySetting || null);
   const [internalPolicies, setInternalPolicies] = useState(policies?.length ? policies : null);
 
@@ -919,6 +919,9 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
       <div className="">
         <DynamicPills productDetails={productDetails} reviewsData={reviewsData} supportPhone={supportPhone} activeTab={activePillTab} setActiveTab={setActivePillTab} />
       </div>
+
+      {/* Server-rendered slot (e.g. Quick Answers) shown above Related Products */}
+      {afterDetails}
 
       <RelatedProducts relatedProductsData={relatedProductsData} />
       <div className="h-20 lg:h-24 w-full" />

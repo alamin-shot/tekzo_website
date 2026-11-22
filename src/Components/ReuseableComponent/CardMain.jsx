@@ -348,7 +348,16 @@ const CardMain = ({
             /* Standard product: add to compare, then go to /compare */
             <button type="button" onClick={handleCompare} disabled={isComparing} className={`${PILL_OUTER} gradient cursor-pointer`}>
               <div className={PILL_INNER}>
-                <span className={GRADIENT_TEXT}>{isComparing ? "Adding..." : "Add to Compare"}</span>
+                {/* Short label on narrow cards (mobile), full label from lg up */}
+                <span className={GRADIENT_TEXT}>
+                  {isComparing ? (
+                    "Adding..."
+                  ) : (
+                    <>
+                      <span className="hidden lg:inline">Add to </span>Compare
+                    </>
+                  )}
+                </span>
                 <MdArrowForwardIos className="text-primary shrink-0" />
               </div>
             </button>
@@ -359,10 +368,10 @@ const CardMain = ({
             type="button"
             onClick={openCartModal}
             aria-label={`Buy ${name}`}
-            className={`${ROW_HEIGHT} shrink-0 gradient rounded-full flex items-center justify-center gap-1 lg:gap-2 px-3 lg:px-5 xl:px-6 text-white text-[11px] lg:text-sm 2xl:text-lg font-semibold whitespace-nowrap cursor-pointer shadow-sm hover:brightness-110 hover:shadow-md`}
+            className={`${ROW_HEIGHT} shrink-0 gradient rounded-full flex items-center justify-center gap-1.5 lg:gap-2 px-4 lg:px-7 xl:px-9 text-white text-xs lg:text-base 2xl:text-lg font-semibold whitespace-nowrap cursor-pointer shadow-sm hover:brightness-110 hover:shadow-md`}
           >
             <span>Buy</span>
-            <ShoppingBag className="size-3 lg:size-4 2xl:size-5" strokeWidth={2.25} />
+            <ShoppingBag className="size-3.5 lg:size-5 2xl:size-6" strokeWidth={2.25} />
           </button>
         </div>
       </div>

@@ -181,7 +181,7 @@ export default function HowToClaimClient({ seoData }) {
 
   return (
     <div className="min-h-screen ">
-      <Banner
+      <Banner h1="How to Claim Your Warranty"
         image={seoData?.banner || "/loginPage/contact-about-bg.webp"}
         title={seoData?.title || t.banner}
       />

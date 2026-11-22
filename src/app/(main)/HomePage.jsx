@@ -10,10 +10,11 @@ import TrustFeatures from "@/Components/Home/TrustFeatures/TrustFeatures";
 import WhyChooseTekzo from "@/Components/Home/WhyChooseTekzo/WhyChooseTekzo";
 import HomeFAQ from "@/Components/Home/HomeFAQ/HomeFAQ";
 import { getSettings } from "@/lib/api";
+import { getHomeCustomerQuote } from "@/lib/homeQuote";
 import NewArrival from "@/Components/Home/NewArrival/NewArrival";
 
 const HomePage = async ({ slidersData, categoriesData, brands }) => {
-  const companySetting = await getSettings();
+  const [companySetting, customerQuote] = await Promise.all([getSettings(), getHomeCustomerQuote()]);
   return (
     <main className="flex flex-col gap-6 md:gap-8 lg:gap-10">
       <h1 className="sr-only">TEKZO – Trusted Smartphone, Gadget & Electronics Store in Bangladesh</h1>
@@ -27,7 +28,7 @@ const HomePage = async ({ slidersData, categoriesData, brands }) => {
       <UsedDeviceHomePage></UsedDeviceHomePage>
       <TrustFeatures></TrustFeatures>
       <WhyChooseTekzo></WhyChooseTekzo>
-      <HomeFAQ />
+      <HomeFAQ customerQuote={customerQuote} />
       <PageDescription className="!mt-0" title="More About Tekzo" description={companySetting?.seoData?.long_description} />
     </main>
   );

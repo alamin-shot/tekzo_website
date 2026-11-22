@@ -10,7 +10,7 @@ export default function WarrantyInfo({ productDetails, supportPhone }) {
 
   return (
     <div className="bg-[#E7E9EB] rounded-xl lg:rounded-[20px] p-4 lg:p-0 space-y-3">
-      <h3 className="text-sm lg:text-base 2xl:text-lg font-bold text-gray-700 tracking-tight">Warranty Information</h3>
+      <h2 className="text-sm lg:text-base 2xl:text-lg font-bold text-gray-700 tracking-tight">Warranty Information</h2>
 
       {/* Brand Warranty Row */}
       {productDetails?.warranty_day && (

@@ -1,4 +1,5 @@
 import Banner from "@/Components/ReuseableComponent/Banner";
+import { pageCanonical } from "@/lib/seo/jsonLd";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
 import FilterSidebar from "@/Components/Marketplace/FilterSidebar";
 import ProductSection from "@/Components/Marketplace/ProductSection";
@@ -33,8 +34,7 @@ export async function generateMetadata({ searchParams }) {
   const keywords = seoData?.tags
     ? seoData.tags.split(",").map((t) => t.trim())
     : [];
-  const baseUrl = (process.env.NEXT_PUBLIC_URL || "https://www.tekzo.com.bd").replace(/\/$/, "");
-  const canonical = seoData?.canonicalUrl || `${baseUrl}/marketplace`;
+  const canonical = pageCanonical(seoData?.canonicalUrl, "/marketplace");
   const ogImage = seoData?.ogImage || "/all-product-banner.webp";
   const siteName = seoData?.siteName;
 

@@ -65,7 +65,7 @@ export default async function Offer({ searchParams }) {
 
   return (
     <div>
-      <Banner
+      <Banner h1="Offers"
         image={seoData?.banner || "/all-product-banner.webp"}
         title={seoData?.title || "Offers"}
       />

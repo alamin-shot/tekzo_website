@@ -78,7 +78,7 @@ const SearchPage = async ({ searchParams }) => {
   return (
     <div>
       <div className="overflow-visible">
-        <Banner image={"/all-product-banner.webp"} title={"Search Results"} />
+        <Banner h1="Search Results" image={"/all-product-banner.webp"} title={"Search Results"} />
       </div>
       <main>
         {/* Search heading */}

@@ -1,8 +1,11 @@
 // app/products/[productDetails]/page.jsx
 import dynamic from "next/dynamic";
+import QuickAnswers from "@/Components/SEO/QuickAnswers";
+import { buildUsedDeviceAnswers } from "@/lib/seo/quickAnswers";
 import ProductJsonLd from "@/Components/SEO/ProductJsonLd";
 import ProductViewTracker from "@/Components/Tracker/ProductViewTracker";
 import {
+  getBrands,
   getUsedDeviceProduct,
   getSettings,
   getPreOwnedRelatedProducts,
@@ -79,6 +82,9 @@ const ProductDetailsPage = async ({ params, searchParams }) => {
   const relatedProducts = await getPreOwnedRelatedProducts(slug, preOwnedId);
 
   const seo = data?.seoData;
+  const allBrands = await getBrands();
+  const brandTagline = (Array.isArray(allBrands) ? allBrands : []).find((b) => b?.slug === data?.brand?.slug)?.tagline;
+  const qa = buildUsedDeviceAnswers(data, brandTagline, `/used-device/product/${slug}`);
 
   return (
     <div>
@@ -90,6 +96,7 @@ const ProductDetailsPage = async ({ params, searchParams }) => {
         productDetails={data}
         supportPhone={companySetting?.primary_phone_number}
         relatedProducts={relatedProducts}
+        afterDetails={qa ? <QuickAnswers {...qa} /> : null}
       />
     </div>
   );

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import PreFetchLink from "@/Components/ReuseableComponent/CustomUIComponent/PreFetchLink";
 
-export default function HomeFAQ() {
+export default function HomeFAQ({ customerQuote }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleAccordion = (index) => {
@@ -12,11 +12,17 @@ export default function HomeFAQ() {
   };
 
   const blueLinkClass = "text-blue-600 hover:text-blue-700 hover:underline font-bold transition-colors";
+  // Outbound citation to a manufacturer's official site (named source).
+  const OfficialLink = ({ href, children }) => (
+    <a href={href} target="_blank" rel="noopener" className={blueLinkClass}>
+      {children}
+    </a>
+  );
 
   const faqs = [
     {
       id: "faq-1",
-      question: "Your absolute trusted source for Mobile Phones, Smart Gadgets, Laptop, and Home Appliances.",
+      question: "Why should I buy phones, laptops and home appliances from TEKZO?",
       answer: (
         <p>
           When it comes to investing in your next smartphone, high-performance{" "}
@@ -53,7 +59,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-2",
-      question: "Premier Gaming Smartphones Retailer and Online Shop in Bangladesh.",
+      question: "Where can I buy genuine gaming smartphones in Bangladesh?",
       answer: (
         <p>
           Step into the ultimate arena of mobile gaming and high-performance tech with{" "}
@@ -76,7 +82,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-3",
-      question: "The Finest Mobile Destination in Bangladesh",
+      question: "Why do tech enthusiasts buy their phones from TEKZO?",
       answer: (
         <p>
           Discover why tech enthusiasts rely on{" "}
@@ -96,7 +102,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-4",
-      question: "Elite Laptops & MacBooks for Professional Workflows with TEKZO",
+      question: "Can I buy genuine laptops and MacBooks on EMI at TEKZO?",
       answer: (
         <div className="space-y-3">
           <p>
@@ -131,7 +137,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-5",
-      question: "In this Modern era, The Easiest Way to Upgrade Your Tech ",
+      question: "Does TEKZO offer competitive prices on Apple and Samsung devices?",
       answer: (
         <div className="space-y-3">
           <p>
@@ -171,7 +177,10 @@ export default function HomeFAQ() {
             </li>
             <li className="leading-relaxed">
               <span className="font-bold">Factory-Fresh Authenticity:</span> Every device is sourced directly through authorized channels and comes with official manufacturer warranties—zero
-              replicas, uncertainty.
+              replicas, uncertainty. Manufacturer warranty terms are published on the{" "}
+              <OfficialLink href="https://www.apple.com">Apple</OfficialLink>,{" "}
+              <OfficialLink href="https://www.samsung.com">Samsung</OfficialLink> and{" "}
+              <OfficialLink href="https://www.anker.com">Anker</OfficialLink> official websites.
             </li>
             <li className="leading-relaxed">
               <span className="font-bold">Seamless Shopping Experience:</span> Access our collection effortlessly through our secure online platform or visit our physical retail presence to experience
@@ -194,7 +203,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-6",
-      question: "Power, Sound, & Style: The Ultimate TEKZO Accessory Ecosystem",
+      question: "What chargers, power banks and audio accessories does TEKZO sell?",
       answer: (
         <div className="space-y-3">
           <p>
@@ -227,7 +236,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-7",
-      question: "Modern Comfort, Elevate Your Everyday with TEKZO’s Home Appliance",
+      question: "Which home appliances can I buy at TEKZO?",
       answer: (
         <p>
           the appliances that simplify your daily routine and transform your home into a smart, efficient sanctuary. At{" "}
@@ -272,7 +281,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-8",
-      question: "A Massive Catalog of Verified Tech Essentials",
+      question: "Can I find rare or hard-to-find gadgets at TEKZO?",
       answer: (
         <p>
           When building the ultimate digital lifestyle, having access to variety shouldn&#39;t mean compromising on authenticity or availability. At{" "}
@@ -294,7 +303,7 @@ export default function HomeFAQ() {
     },
     {
       id: "faq-9",
-      question: "The TEKZO Buyer’s Assurance",
+      question: "What is the TEKZO Buyer’s Assurance?",
       answer: (
         <p>
           Total peace of mind should be standard with every tech investment, not an afterthought. At{" "}
@@ -310,12 +319,22 @@ export default function HomeFAQ() {
             TEKZO
           </PreFetchLink>
           , where your investment is always fully protected.
+          {customerQuote && (
+            <>
+              {" "}
+              As customer <cite className="not-italic font-bold">{customerQuote.author}</cite> wrote in a {customerQuote.rating}/5 review of the{" "}
+              <PreFetchLink href={`/product/${customerQuote.productSlug}`} className={blueLinkClass}>
+                {customerQuote.productName}
+              </PreFetchLink>
+              : <q className="italic">{customerQuote.text}</q>
+            </>
+          )}
         </p>
       ),
     },
     {
       id: "faq-10",
-      question: "The TEKZO Experience: Where Authenticity Meets Value",
+      question: "What makes TEKZO different from other tech shops?",
       answer: (
         <p>
           Technology moves fast, but true trust is built to last.{" "}
@@ -344,10 +363,11 @@ export default function HomeFAQ() {
     return (
       <div
         key={faq.id}
-        className={`rounded-2xl md:rounded-3xl transition-all duration-300 bg-gradient-to-br from-secondary/20 to-secondary/5  ${
+        className={`break-inside-avoid mb-3.5 lg:mb-4 rounded-2xl md:rounded-3xl transition-all duration-300 bg-gradient-to-br from-secondary/20 to-secondary/5  ${
           isOpen ? "border-secondary/40 shadow-md ring-1 ring-secondary/25" : "border-secondary/20 hover:border-secondary/35 shadow-xs hover:shadow-md"
         }`}
       >
+        <h3 className="m-0">
         <button
           type="button"
           onClick={() => toggleAccordion(index)}
@@ -374,6 +394,7 @@ export default function HomeFAQ() {
             <ChevronDown className="w-4 h-4" />
           </span>
         </button>
+        </h3>
 
         {/* Smooth CSS Grid Transition */}
         <div
@@ -390,9 +411,6 @@ export default function HomeFAQ() {
     );
   };
 
-  const leftColumnFaqs = faqs.slice(0, 5);
-  const rightColumnFaqs = faqs.slice(5);
-
   return (
     <section>
       {/* Section Header */}
@@ -403,14 +421,11 @@ export default function HomeFAQ() {
         <p className="text-xs md:text-base text-gray-600 max-w-2xl mx-auto px-4">Everything you need to know about our genuine tech, official warranties, and seamless customer care at TEKZO.</p>
       </div>
 
-      {/* Mobile: 1 Column Layout */}
-      <div className="flex flex-col gap-3.5 lg:hidden">{faqs.map((faq, index) => renderFaqCard(faq, index))}</div>
+      {/* One list for all screens: 1 column on mobile, 2 CSS columns on desktop
+          (FAQs 1-5 left, 6-10 right). Rendering it twice for mobile/desktop
+          doubled the page's word count for crawlers. */}
+      <div className="lg:columns-2 lg:gap-5">{faqs.map((faq, index) => renderFaqCard(faq, index))}</div>
 
-      {/* Desktop (lg and above): 2 Columns Layout */}
-      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-5 items-start">
-        <div className="flex flex-col gap-4">{leftColumnFaqs.map((faq, index) => renderFaqCard(faq, index))}</div>
-        <div className="flex flex-col gap-4">{rightColumnFaqs.map((faq, index) => renderFaqCard(faq, index + 5))}</div>
-      </div>
     </section>
   );
 }

@@ -78,7 +78,9 @@ const SingleCategory = ({
   };
 
   const tabBase =
-    "px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer";
+    // Same 40px height as the brand-logo chips; text tabs take 2 cells of the
+    // mobile grid so longer names fit.
+    "col-span-2 lg:col-span-1 h-10 px-3 lg:px-5 flex items-center justify-center rounded-lg text-xs lg:text-sm font-medium transition-all whitespace-nowrap truncate cursor-pointer";
   const tabActive = "bg-secondary text-white shadow-md";
   const tabInactive = "bg-[#F3F4F6] text-gray-600 hover:bg-gray-200";
 
@@ -130,10 +132,12 @@ const SingleCategory = ({
       key={item.id}
       title={item?.name}
       onClick={() => handleFilter(item.slug, "brand")}
-      className={`px-5 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${activeBrand === item.slug ? "bg-secondary text-white shadow-md" : "bg-gray-100"}`}
+      // Fixed-size chip: every brand gets the same box and its logo is fitted
+      // inside, so tall (ZTE, itel) and wide (Samsung, OPPO) logos line up.
+      className={`h-10 w-full lg:w-24 px-2 flex items-center justify-center rounded-lg text-xs lg:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${activeBrand === item.slug ? "bg-secondary text-white shadow-md" : "bg-gray-100"}`}
     >
       {item.name === "All Products" ? (
-        <span>All Products</span>
+        <span className="truncate">All Products</span>
       ) : (
         <Image
           src={item?.primary_logo}
@@ -141,7 +145,7 @@ const SingleCategory = ({
           title={item?.name}
           width={128}
           height={96}
-          className="w-12 h-auto"
+          className="h-auto w-auto max-h-6 max-w-full object-contain"
         />
       )}
     </button>
@@ -197,8 +201,8 @@ const SingleCategory = ({
             <IoSearchOutline className="absolute right-3 text-gray-400 text-xl pointer-events-none" />
           </div>
 
-          {/* Mobile tabs */}
-          <div className="flex lg:hidden flex-wrap gap-2 overflow-x-auto no-scrollbar">
+          {/* Mobile tabs: equal-width grid so brand chips line up in rows */}
+          <div className="grid grid-cols-4 sm:grid-cols-5 lg:hidden gap-2">
             {categoryTabs}
             {brandTabs}
           </div>

@@ -1,4 +1,5 @@
 import Banner from "@/Components/ReuseableComponent/Banner";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Section from "@/Components/ReuseableComponent/Section";
 import { getNewArrivalProducts } from "@/lib/api";
 import NoProductFound from "@/Components/ReuseableComponent/NoProductFound";
@@ -72,6 +73,7 @@ export default async function NewArrivalProductsPage({ searchParams }) {
 
   return (
     <div className="min-h-screen">
+      <ProductListJsonLd products={displayProducts} path="/new-arrival-products" name="New Arrival" description={seoData?.description} />
       <Banner image="/all-product-banner.webp" title="New Arrival" />
 
       <main>

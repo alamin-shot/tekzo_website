@@ -36,7 +36,7 @@ function getDefaultVariant(productDetails) {
   return inStock.length > 0 ? inStock[0] : productDetails.variants[0];
 }
 
-export default function ProductDetails({ productDetails, supportPhone, relatedProducts }) {
+export default function ProductDetails({ productDetails, supportPhone, relatedProducts, afterDetails }) {
   // productDetails arrives already resolved as a prop (server-fetched), so
   // selectedVariant/activeIndex can be computed synchronously on first
   // render instead of via a post-mount effect — that's what caused the
@@ -722,6 +722,8 @@ export default function ProductDetails({ productDetails, supportPhone, relatedPr
             </div>
           </div>
         </div>
+        {/* Server-rendered slot (e.g. Quick Answers) shown above related products */}
+        {afterDetails}
         {/* related product section */}
         <UsedRelatedProducts relatedProducts={relatedProducts} />
       </div>

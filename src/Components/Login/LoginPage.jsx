@@ -68,7 +68,7 @@ const LoginPage = () => {
 
   return (
     <div>
-      <Banner
+      <Banner h1="Login"
         image={"/loginPage/contact-about-bg.webp"}
         title={isLogin ? "login account" : "register account"}
       />

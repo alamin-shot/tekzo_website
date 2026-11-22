@@ -172,7 +172,7 @@ const ProductComparisonHero = ({ seoData }) => {
 
   return (
     <div className="">
-      <Banner image={seoData?.banner || "/all-product-banner.webp"} title={"compare"} />
+      <Banner h1="Compare Products" image={seoData?.banner || "/all-product-banner.webp"} title={"compare"} />
       <div className="">
         <Breadcrumbs />
         <section className="flex flex-col items-center w-full mt-6 lg:mt-10">

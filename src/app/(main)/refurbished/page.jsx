@@ -1,4 +1,5 @@
 import Banner from "@/Components/ReuseableComponent/Banner";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
 import PageDescription from "@/Components/ReuseableComponent/PageDescription";
 import RefurbishedProductGrid from "@/Components/Refurbished/RefurbishedProductGrid";
@@ -15,7 +16,8 @@ export async function generateMetadata({ searchParams }) {
 
   const title = seoData?.title || "Certified Refurbished Smartphones | Best Prices & Warranty | Tekzo";
   const description = seoData?.description || "Browse top certified refurbished smartphones at Tekzo. Best prices, authentic quality, and official warranty in Bangladesh.";
-  const canonical = `${baseUrl}/refurbished-smartphones`;
+  // Was /refurbished-smartphones, which 404s.
+  const canonical = `${baseUrl}/refurbished`;
   const ogImage = seoData?.banner || "/all-product-banner.webp";
 
   return {
@@ -67,6 +69,7 @@ export default async function RefurbishedPage({ searchParams }) {
   return (
     <div>
       <div className="overflow-visible">
+        <ProductListJsonLd products={allProducts} path="/refurbished" name={seoData?.title || "Refurbished Smartphones"} />
         <Banner image={seoData?.banner || "/all-product-banner.webp"} title={seoData?.title || "Refurbished Smartphones"} />
       </div>
       <main>

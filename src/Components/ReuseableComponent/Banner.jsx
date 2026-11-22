@@ -12,9 +12,14 @@ import SearchBar from "./SearchBar";
 // only by HomePage.jsx) is what actually keeps swiper off these routes.
 // hideImageOnMobile: hides only the banner image below lg (phones + tablets);
 // the SearchBar above it stays visible.
-const Banner = ({ image, title, hideImageOnMobile = false }) => {
+// h1: pages with no heading of their own pass `h1` (uses `title`) or
+// `h1="Custom text"` to get a visually hidden <h1> — the banner title is only
+// in the image, so without this the page has no H1 for search/AI engines.
+// Leave it off on pages that already render their own <h1>.
+const Banner = ({ image, title, hideImageOnMobile = false, h1 }) => {
   return (
     <div className="relative">
+      {h1 && <h1 className="sr-only">{h1 === true ? title : h1}</h1>}
       <SearchBar />
 
       <div className={`${hideImageOnMobile ? "hidden lg:block " : ""}relative`}>

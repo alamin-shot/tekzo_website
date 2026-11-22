@@ -50,7 +50,7 @@ export default function ClaimWarranty({ seoData }) {
 
   return (
     <div className="min-h-screen">
-      <Banner
+      <Banner h1="Claim Your Warranty"
         image={seoData?.banner || "/loginPage/contact-about-bg.webp"}
         title={seoData?.title || "Claim A Warranty"}
       />

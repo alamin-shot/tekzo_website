@@ -72,7 +72,7 @@ const Policy = async ({ params }) => {
 
   return (
     <div>
-      <Banner
+      <Banner h1
         image={
           privacyText?.seoData?.banner || "/loginPage/contact-about-bg.webp"
         }

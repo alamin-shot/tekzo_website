@@ -881,7 +881,7 @@ export default function CheckoutPage() {
     <div className="">
       <CheckoutTracker cartItems={cartItems} />
 
-      <Banner image={bannerImage} title={"checkout"} />
+      <Banner h1="Checkout" image={bannerImage} title={"checkout"} />
 
       <div className="max-w-7xl mx-auto mt-6 lg:mt-10 ">
         {loading && cartItems.length === 0 ? (

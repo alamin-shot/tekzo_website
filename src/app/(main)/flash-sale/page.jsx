@@ -1,4 +1,5 @@
 import Banner from "@/Components/ReuseableComponent/Banner";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Section from "@/Components/ReuseableComponent/Section";
 import FlashSaleCountdown from "@/Components/Home/FlashSale/FlashSaleCountdown";
 import { getFlashSaleData, DEFAULT_FLASH_SALE_SEO } from "@/lib/api";
@@ -122,10 +123,7 @@ export default async function FlashSalePage({ searchParams }) {
 
   return (
     <div className="min-h-screen">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <ProductListJsonLd products={displayProducts} path="/flash-sale" name={jsonLd.name} description={jsonLd.description} />
       <Banner
         image={seo?.banner || seo?.info_banner || "/flashsale/flashsale-cover.jpg"}
         title={seo?.title || "Flash Sale"}

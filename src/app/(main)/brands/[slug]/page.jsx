@@ -1,4 +1,7 @@
 import { getAllBrands, getBrandProducts } from "@/lib/api";
+import QuickAnswers from "@/Components/SEO/QuickAnswers";
+import { buildProductAnswers, buildListingAnswers } from "@/lib/seo/quickAnswers";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Banner from "@/Components/ReuseableComponent/Banner";
 import SingleCategory from "@/Components/Home/Categories/CategoryDetails/SingleCategory";
 import PageDescription from "@/Components/ReuseableComponent/PageDescription";
@@ -115,10 +118,23 @@ export default async function BrandPage({ params, searchParams }) {
 
   return (
     <div>
+      <ProductListJsonLd products={product?.products} path={`/brands/${slug}`} name={product?.name} />
       <Banner image={product?.banner || "/all-product-banner.webp"} title={product?.name || "product not found"} />
       {product ? (
         <>
           <SingleCategory product={product} activeCategory={category} activeBrand={brand} pagination={product?.pagination} currentPage={currentPage} />
+          {(() => {
+            const qa = buildListingAnswers({
+              kind: "brand",
+              entity: { name: product?.name, slug },
+              products: product?.products,
+              total: product?.pagination?.total,
+              brand: { name: product?.name, slug },
+              tagline: product?.tagline,
+              path: `/brands/${slug}`,
+            });
+            return qa ? <QuickAnswers {...qa} /> : null;
+          })()}
           <PageDescription title={product?.name ? `Learn More About ${product.name}` : "Learn More About This Brand"} description={product?.description} />
         </>
       ) : (

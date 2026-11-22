@@ -55,7 +55,7 @@ export default async function CareersPage() {
 
   return (
     <div>
-      <Banner image={"/all-product-banner.webp"} title={"careers"} />
+      <Banner h1="Careers at TEKZO" image={"/all-product-banner.webp"} title={"careers"} />
       <Breadcrumbs />
       <CareersClient jobs={careersData?.jobs} teams={teams} />
     </div>

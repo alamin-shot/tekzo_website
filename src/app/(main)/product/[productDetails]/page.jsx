@@ -1,5 +1,7 @@
 // app/products/[productDetails]/page.jsx
 import ProductJsonLd from "@/Components/SEO/ProductJsonLd";
+import QuickAnswers from "@/Components/SEO/QuickAnswers";
+import { buildProductAnswers, buildListingAnswers } from "@/lib/seo/quickAnswers";
 import ProductViewTracker from "@/Components/Tracker/ProductViewTracker";
 import ProductDetails from "@/Components/ReuseableComponent/ProductDetails/ProductDetails";
 import {
@@ -7,6 +9,7 @@ import {
   getRelatedProducts,
   getProductReviews,
   getSettings,
+  getBrands,
   getPolicies,
 } from "@/lib/api";
 
@@ -150,6 +153,8 @@ const ProductDetailsPage = async ({ params }) => {
     ]);
 
   const seo = data?.seoData;
+  const allBrands = await getBrands();
+  const brandTagline = (Array.isArray(allBrands) ? allBrands : []).find((b) => b?.slug === data?.brand?.slug)?.tagline;
 
   return (
     <div>
@@ -164,6 +169,10 @@ const ProductDetailsPage = async ({ params }) => {
         supportPhone={companySetting?.primary_phone_number}
         companySetting={companySetting}
         policies={policies}
+        afterDetails={(() => {
+          const qa = buildProductAnswers(data, reviewsData, brandTagline);
+          return qa ? <QuickAnswers {...qa} /> : null;
+        })()}
       />
     </div>
   );

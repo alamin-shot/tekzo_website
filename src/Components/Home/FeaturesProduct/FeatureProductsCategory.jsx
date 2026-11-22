@@ -13,7 +13,7 @@ const FeatureProductsCategory = ({ slidersData }) => {
       {/* Left Large Banner (76% Width) */}
       <PreFetchLink prefetch={false} href={firstImage.url || "/"} className="w-full lg:w-[76%] block">
         <div className="w-full relative aspect-[16/9] lg:aspect-[2/1]">
-          <Image src={firstImage.image} alt={firstImage.heading || "Main feature banner"} fill className="my-rounded object-cover" loading="lazy" />
+          <Image src={firstImage.image} alt={firstImage.heading || "Main feature banner"} fill sizes="(max-width: 1023px) 100vw, 76vw" className="my-rounded object-cover" loading="lazy" />
         </div>
       </PreFetchLink>
 
@@ -22,7 +22,7 @@ const FeatureProductsCategory = ({ slidersData }) => {
         {sideImages.map((img) => (
           <PreFetchLink prefetch={false} key={img.id} href={img.url || "/"} className="flex-1 self-stretch min-w-0">
             <div className="w-full relative aspect-[4/3]">
-              <Image src={img.image} fill className="my-rounded object-cover" alt={img.heading || "Side feature banner"} />
+              <Image src={img.image} fill sizes="(max-width: 1023px) 50vw, 24vw" className="my-rounded object-cover" alt={img.heading || "Side feature banner"} />
             </div>
           </PreFetchLink>
         ))}

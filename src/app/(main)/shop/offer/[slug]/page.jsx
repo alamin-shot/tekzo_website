@@ -1,4 +1,5 @@
 import Banner from "@/Components/ReuseableComponent/Banner";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
 import Pagination from "@/Components/Shop/Pagination";
 import CountdownTimer from "./CountdownTimer";
@@ -92,6 +93,7 @@ export default async function OfferSlugPage({ params, searchParams }) {
 
   return (
     <div>
+      <ProductListJsonLd products={displayProducts} path={`/shop/offer/${slug}`} name={offer.title} />
       <Banner image={offer.banner} title={offer.title} />
       <div className="">
         <Breadcrumbs />

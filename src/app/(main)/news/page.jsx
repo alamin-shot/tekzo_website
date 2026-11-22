@@ -54,7 +54,7 @@ const NewsPage = async () => {
 
   return (
     <div>
-      <Banner image={seoData?.banner || "/all-product-banner.webp"} title={seoData?.title || "Blog"} />
+      <Banner h1="TEKZO News" image={seoData?.banner || "/all-product-banner.webp"} title={seoData?.title || "Blog"} />
       <News newsData={newsData} />
     </div>
   );

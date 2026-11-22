@@ -1,4 +1,5 @@
 import React from "react";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import "./page.module.css";
 import Banner from "@/Components/ReuseableComponent/Banner";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
@@ -93,6 +94,7 @@ const Shop = async ({ searchParams }) => {
 
   return (
     <div>
+      <ProductListJsonLd products={shopProducts?.products?.data} path="/shop" name={shopProducts?.seoData?.title || "Shop"} description={shopProducts?.seoData?.description} />
       <div className="overflow-visible">
         <Banner
           image={shopProducts?.seoData?.banner || "/all-product-banner.webp"}

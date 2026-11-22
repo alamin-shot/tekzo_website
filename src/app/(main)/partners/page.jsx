@@ -8,7 +8,7 @@ import React from "react";
 const Partners = () => {
   return (
     <div className="">
-      <Banner image={"/all-product-banner.webp"} title={"partners"}></Banner>
+      <Banner h1="Partner with TEKZO" image={"/all-product-banner.webp"} title={"partners"}></Banner>
       <main className="container">
         <Breadcrumbs></Breadcrumbs>
         <PartnerCard></PartnerCard>

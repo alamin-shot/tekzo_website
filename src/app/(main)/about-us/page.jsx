@@ -45,7 +45,7 @@ export default async function AboutUs() {
   const seoData = await getSeoPage("about-us");
   return (
     <div>
-      <Banner image={seoData?.banner || "/all-product-banner.webp"} 
+      <Banner h1="About TEKZO" image={seoData?.banner || "/all-product-banner.webp"} 
       title={seoData?.title || "About Us"} />
       <main className="container">
         <Breadcrumbs />

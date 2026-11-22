@@ -1,4 +1,5 @@
 import Banner from "@/Components/ReuseableComponent/Banner";
+import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
 import PageDescription from "@/Components/ReuseableComponent/PageDescription";
 import FeaturedProductsSearchFilter from "@/Components/FeaturedProducts/FeaturedProductsSearchFilter";
@@ -67,6 +68,7 @@ const FeaturedProductsPage = async ({ searchParams }) => {
 
   return (
     <div>
+      <ProductListJsonLd products={products} path="/featured-products" name="Featured Products" />
       <Banner image="/all-product-banner.webp" title="Featured Products" />
       <main className="">
         <Breadcrumbs />

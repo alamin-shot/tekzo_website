@@ -1,4 +1,5 @@
 import React from "react";
+import { pageCanonical } from "@/lib/seo/jsonLd";
 import Link from "next/link";
 import {
   FaUsers,
@@ -44,7 +45,7 @@ export async function generateMetadata() {
         description:
           seoData?.description ||
           "Explore the latest smartphones, laptops, tablets, audio devices, and accessories at TEKZO.",
-        url: seoData?.canonicalUrl || "https://www.tekzo.com.bd/discovery",
+        url: pageCanonical(seoData?.canonicalUrl, "/discovery"),
         siteName: seoData?.siteName || "TEKZO",
         images: seoData?.ogImage
           ? [
@@ -85,8 +86,7 @@ export async function generateMetadata() {
 
       // Canonical URL
       alternates: {
-        canonical:
-          seoData?.canonicalUrl || "https://www.tekzo.com.bd/discovery",
+        canonical: pageCanonical(seoData?.canonicalUrl, "/discovery"),
       },
 
       // Robots

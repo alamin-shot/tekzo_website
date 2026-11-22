@@ -54,3 +54,17 @@ export function getSocialProfiles(companySetting, extra) {
   ];
   return urls.length ? urls : DEFAULT_SOCIAL_PROFILES;
 }
+
+// Canonical for a sub-page. CMS-provided canonicals are used only when they
+// point somewhere other than the homepage — a sub-page canonicalised to "/"
+// tells Google to drop the page. Falls back to the page's own URL.
+export function pageCanonical(cmsCanonical, path) {
+  const own = `${SITE_URL}${path}`;
+  if (typeof cmsCanonical !== "string" || !cmsCanonical.trim()) return own;
+  try {
+    const url = new URL(cmsCanonical, SITE_URL);
+    return url.pathname === "/" || url.pathname === "" ? own : url.toString().replace(/\/$/, "");
+  } catch {
+    return own;
+  }
+}

@@ -267,7 +267,7 @@ export default function OrderTracking({ seoData }) {
 
   return (
     <div className="">
-      <Banner
+      <Banner h1="Track Your Order"
         image={seoData?.banner || "/order-tracking.png"}
         title={seoData?.title || "Order Tracking"}
       />

@@ -49,7 +49,7 @@ export default async function BlogPage({ searchParams }) {
 
   return (
     <div className="">
-      <Banner image={featuredData?.seoData?.banner || "/loginPage/contact-about-bg.webp"} title={"Blog"} />
+      <Banner h1="TEKZO Blog" image={featuredData?.seoData?.banner || "/loginPage/contact-about-bg.webp"} title={"Blog"} />
       <BlogContent
         featured={featuredData?.featured_blog}
         recentPosts={recentPosts}
