@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { MdArrowForwardIos } from "react-icons/md";
-import { Eye } from "lucide-react";
+import { Eye, ShoppingBag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,12 @@ import PreFetchLink from "./CustomUIComponent/PreFetchLink";
 // framer-motion + the modal UI only ship once the user actually opens it,
 // instead of bloating every listing page's initial JS bundle.
 const CartModal = dynamic(() => import("./CartModal"), { ssr: false });
+
+// One height for the whole button row (pill + round action) at every breakpoint.
+const ROW_HEIGHT = "h-8 lg:h-11 xl:h-13 2xl:h-14";
+const PILL_OUTER = `${ROW_HEIGHT} flex-1 min-w-0 block rounded-full overflow-hidden p-px xl:p-[1.5px]`;
+const PILL_INNER = "h-full bg-white rounded-full flex items-center justify-center gap-1 lg:gap-2 px-2 text-[11px] lg:text-sm 2xl:text-lg font-semibold whitespace-nowrap";
+const GRADIENT_TEXT = "bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent truncate";
 
 const CardMain = ({
   name,
@@ -83,12 +89,6 @@ const CardMain = ({
 
   // Eye icon: opens the existing CartModal (the old "Add To Bag" trigger).
   const openCartModal = () => setIsModalOpen(true);
-  const handleEyeKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      openCartModal();
-    }
-  };
 
   if (isModalOpen && !hasOpenedCart) {
     setHasOpenedCart(true);
@@ -321,90 +321,51 @@ const CardMain = ({
         </PreFetchLink>
 
         <div className="h-1.5 lg:h-3 xl:h-4 mt-auto"></div>
-        {/* Button + Rating */}
-        <div className="flex items-end">
+        {/* Button row: pill + round action share one fixed height so every card lines up */}
+        <div className="flex items-center gap-1.5 lg:gap-2.5 xl:gap-3">
           {from === "preOwned" ? (
             /* Pre-owned: navigate to detail page */
             <PreFetchLink
               prefetch={false}
               href={isStock ? `/used-device/${link}` : "#"}
               disabled={!isStock}
-              className={`w-[calc(100%-34px)] lg:w-[calc(100%-52px)] xl:w-[calc(100%-76px)] inline-block rounded-full overflow-hidden p-px xl:p-[1.5px] ${
-                isStock ? "gradient cursor-pointer" : "bg-gray-300 cursor-not-allowed"
-              }`}
+              className={`${PILL_OUTER} ${isStock ? "gradient cursor-pointer" : "bg-gray-300 cursor-not-allowed"}`}
             >
-              <div className="bg-white rounded-full flex items-center justify-center text-xs lg:text-sm 2xl:text-lg gap-1 lg:gap-2 py-[3px] lg:py-1.5 xl:py-2.5 font-semibold">
-                <span className={isStock ? "bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent" : "text-gray-500"}>{isStock ? "View all Products" : "Out of Stock"}</span>
-                {isStock && <MdArrowForwardIos className="text-primary" />}
+              <div className={PILL_INNER}>
+                <span className={isStock ? GRADIENT_TEXT : "text-gray-500"}>{isStock ? "View all Products" : "Out of Stock"}</span>
+                {isStock && <MdArrowForwardIos className="text-primary shrink-0" />}
               </div>
             </PreFetchLink>
           ) : isPreOrder ? (
             /* Pre-order product: link to product details */
-            <PreFetchLink
-              prefetch={false}
-              href={`/product/${link}`}
-              className="w-[calc(100%-34px)] lg:w-[calc(100%-52px)] xl:w-[calc(100%-76px)] inline-block rounded-full overflow-hidden p-px xl:p-[1.5px] gradient cursor-pointer"
-            >
-              <div className="bg-white rounded-full flex items-center justify-center text-xs lg:text-sm xl:text-lg gap-1 lg:gap-2 py-[3px] lg:py-1.5 xl:py-2.5 font-semibold">
-                <span className="bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent">Pre Order</span>
-                <MdArrowForwardIos className="text-primary" />
+            <PreFetchLink prefetch={false} href={`/product/${link}`} className={`${PILL_OUTER} gradient cursor-pointer`}>
+              <div className={PILL_INNER}>
+                <span className={GRADIENT_TEXT}>Pre Order</span>
+                <MdArrowForwardIos className="text-primary shrink-0" />
               </div>
             </PreFetchLink>
           ) : (
             /* Standard product: add to compare, then go to /compare */
-            <button
-              onClick={handleCompare}
-              disabled={isComparing}
-              className="w-[calc(100%-34px)] lg:w-[calc(100%-52px)] xl:w-[calc(100%-76px)] inline-block rounded-full overflow-hidden p-px xl:p-[1.5px] gradient cursor-pointer"
-            >
-              <div className="bg-white rounded-full flex items-center justify-center text-xs lg:text-sm  2xl:text-lg gap-1 lg:gap-2 py-[3px] lg:py-1.5 xl:py-2.5 font-semibold">
-                <span className="bg-linear-to-r from-secondary to-primary bg-clip-text text-transparent">{isComparing ? "Adding..." : "Add to Compare"}</span>
-                <MdArrowForwardIos className="text-primary" />
+            <button type="button" onClick={handleCompare} disabled={isComparing} className={`${PILL_OUTER} gradient cursor-pointer`}>
+              <div className={PILL_INNER}>
+                <span className={GRADIENT_TEXT}>{isComparing ? "Adding..." : "Add to Compare"}</span>
+                <MdArrowForwardIos className="text-primary shrink-0" />
               </div>
             </button>
           )}
 
-          {/* Rating circle */}
-          {from === "flashSale" ? (
-            <div className="pl-1.5 lg:pl-2.5 xl:pl-3">
-              <div className="aspect-square w-8 lg:w-12 xl:w-17  ">
-                <div className="gradient p-px xl:p-[1.5px] rounded-full">
-                  <div
-                    onClick={openCartModal}
-                    onKeyDown={handleEyeKeyDown}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Add to cart"
-                    className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary"
-                  >
-                     <ShoppingBagIcon size="1em" />
-                    <span>{rating}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="aspect-square w-10 lg:w-15 xl:w-21 absolute -bottom-1 -right-[3px] lg:-bottom-1.5 lg:-right-1.5 z-10 ">
-              <div
-                className={`w-full h-full aspect-square p-[3px] lg:p-1 xl:p-[6px] rounded-full ${from === "flashSale" ? "bg-transparent" : "bg-[#D9D7D7]"}`}
-                // className={`w-full h-full aspect-square p-[3px] lg:p-1 xl:p-[6px] rounded-full bg-white`}
-              >
-                <div className="gradient p-px xl:p-[1.5px] rounded-full">
-                  <div
-                    onClick={openCartModal}
-                    onKeyDown={handleEyeKeyDown}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Add to cart"
-                    className="w-full h-full aspect-square whitespace-nowrap flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-[10px] xl:text-sm text-primary"
-                  >
-                    <Eye size="1em" />
-                    <span>{rating}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Round action: opens the cart modal */}
+          <div className={`${ROW_HEIGHT} aspect-square shrink-0 gradient p-px xl:p-[1.5px] rounded-full`}>
+            <button
+              type="button"
+              onClick={openCartModal}
+              aria-label="Add to cart"
+              className="w-full h-full flex gap-px xl:gap-1 items-center justify-center rounded-full bg-[#F3F2F7] text-primary text-sm lg:text-lg xl:text-xl cursor-pointer"
+            >
+              {from === "flashSale" ? <ShoppingBag size="1em" /> : <Eye size="1em" />}
+              {rating ? <span className="text-[10px] xl:text-sm">{rating}</span> : null}
+            </button>
+          </div>
         </div>
       </div>
       {hasOpenedCart && <CartModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} name={name} currentPrice={currentPrice} image={image} slug={link} />}
