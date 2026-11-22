@@ -31,6 +31,12 @@ export async function generateMetadata() {
     description,
     keywords,
 
+    // Author signals: <meta name="author">, <link rel="author">, creator/publisher.
+    // The store itself is the author of its pages; /about-us says who that is.
+    authors: [{ name: siteName, url: `${base}/about-us` }],
+    creator: siteName,
+    publisher: siteName,
+
     //  Prevent crash
     metadataBase: new URL(base),
 
