@@ -134,7 +134,7 @@ export default async function CategoryPage({ params, searchParams }) {
               total: product?.pagination?.total,
               path: `/categories/${slug}`,
             });
-            return qa ? <QuickAnswers {...qa} /> : null;
+            return qa ? <QuickAnswers {...qa} collapseSources /> : null;
           })()}
           <PageDescription title={categoryInfo?.name ? `Learn More About ${categoryInfo.name}` : "Learn More About This Category"} description={product?.description || categoryInfo?.description} />
         </>

@@ -15,7 +15,7 @@ import { SITE_URL, serializeJsonLd } from "@/lib/seo/jsonLd";
  * @param quote    { text, author, context } — a real, attributable quote
  * @param path     page path, for the schema @id
  */
-export default function QuickAnswers({ title, items = [], sources = [], quote, path }) {
+export default function QuickAnswers({ title, items = [], sources = [], quote, path, collapseSources = false }) {
   const qa = items.filter((i) => i?.q && i?.a);
   if (!qa.length) return null;
 
@@ -54,6 +54,38 @@ export default function QuickAnswers({ title, items = [], sources = [], quote, p
         ))}
       </dl>
 
+      {collapseSources ? (
+        // Collapsed by default: a one-line "Sources" toggle. The quote and
+        // citations stay in the page and open on click (like an FAQ answer).
+        (quote?.text || sources.length > 0) && (
+          <details className="mt-4 lg:mt-6 group/src">
+            <summary className="cursor-pointer list-none text-xs md:text-sm text-gray-500 hover:text-gray-700 select-none">
+              Sources <span className="inline-block transition-transform group-open/src:rotate-90">›</span>
+            </summary>
+            <div className="mt-2 space-y-1 text-xs md:text-sm text-gray-600">
+              {quote?.text && quote?.author && (
+                <p>
+                  <q className="italic">{quote.text}</q> — <cite className="not-italic font-semibold text-gray-800">{quote.author}</cite>
+                  {quote.context ? `, ${quote.context}` : ""}
+                </p>
+              )}
+              {sources.length > 0 && (
+                <p>
+                  {sources.map((s, idx) => (
+                    <span key={s.url}>
+                      {idx > 0 && " · "}
+                      <a href={s.url} target="_blank" rel="noopener" className="text-primary font-medium hover:underline">
+                        {s.label}
+                      </a>
+                    </span>
+                  ))}
+                </p>
+              )}
+            </div>
+          </details>
+        )
+      ) : (
+        <>
       {quote?.text && quote?.author && (
         <figure className="mt-5 lg:mt-7 rounded-xl lg:rounded-2xl bg-white p-4 lg:p-5 border-l-4 border-secondary">
           <blockquote className="text-sm md:text-base text-gray-800 italic leading-relaxed">
@@ -78,6 +110,8 @@ export default function QuickAnswers({ title, items = [], sources = [], quote, p
             </span>
           ))}
         </p>
+      )}
+        </>
       )}
     </section>
   );
