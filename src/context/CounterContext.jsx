@@ -7,6 +7,7 @@ import {
   useState,
   useCallback,
 } from "react";
+import { usePathname } from "next/navigation";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import hasAuthCookie from "@/utils/hasAuthCookie";
 
@@ -20,8 +21,13 @@ export function CounterProvider({
   const [cartCount, setCartCount] = useState(initialCartCount);
   const [wishlistCount, setWishlistCount] = useState(initialWishlistCount);
 
+  const pathname = usePathname();
+
   const refreshCart = useCallback(async () => {
-    if (!hasAuthCookie()) return;
+    if (!hasAuthCookie()) {
+      setCartCount(0);
+      return;
+    }
     try {
       const res = await clientFetchAPI("/customer/carts", "GET");
       const items = res?.data?.cartItems ?? [];
@@ -32,7 +38,10 @@ export function CounterProvider({
   }, []);
 
   const refreshWishlist = useCallback(async () => {
-    if (!hasAuthCookie()) return;
+    if (!hasAuthCookie()) {
+      setWishlistCount(0);
+      return;
+    }
     try {
       const res = await clientFetchAPI("/customer/wishlists", "GET");
       const payload = res?.data ?? res ?? {};
@@ -58,10 +67,22 @@ export function CounterProvider({
     [],
   );
 
-  // Fetch initial counts on mount (no server cookies needed)
+  // This provider lives in the root layout and never remounts, so a
+  // mount-only fetch leaves stale counts after login/logout (client-side
+  // redirects) or after a failed first request. Re-sync on every route
+  // change and when the tab regains focus.
   useEffect(() => {
     refreshCart();
     refreshWishlist();
+  }, [pathname, refreshCart, refreshWishlist]);
+
+  useEffect(() => {
+    const onFocus = () => {
+      refreshCart();
+      refreshWishlist();
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
   }, [refreshCart, refreshWishlist]);
 
   // Listen for custom events fired from anywhere in the app
