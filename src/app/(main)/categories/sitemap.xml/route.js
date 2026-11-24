@@ -1,8 +1,14 @@
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
+
 export async function GET() {
     const baseUrl = (process.env.NEXT_PUBLIC_URL || 'https://www.tekzo.com.bd').replace(/\/$/, '');
 
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
+            headers: {
+                Accept: "application/json",
+                ...(INTERNAL_API_TOKEN && { "X-Internal-Token": INTERNAL_API_TOKEN }),
+            },
             next: {revalidate: 3600},
         });
 

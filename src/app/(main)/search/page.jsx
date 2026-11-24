@@ -21,7 +21,13 @@ async function getSearchProducts(params) {
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/search?${query.toString()}`,
-      { cache: "no-store" },
+      {
+        headers: {
+          Accept: "application/json",
+          ...(process.env.INTERNAL_API_TOKEN && { "X-Internal-Token": process.env.INTERNAL_API_TOKEN }),
+        },
+        cache: "no-store",
+      },
     );
 
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);

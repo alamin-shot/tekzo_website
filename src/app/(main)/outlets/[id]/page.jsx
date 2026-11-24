@@ -30,7 +30,13 @@ async function getOutlet(slug) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/outlets/${slug}/detail`,
-      { next: { revalidate: 3600 } },
+      {
+        headers: {
+          Accept: "application/json",
+          ...(process.env.INTERNAL_API_TOKEN && { "X-Internal-Token": process.env.INTERNAL_API_TOKEN }),
+        },
+        next: { revalidate: 3600 },
+      },
     );
     if (!res.ok) return null;
     const json = await res.json();
