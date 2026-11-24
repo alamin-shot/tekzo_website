@@ -178,6 +178,9 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponLoading, setCouponLoading] = useState(false);
+  // True from the first frame of a Place Order click until the request
+  // settles: disables the button (no double orders) and shows progress.
+  const [placingOrder, setPlacingOrder] = useState(false);
   const [couponError, setCouponError] = useState("");
   const [note, setNote] = useState("");
 
@@ -833,6 +836,9 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (placingOrder) return;
+    setPlacingOrder(true);
+    let redirecting = false;
     try {
       const payload = buildCheckoutPayload();
       const endpoint = user ? "/customer/checkouts" : "/customer/gust-buy-now";
@@ -851,8 +857,13 @@ export default function CheckoutPage() {
         const invoiceNumber = response?.data?.invoice_number;
         router.push(`/order/successful?invoice_number=${encodeURIComponent(invoiceNumber)}`);
       }
+      // Keep the button locked while the browser leaves for the payment
+      // gateway / success page, so it can't be tapped again meanwhile.
+      redirecting = true;
     } catch (error) {
       setErrors([error.message || "Failed to place order."]);
+    } finally {
+      if (!redirecting) setPlacingOrder(false);
     }
   };
 
@@ -1177,14 +1188,14 @@ export default function CheckoutPage() {
 
                   <button
                     type="submit"
-                    disabled={cartItems.length === 0 || !agreed || (user ? !selectedAddr?.id : !isGuestEmailValid || !district || !area || !form.fullName.trim() || !form.street.trim())}
+                    disabled={placingOrder || cartItems.length === 0 || !agreed || (user ? !selectedAddr?.id : !isGuestEmailValid || !district || !area || !form.fullName.trim() || !form.street.trim())}
                     className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg active:scale-[0.98] transition-all ${
                       cartItems.length === 0 || !agreed || (user ? !selectedAddr?.id : !isGuestEmailValid || !district || !area || !form.fullName.trim() || !form.street.trim())
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-secondary hover:bg-[#15a084]"
                     }`}
                   >
-                    Place Order — ৳{payOption === "booking" ? bookingTotal.toLocaleString() : totalAmount.toLocaleString()}
+                    {placingOrder ? "Placing order…" : <>Place Order — ৳{payOption === "booking" ? bookingTotal.toLocaleString() : totalAmount.toLocaleString()}</>}
                   </button>
                 </div>
 
