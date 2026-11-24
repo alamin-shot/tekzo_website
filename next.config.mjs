@@ -81,6 +81,7 @@ const nextConfig = {
     position: "bottom-right",
   },
   experimental: {
+    inlineCss: true,
     optimizePackageImports: ["lucide-react", "react-icons"],
     serverActions: {
       // Server Actions (login/register, contact form) reject requests whose
