@@ -3,6 +3,7 @@ import FooterPage from "@/Components/Footer/FooterPage";
 import WhatsAppPopUp from "@/Components/WhatsAppPopUp/WhatsAppPopUp";
 import CompanyJsonLd from "@/Components/SEO/CompanyJsonLd";
 import GTM from "@/Components/GTM/GTM";
+import WebVitalsReporter from "@/Components/GTM/WebVitalsReporter";
 import Navbar2 from "@/Components/Navbar/Navbar2";
 import NavbarVisibilityWrapper from "@/Components/Navbar/NavbarVisibilityWrapper";
 // app/page.js (home)
@@ -128,6 +129,7 @@ export default async function MainLayout({ children }) {
   return (
     <div className="bg-[#D9D7D7]">
       <GTM />
+      <WebVitalsReporter />
       {/* Structured Data JSON-LD */}
 
       <CompanyJsonLd companySetting={companySetting} seo={companySetting?.seoData} />
