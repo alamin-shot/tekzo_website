@@ -19,7 +19,7 @@ import ProductRatingReviewsCards from "./ProductRatingReviewsCards";
 import ProductBenefits from "./ProductBenefits";
 import ShippingDetails from "./ShippingDetails";
 import GiftForUser from "./Gift/GiftForUser";
-import { Layers, Menu, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Layers, Menu, Search } from "lucide-react";
 import SidebarFunction from "@/Components/Navbar/NavFunction/SidebarFunction";
 import Coupon from "./Coupon";
 import PreFetchLink from "../CustomUIComponent/PreFetchLink";
@@ -27,6 +27,8 @@ import NoProductFound from "@/Components/ReuseableComponent/NoProductFound";
 import styles from "./ProductDetails.module.css";
 import { useCompareActions } from "@/context/CompareContext";
 import SearchBar from "../SearchBar";
+import { buildVariantSlides, resolveImageSrc } from "@/utils/variantImages";
+import useAutoSlide from "@/hooks/useAutoSlide";
 
 // Utility function to extract storage capacity and convert to bytes for sorting
 const getStorageInBytes = (storageString) => {
@@ -178,7 +180,26 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   const mainImageRef = useRef(null);
   const isFirstImageRender = useRef(true);
 
-  // reset the skeleton whenever the shown image changes (thumbnail click, variant switch)
+  // Main gallery slides: the selected variant's own images (attribute.images,
+  // primary first). While the colour thumbnail and the selected variant
+  // disagree (no variant for that colour), keep showing the colour image as
+  // before.
+  const colorImage = productDetails?.images?.[activeIndex];
+  const variantMatchesColor = Boolean(selectedVariant) && (!colorImage?.attribute?.id || selectedVariant?.attribute?.id === colorImage.attribute.id);
+  const colorImagePath = colorImage?.image_path;
+  const productName = productDetails?.product_name;
+  const gallerySlides = useMemo(() => {
+    if (variantMatchesColor) {
+      return buildVariantSlides(selectedVariant, { fallbackSrc: colorImagePath, fallbackAlt: productName });
+    }
+    const src = resolveImageSrc(colorImagePath);
+    return src ? [{ id: src, src, alt: productName || "Product image" }] : [];
+  }, [variantMatchesColor, selectedVariant, colorImagePath, productName]);
+  const gallery = useAutoSlide(gallerySlides.length, { resetKey: `${selectedVariant?.id ?? ""}|${activeIndex}` });
+  const mainSlide = gallerySlides[gallery.index];
+  const mainImageSrc = mainSlide?.src || "/placeholder.jpg";
+
+  // reset the skeleton whenever the shown image changes (slide, thumbnail click, variant switch)
   useEffect(() => {
     if (isFirstImageRender.current) {
       isFirstImageRender.current = false;
@@ -191,7 +212,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
     if (mainImageRef.current?.complete) {
       setMainImageLoaded(true);
     }
-  }, [activeIndex]);
+  }, [mainImageSrc]);
   const [selectedGiftId, setSelectedGiftId] = useState(() => productDetails?.gift_products?.[0]?.gift_id || "");
   const variantContainerDesktopRef = useRef(null);
   const variantContainerRef = useRef(null);
@@ -719,13 +740,17 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
                   className="w-25 lg:w-[100px] 2xl:w-[120px] absolute top-0 right-4 lg:top-4 lg:right-4 2xl:top-8 2xl:right-8  z-10"
                 />
               )}
-              <div className="relative w-full aspect-square mt-4 lg:mt-0 px-6 pb-6 pt-12 md:pt-16 lg:px-6 lg:pb-4 lg:pt-20 xl:px-12 xl:pb-8 xl:pt-28 2xl:px-20 2xl:pb-12 2xl:pt-32 transition-all duration-300">
+              <div
+                className="relative w-full aspect-square mt-4 lg:mt-0 px-6 pb-6 pt-12 md:pt-16 lg:px-6 lg:pb-4 lg:pt-20 xl:px-12 xl:pb-8 xl:pt-28 2xl:px-20 2xl:pb-12 2xl:pt-32 transition-all duration-300"
+                onMouseEnter={gallery.pause}
+                onMouseLeave={gallery.resume}
+              >
                 <div className={`${styles.imageContainer} relative w-full h-full xl:p-4`}>
                   {!mainImageLoaded && <div className="skeleton absolute inset-0 rounded-none" />}
                   <Image
                     ref={mainImageRef}
-                    src={productDetails?.images?.[activeIndex]?.image_path.includes("https://d2c2zgda4zwbg9.cloudfront.net/") ? productDetails?.images?.[activeIndex]?.image_path : "/placeholder.jpg"}
-                    alt={productDetails.product_name}
+                    src={mainImageSrc}
+                    alt={mainSlide?.alt || productDetails.product_name}
                     width={1000}
                     height={1000}
                     priority
@@ -735,6 +760,27 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
                   />
                   <div className={styles.lightSweep}></div>
                 </div>
+                {/* Prev / next — only when the variant has more than one image */}
+                {gallerySlides.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Previous image"
+                      onClick={gallery.prev}
+                      className="absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/90 hover:bg-white text-gray-800 shadow-md flex items-center justify-center cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4 lg:w-5 lg:h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Next image"
+                      onClick={gallery.next}
+                      className="absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/90 hover:bg-white text-gray-800 shadow-md flex items-center justify-center cursor-pointer"
+                    >
+                      <ChevronRight className="w-4 h-4 lg:w-5 lg:h-5" />
+                    </button>
+                  </>
+                )}
               </div>
               <div className="w-full max-w-full mt-8 lg:mt-0 overflow-x-auto pb-4 scroll-smooth px-4">
                 <div className="flex justify-center items-start gap-3 sm:gap-4 flex-nowrap w-max mx-auto pt-1">
