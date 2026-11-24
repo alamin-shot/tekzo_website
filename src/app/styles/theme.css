@@ -6,8 +6,8 @@
   --color-primary: #e55a40;
   --color-secondary: #0e7a80;
   --color-dark: #f3f2f7;
-  --font-sans: var(--font-switzer), var(--font-bornomala), sans-serif;
-  --font-switzer: var(--font-switzer), var(--font-bornomala), sans-serif;
+  --font-sans: var(--font-switzer), var(--font-bornomala-taka), var(--font-bornomala), sans-serif;
+  --font-switzer: var(--font-switzer), var(--font-bornomala-taka), var(--font-bornomala), sans-serif;
   --font-bornomala: var(--font-bornomala), var(--font-switzer), sans-serif;
   --font-bengali: var(--font-bornomala), var(--font-switzer), sans-serif;
   --font-bangla: var(--font-bornomala), var(--font-switzer), sans-serif;

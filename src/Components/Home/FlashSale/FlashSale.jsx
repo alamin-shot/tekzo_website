@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Section from "../../ReuseableComponent/Section";
 import { getFlashSaleData } from "@/lib/api";
 import FlashSaleCountdown from "./FlashSaleCountdown";
@@ -29,12 +30,11 @@ const FlashSale = async ({ slidersData }) => {
   return (
     <div>
       <Section>
-        <div
-          style={{
-            backgroundImage: bgImage ? `url(${bgImage})` : undefined,
-          }}
-          className="bg-cover bg-center my-rounded overflow-hidden min-h-[160px] lg:min-h-[220px]"
-        >
+        <div className="relative isolate my-rounded overflow-hidden min-h-[160px] lg:min-h-[220px]">
+          {/* A lazy <Image> instead of an inline background-image: CSS backgrounds
+              are fetched as soon as the element is laid out, so this full-size
+              banner competed with the hero (LCP) image on first load. */}
+          {bgImage && <Image src={bgImage} alt="" fill sizes="100vw" className="object-cover object-center -z-10" />}
           {/* Header Row */}
           <div className="flex flex-col sm:flex-row items-center justify-between px-4 md:px-6 py-2 md:py-4  sm:gap-0">
             {/* Left: Flash Sale Title */}

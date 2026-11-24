@@ -81,7 +81,12 @@ const nextConfig = {
     position: "bottom-right",
   },
   experimental: {
-    inlineCss: true,
+    // inlineCss stays off. It wrote the ~246 KB site stylesheet into every
+    // HTML response three times (a <style> tag plus two copies in the RSC
+    // payload), taking the homepage document from ~64 KB to ~175 KB gzipped.
+    // Lighthouse's LCP model charges those bytes before the hero image, so
+    // inlining cost ~0.4 s of LCP and ~0.2 s of FCP versus one cached,
+    // render-blocking 37 KB stylesheet.
     optimizePackageImports: ["lucide-react", "react-icons"],
     serverActions: {
       // Server Actions (login/register, contact form) reject requests whose

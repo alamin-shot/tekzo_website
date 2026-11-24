@@ -11,6 +11,31 @@ export const switzer = localFont({
   display: "swap",
 });
 
+// Prices render "৳" on nearly every storefront page, and it was the only
+// Bengali glyph on the homepage — yet it pulled both full Bornomala subsets
+// (~126 KB) before the hero painted, which Lighthouse charges to LCP. These
+// ~1 KB files hold just U+09F3 and sit before Bornomala in the font stacks,
+// so the full faces load only when real Bengali copy is on the page.
+export const bornomalaTaka = localFont({
+  src: [
+    {
+      path: "../fonts/Bornomala/Bornomala-Regular.taka.woff2",
+      weight: "300 500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Bornomala/Bornomala-Bold.taka.woff2",
+      weight: "600 900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-bornomala-taka",
+  display: "swap",
+  preload: false,
+  adjustFontFallback: false,
+  declarations: [{ prop: "unicode-range", value: "U+09F3" }],
+});
+
 // Bornomala is only a fallback after Switzer (see globals.css), so it is
 // needed solely for Bengali glyphs (e.g. "৳" in prices, Bengali copy in
 // checkout/claims). The .subset.woff2 files are pyftsubset'd from the TTFs

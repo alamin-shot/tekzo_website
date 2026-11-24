@@ -28,11 +28,11 @@ div, section, article, main, header, footer,
 table, th, td, blockquote,
 .prose, .prose *,
 .rendered-html, .rendered-html * {
-  font-family: var(--font-switzer), var(--font-bornomala), sans-serif;
+  font-family: var(--font-switzer), var(--font-bornomala-taka), var(--font-bornomala), sans-serif;
 }
 
 .font-switzer {
-  font-family: var(--font-switzer), var(--font-bornomala), sans-serif !important;
+  font-family: var(--font-switzer), var(--font-bornomala-taka), var(--font-bornomala), sans-serif !important;
 }
 
 /* Only apply custom scrollbar styling on Desktop (screens wider than 768px) */
