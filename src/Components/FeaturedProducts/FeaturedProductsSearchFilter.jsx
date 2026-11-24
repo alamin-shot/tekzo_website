@@ -13,19 +13,18 @@ export default function FeaturedProductsSearchFilter() {
   const searchParams = useSearchParams();
   const currentSearch = searchParams.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(currentSearch);
-  const [prevSearch, setPrevSearch] = useState(currentSearch);
   const timerRef = useRef(null);
   // The URL value this component last wrote, so our own debounced update
   // doesn't overwrite what the user has typed since.
   const lastWrittenRef = useRef(currentSearch);
 
-  // Sync state if searchParams change externally (React recommended state adjustment during render)
-  if (prevSearch !== currentSearch) {
-    setPrevSearch(currentSearch);
+  // Sync state if searchParams change externally (back/forward, links)
+  useEffect(() => {
     if (currentSearch !== lastWrittenRef.current) {
+      lastWrittenRef.current = currentSearch;
       setSearchQuery(currentSearch);
     }
-  }
+  }, [currentSearch]);
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
