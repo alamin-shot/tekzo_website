@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Swiper } from "swiper/react";
 
 // Drop-in replacement for <Swiper> for carousels that are usually below the
@@ -30,6 +30,23 @@ function needs(param, keys) {
 export default function LazySwiper({ rootMargin = "250px 0px", children, className, style, ...swiperProps }) {
   const [active, setActive] = useState(false);
   const placeholderRef = useRef(null);
+
+  // A carousel that is already within range at mount activates before the
+  // browser paints (layout effect), exactly as when Swiper mounted directly.
+  // Activating it from the IntersectionObserver callback instead would let
+  // one frame paint the un-initialized layout (e.g. full-width slides where
+  // slidesPerView is 2) and then shift — a visible layout shift (CLS).
+  useLayoutEffect(() => {
+    const el = placeholderRef.current;
+    if (!el) return;
+    const margin = parseInt(rootMargin, 10) || 0;
+    const r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight + margin && r.bottom > -margin) {
+      setActive(true);
+    }
+    // Mount-only: later visibility changes are handled by the observer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (active) return;
