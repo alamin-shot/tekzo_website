@@ -20,7 +20,7 @@ export default function SearchBarAction({ isModalOpen, onClose }) {
     <PreFetchLink
       prefetch={false}
       href="/shop/offer"
-      className="bg-primary text-white rounded-xl flex flex-col justify-center items-center aspect-square p-2.5 lg:hidden relative z-[2950]"
+      className="bg-[#cc4529] text-white rounded-xl flex flex-col justify-center items-center aspect-square p-2.5 lg:hidden relative z-[2950]"
     >
       <GoGift className="text-lg" />
       <span className="text-xs">offer</span>

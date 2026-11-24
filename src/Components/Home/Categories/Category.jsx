@@ -15,6 +15,10 @@ const CategoryCard = ({ item }) => (
         alt={`${item?.name} category`}
         width={140}
         height={140}
+        // The box is 1/4 of the row on mobile and 1/8 from md up, and the logo
+        // fills 66% of it; without sizes the browser fetched a 384px file for
+        // a ~45px logo on mobile.
+        sizes="(max-width: 767px) 16vw, 9vw"
         className="w-[66%] h-[66%] object-contain group-hover:scale-108 transition-transform duration-300 ease-out"
       />
     </div>

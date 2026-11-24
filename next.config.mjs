@@ -43,15 +43,30 @@ const nextConfig = {
                         key: "Content-Security-Policy-Report-Only",
                         value: [
                             "default-src 'self'",
-                            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://connect.facebook.net https://analytics.tiktok.com https://www.clarity.ms https://*.amazonaws.com https://*.cloudflare.com",
+                            // server.tekzo.com.bd is the server-side GTM container; the
+                            // rest are scripts GTM/Cloudflare inject (PSI "Issues"
+                            // panel listed each one as a report-only violation).
+                            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://server.tekzo.com.bd https://connect.facebook.net https://analytics.tiktok.com https://www.clarity.ms https://scripts.clarity.ms https://static.cloudflareinsights.com https://cdn.jsdelivr.net https://googleads.g.doubleclick.net https://*.amazonaws.com https://*.cloudflare.com",
                             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                             "img-src 'self' data: https:",
                             "font-src 'self' data: https://fonts.gstatic.com",
                             "connect-src 'self' https:",
-                            "frame-src 'self' https://www.googletagmanager.com https://www.google.com https://www.facebook.com",
+                            "frame-src 'self' https://www.googletagmanager.com https://server.tekzo.com.bd https://www.google.com https://www.facebook.com https://googleads.g.doubleclick.net https://td.doubleclick.net",
                             "object-src 'none'",
                             "base-uri 'self'",
                         ].join("; "),
+                    },
+                ],
+            },
+            {
+                // Static files from /public (badges, icons, logos). Their
+                // names are not content-hashed, so they get 30 days rather
+                // than "immutable"; PSI reported a 4h lifetime.
+                source: "/:file*\\.(svg|webp|png|jpg|jpeg|gif|ico)",
+                headers: [
+                    {
+                        key: "Cache-Control",
+                        value: "public, max-age=2592000, stale-while-revalidate=86400",
                     },
                 ],
             },

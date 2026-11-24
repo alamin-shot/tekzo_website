@@ -137,8 +137,8 @@ const CardMain = ({
           <Image
             src={"/official-logoo.webp"}
             alt="warranty logo"
-            width={4000}
-            height={3000}
+            width={120}
+            height={39}
             priority={false}
             className="w-11 lg:w-[80px] 2xl:w-[100px] absolute top-1.5 right-1.5 lg:top-4 lg:right-4 z-10"
           />
@@ -148,21 +148,21 @@ const CardMain = ({
           <Image
             src={"/unofficial-iconn.webp"}
             alt="warranty logo"
-            width={4000}
-            height={3000}
+            width={120}
+            height={39}
             priority={false}
             className="w-11 lg:w-[80px] 2xl:w-[100px] absolute top-1.5 right-1.5 lg:top-4 lg:right-4 z-10"
           />
         )}
         {product?.is_chinese && (
-          <Image src={"/Chinese.svg"} alt="warranty logo" width={4000} height={3000} priority={false} className="w-11 lg:w-[80px] 2xl:w-[100px] absolute top-1.5 right-1.5 lg:top-4 lg:right-4 z-10" />
+          <Image src={"/Chinese.svg"} alt="warranty logo" width={120} height={45} priority={false} className="w-11 lg:w-[80px] 2xl:w-[100px] absolute top-1.5 right-1.5 lg:top-4 lg:right-4 z-10" />
         )}
         {product?.is_refurbished && (
           <Image
             src={"/Refurbish.webp"}
             alt="warranty logo"
-            width={4000}
-            height={3000}
+            width={120}
+            height={39}
             priority={false}
             className="w-11 lg:w-[80px] 2xl:w-[100px] absolute top-1.5 right-1.5 lg:top-4 lg:right-4 z-10"
           />
@@ -176,7 +176,7 @@ const CardMain = ({
 
         {product?.purchase_point && (
           <div className="absolute top-1.5 left-1.5 lg:top-4 lg:left-4 z-10 flex items-start gap-0.5 lg:gap-1 2xl:gap-1.5">
-            <Image src={"/pointCardLogo.svg"} alt="warranty logo" width={4000} height={3000} priority={false} className="w-3 lg:w-5 2xl:w-6 " />
+            <Image src={"/pointCardLogo.svg"} alt="warranty logo" width={24} height={27} priority={false} className="w-3 lg:w-5 2xl:w-6 " />
             <div className="">
               <p className="text-[6px] lg:text-[11px] 2xl:text-[13px] text-gray-700 leading-1.5 lg:leading-2 2xl:leading-2.5 2xl:mt-px">Get</p>
               <p className="text-[6px] lg:text-[12px] 2xl:text-[13px] text-gray-700 font-semibold">{product?.purchase_point} Points</p>
@@ -205,8 +205,8 @@ const CardMain = ({
               <Image
                 src={"/product-details/tekzo-care.webp"}
                 alt="warranty logo"
-                width={4000}
-                height={3000}
+                width={120}
+                height={39}
                 priority={false}
                 className="w-14 lg:w-[95px] 2xl:w-[120px] absolute bottom-1 right-1.5 lg:bottom-3.5 lg:right-4 z-10"
               />
@@ -218,8 +218,8 @@ const CardMain = ({
               <Image
                 src={"/Offer.svg"}
                 alt="warranty logo"
-                width={4000}
-                height={3000}
+                width={80}
+                height={55}
                 priority={false}
                 className={`w-8 sm:w-10 lg:w-[60px] 2xl:w-[80px] absolute left-1 lg:left-3.5 z-10 ${product?.gift ? "bottom-4.5 lg:bottom-9  border" : "bottom-1 lg:bottom-3.5"}`}
               />
@@ -227,7 +227,7 @@ const CardMain = ({
           )}
         </div>
         <div
-          className={`relative rounded-b-xl lg:rounded-b-3xl flex justify-between items-center text-[10px] lg:text-xs xl:text-sm w-full bg-[#DCDEE3] px-2 lg:px-4 h-6 lg:h-10 xl:h-12 text-secondary`}
+          className={`relative rounded-b-xl lg:rounded-b-3xl flex justify-between items-center text-[10px] lg:text-xs xl:text-sm w-full bg-[#DCDEE3] px-2 lg:px-4 h-6 lg:h-10 xl:h-12 text-[#0b666b]`}
         >
           {product?.gift && (
             <div className="absolute -top-[67%] lg:-top-[62%] 2xl:-top-[63%] rounded-tr-lg lg:rounded-tr-2xl left-0 bg-[#DCDEE3]  text-primary text-[7px] lg:text-[10px] 2xl:text-[11px] font-medium px-1.5 lg:px-2.5 py-0.5 lg:py-1.5 pr-2 lg:pr-4 tracking-wide uppercase">
@@ -263,7 +263,7 @@ const CardMain = ({
             <PreFetchLink
               prefetch={false}
               href={`/categories/${categoryLink}`}
-              className={`capitalize hover:text-primary ${from === "flashSale" && "text-[8px] lg:text-xs xl:text-sm whitespace-nowrap"}`}
+              className={`capitalize hover:text-primary ${from === "flashSale" ? "text-[8px] lg:text-xs xl:text-sm whitespace-nowrap" : ""}`}
             >
               {category}
             </PreFetchLink>
