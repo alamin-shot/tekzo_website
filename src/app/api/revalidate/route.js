@@ -2,6 +2,22 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 const SECRET = process.env.REVALIDATION_SECRET;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
+
+async function flushApiResponseCache() {
+  if (!INTERNAL_API_TOKEN) return;
+
+  try {
+    await fetch(`${API_URL}/response-cache`, {
+      method: "DELETE",
+      headers: { Accept: "application/json", "X-Internal-Token": INTERNAL_API_TOKEN },
+      cache: "no-store",
+    });
+  } catch (err) {
+    console.error("API response cache flush failed:", err.message);
+  }
+}
 
 export async function POST(request) {
   try {
@@ -10,6 +26,8 @@ export async function POST(request) {
     if (!SECRET || secret !== SECRET) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+
+    await flushApiResponseCache();
 
     // সব slug lowercase — case mismatch (Earbuds vs earbuds) এখানেই fix
     //const slug = rawSlug?.toLowerCase();
