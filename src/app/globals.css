@@ -10,9 +10,6 @@
 @import "swiper/css/navigation";
 @import "swiper/css/free-mode";
 @import "./styles/theme.css";
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
 
 /* ------------------------------------ */
 html {
@@ -38,11 +35,6 @@ table, th, td, blockquote,
   font-family: var(--font-switzer), var(--font-bornomala), sans-serif !important;
 }
 
-.font-bornomala,
-.font-bengali,
-.font-bangla {
-  font-family: var(--font-bornomala), var(--font-switzer), sans-serif !important;
-}
 /* Only apply custom scrollbar styling on Desktop (screens wider than 768px) */
 @media (min-width: 769px) {
   /* 1. For WebKit Browsers (Chrome, Safari, Edge) */
@@ -101,13 +93,6 @@ table, th, td, blockquote,
 }
 
 @layer components {
-  .btn {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 8px 25px;
-    border-radius: 1000px;
-  }
-
   .gradient {
     background: linear-gradient(
       to right,
@@ -123,32 +108,11 @@ table, th, td, blockquote,
     );
   }
 
-  .bg {
-    background-color: red;
-  }
-
   .bg-1 {
     background-color: #e7e9eb;
   }
   .bg-2 {
     background-color: #f3f2f6;
-  }
-
-  .my-btn {
-    padding: 0.75rem 2rem; /* py-3 px-8 (py = 0.75rem, px = 2rem) */
-    border-radius: 9999px; /* rounded-full */
-    background: linear-gradient(
-      to right,
-      #18ac8f,
-      /* from color */ #6baa0b,
-      /* via color */ #e96c27 /* to color */
-    ); /* bg-linear-to-r from-... via-... to-... */
-    color: #ffffff; /* text-white */
-    font-weight: 600;
-    text-transform: capitalize;
-    text-align: center;
-    display: inline-block;
-    cursor: pointer;
   }
 }
 
@@ -162,20 +126,15 @@ table, th, td, blockquote,
 .my-rounded-t {
   border-radius: 1rem 1rem 0 0;
 }
-.my-rounded-b {
-  border-radius: 0 0 1rem 1rem;
-}
 
 @media (min-width: 1024px) {
   .my-rounded {
     border-radius: 40px;
   }
-  .my-rounded-b {
-    border-radius: 0 0 40px 40px;
-  }
   .my-rounded-t {
     border-radius: 40px 40px 0 0;
   }
+  /* (was declared twice; this later 0px value is the one that applied) */
   .my-rounded-b {
     border-radius: 0 0 0px 0px;
   }
@@ -217,9 +176,6 @@ table, th, td, blockquote,
 .my-mt {
   margin-top: 1rem; /* mt-4 = 16px */
 }
-.my-mb {
-  margin-bottom: 1rem; /* mt-4 = 16px */
-}
 .my-my {
   margin-top: 1rem; /* mt-4 = 16px */
 }
@@ -231,9 +187,6 @@ table, th, td, blockquote,
 @media (min-width: 1024px) {
   .my-mt {
     margin-top: 1.5rem; /* mt-6 = 24px */
-  }
-  .my-mb {
-    margin-bottom: 1.5rem; /* mt-6 = 24px */
   }
   .my-my {
     margin-top: 1.5rem; /* mt-6 = 24px */
@@ -247,9 +200,6 @@ table, th, td, blockquote,
 @media (min-width: 1280px) {
   .my-mt {
     margin-top: 2rem; /* mt-8 = 32px */
-  }
-  .my-mb {
-    margin-bottom: 2rem; /* mt-8 = 32px */
   }
   .my-my {
     margin-top: 2rem; /* mt-8 = 32px */
@@ -276,11 +226,6 @@ table, th, td, blockquote,
 .swiper {
   width: 100%;
   height: 100%;
-}
-
-.swiper-slide {
-  display: block;
-  height: auto;
 }
 
 /* Equal height slides for news cards and similar content */
@@ -432,10 +377,6 @@ table, th, td, blockquote,
   transition: 0.3s;
   color: #ee8045;
 }
-.text-hover:hover {
-  transition: 0.3s;
-  color: #ee8045;
-}
 .flex-center {
   display: flex;
   justify-content: center;
@@ -472,42 +413,25 @@ table, th, td, blockquote,
 
 /* Layered so `absolute`/`fixed` utilities on a skeleton still win. */
 @layer components {
-  .skeleton,
-  .skeleton-dark {
+  .skeleton {
     position: relative;
   }
 }
 
-.skeleton,
-.skeleton-dark {
+.skeleton {
   overflow: hidden;
   border-radius: 0.5rem;
-}
-
-.skeleton {
   background: #ececec;
 }
 
-.skeleton-dark {
-  background: #d8d8d8;
-}
-
-.skeleton::after,
-.skeleton-dark::after {
+.skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
   animation: shimmer 1.6s ease-in-out infinite;
   pointer-events: none;
-}
-
-.skeleton::after {
   background: linear-gradient(90deg, transparent 0%, #f5f5f5 50%, transparent 100%);
-}
-
-.skeleton-dark::after {
-  background: linear-gradient(90deg, transparent 0%, #e8e8e8 50%, transparent 100%);
 }
 
 /* ===== DANGEROUSLY SET HTML LINK STYLING ===== */

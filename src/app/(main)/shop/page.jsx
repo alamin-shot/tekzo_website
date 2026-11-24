@@ -1,6 +1,5 @@
 import React from "react";
 import ProductListJsonLd from "@/Components/SEO/ProductListJsonLd";
-import "./page.module.css";
 import Banner from "@/Components/ReuseableComponent/Banner";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
 import Filter from "@/Components/Shop/Filter";
