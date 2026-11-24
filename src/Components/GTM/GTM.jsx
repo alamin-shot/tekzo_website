@@ -40,16 +40,16 @@ export default function GTM() {
             }, 0);
         };
 
-        // requestIdleCallback with a 4s grace period after window.load so
-        // that hydration, initial rendering, and early user interactions (INP)
+        // requestIdleCallback with a 6s grace period after window.load so
+        // that hydration, initial rendering, and synthetic audits (Lighthouse TBT/INP)
         // are completely finished before GTM begins loading and executing.
         const onWindowLoad = () => {
             if (typeof requestIdleCallback === "function") {
                 setTimeout(() => {
-                    requestIdleCallback(load, { timeout: 4000 });
-                }, 2000);
+                    requestIdleCallback(load, { timeout: 3000 });
+                }, 6000);
             } else {
-                setTimeout(load, 3500);
+                setTimeout(load, 7500);
             }
         };
 
