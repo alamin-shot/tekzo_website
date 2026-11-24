@@ -25,7 +25,7 @@ import Coupon from "./Coupon";
 import PreFetchLink from "../CustomUIComponent/PreFetchLink";
 import NoProductFound from "@/Components/ReuseableComponent/NoProductFound";
 import styles from "./ProductDetails.module.css";
-import { useCompare } from "@/context/CompareContext";
+import { useCompareActions } from "@/context/CompareContext";
 import SearchBar from "../SearchBar";
 
 // Utility function to extract storage capacity and convert to bytes for sorting
@@ -204,7 +204,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   const [wishlistAdding, setWishlistAdding] = useState(false);
   const [wishlistAdded, setWishlistAdded] = useState(false);
   const router = useRouter();
-  const { addToCompare } = useCompare();
+  const { addToCompare } = useCompareActions();
   const [activePillTab, setActivePillTab] = useState("specifications");
 
   const availableVariants = useMemo(() => {

@@ -363,7 +363,7 @@ export default function HomeFAQ({ customerQuote }) {
     return (
       <div
         key={faq.id}
-        className={`rounded-2xl md:rounded-3xl transition-all duration-300 bg-gradient-to-br from-secondary/20 to-secondary/5  ${
+        className={`rounded-2xl md:rounded-3xl transition-[box-shadow,border-color] duration-300 bg-gradient-to-br from-secondary/20 to-secondary/5  ${
           isOpen ? "border-secondary/40 shadow-md ring-1 ring-secondary/25" : "border-secondary/20 hover:border-secondary/35 shadow-xs hover:shadow-md"
         }`}
       >
@@ -378,7 +378,7 @@ export default function HomeFAQ({ customerQuote }) {
         >
           <div className="flex items-start gap-3 min-w-0">
             <span
-              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-all duration-300 ${
+              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-[transform,background-color,color,box-shadow] duration-300 ${
                 isOpen ? "bg-secondary text-white shadow-sm" : "bg-white/80 text-secondary shadow-xs group-hover:bg-white group-hover:scale-105"
               }`}
             >
@@ -387,7 +387,7 @@ export default function HomeFAQ({ customerQuote }) {
             <span className={`text-sm md:text-base font-bold leading-snug transition-colors ${isOpen ? "text-secondary" : "text-gray-900 group-hover:text-secondary"}`}>{faq.question}</span>
           </div>
           <span
-            className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-1 transition-all duration-300 ${
+            className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-1 transition-[transform,background-color,color,box-shadow] duration-300 ${
               isOpen ? "bg-secondary text-white rotate-180 shadow-xs" : "bg-white/70 text-gray-500 group-hover:text-secondary group-hover:bg-white rotate-0 shadow-xs"
             }`}
           >

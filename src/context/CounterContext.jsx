@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from "react";
 import { usePathname } from "next/navigation";
 import clientFetchAPI from "@/utils/clientFetchAPI";
@@ -105,19 +106,20 @@ export function CounterProvider({
     };
   }, [incrementCart, incrementWishlist, decrementWishlist]);
 
+  const value = useMemo(
+    () => ({
+      cartCount,
+      wishlistCount,
+      refreshCart,
+      refreshWishlist,
+      setCartCount,
+      setWishlistCount,
+    }),
+    [cartCount, wishlistCount, refreshCart, refreshWishlist],
+  );
+
   return (
-    <CounterContext.Provider
-      value={{
-        cartCount,
-        wishlistCount,
-        refreshCart,
-        refreshWishlist,
-        setCartCount,
-        setWishlistCount,
-      }}
-    >
-      {children}
-    </CounterContext.Provider>
+    <CounterContext.Provider value={value}>{children}</CounterContext.Provider>
   );
 }
 

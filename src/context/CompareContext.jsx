@@ -6,9 +6,14 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
 } from "react";
 
 const CompareContext = createContext(null);
+// Actions only (stable references). Components that just add to compare —
+// every product card — subscribe to this one, so they don't all re-render
+// when the compare list changes or when isHydrated flips after mount.
+const CompareActionsContext = createContext(null);
 
 export function CompareProvider({ children }) {
   const [compareProducts, setCompareProducts] = useState([null, null]);
@@ -69,19 +74,27 @@ export function CompareProvider({ children }) {
     setCompareProducts([null, null]);
   }, []);
 
-  return (
-    <CompareContext.Provider
-      value={{
-        compareProducts,
-        addToCompare,
-        removeFromCompare,
-        clearCompare,
-        isHydrated,
-      }}
-    >
-      {children}
-    </CompareContext.Provider>
+  const actions = useMemo(
+    () => ({ addToCompare, removeFromCompare, clearCompare }),
+    [addToCompare, removeFromCompare, clearCompare],
   );
+
+  const value = useMemo(
+    () => ({ compareProducts, isHydrated, ...actions }),
+    [compareProducts, isHydrated, actions],
+  );
+
+  return (
+    <CompareActionsContext.Provider value={actions}>
+      <CompareContext.Provider value={value}>{children}</CompareContext.Provider>
+    </CompareActionsContext.Provider>
+  );
+}
+
+export function useCompareActions() {
+  const ctx = useContext(CompareActionsContext);
+  if (!ctx) throw new Error("useCompareActions must be used inside CompareProvider");
+  return ctx;
 }
 
 export function useCompare() {

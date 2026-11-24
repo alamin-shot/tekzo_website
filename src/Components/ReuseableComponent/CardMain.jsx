@@ -6,7 +6,7 @@ import { ShoppingBag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useCompare } from "@/context/CompareContext";
+import { useCompareActions } from "@/context/CompareContext";
 import PreFetchLink from "./CustomUIComponent/PreFetchLink";
 
 // framer-motion + the modal UI only ship once the user actually opens it,
@@ -60,7 +60,7 @@ const CardMain = ({
   const [isComparing, setIsComparing] = useState(false);
   const imageRef = useRef(null);
   const router = useRouter();
-  const { addToCompare } = useCompare();
+  const { addToCompare } = useCompareActions();
 
   // /compare renders specifications/variants/images, which listing data
   // lacks — fetch the full product first (same endpoint the compare page uses).
