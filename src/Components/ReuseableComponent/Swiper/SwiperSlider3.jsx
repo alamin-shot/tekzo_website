@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Swiper } from "swiper/react";
+import LazySwiper from "./LazySwiper";
 
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import CategorySliderSkeleton from "@/Components/Home/Categories/CategorySliderSkeleton";
@@ -23,7 +23,7 @@ export default function SwiperSlider3({ children }) {
       <div
         className={`w-full transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
       >
-        <Swiper
+        <LazySwiper
           spaceBetween={15}
           speed={1200}
           centeredSlides={false}
@@ -54,7 +54,7 @@ export default function SwiperSlider3({ children }) {
           }}
         >
           {children}
-        </Swiper>
+        </LazySwiper>
       </div>
 
       {/* Skeleton overlays absolutely — removed from DOM once Swiper is ready */}

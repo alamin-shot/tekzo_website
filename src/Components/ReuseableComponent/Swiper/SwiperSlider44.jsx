@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Swiper } from "swiper/react";
+import LazySwiper from "./LazySwiper";
 
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import SkeletonFlashSell from "@/Components/Home/FlashSale/SkeletonFlashSell";
@@ -34,7 +34,7 @@ export default function SwiperSlider44({ children }) {
             : "opacity-0 h-0 overflow-hidden invisible"
         }`}
       >
-        <Swiper
+        <LazySwiper
           spaceBetween={15}
           speed={1200}
           centeredSlides={false}
@@ -65,7 +65,7 @@ export default function SwiperSlider44({ children }) {
           }}
         >
           {children}
-        </Swiper>
+        </LazySwiper>
       </div>
 
       {/* Style the pagination absolutely */}

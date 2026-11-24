@@ -3,7 +3,8 @@
 import React, { useMemo } from "react";
 import PreFetchLink from "@/Components/ReuseableComponent/CustomUIComponent/PreFetchLink";
 import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { SwiperSlide } from "swiper/react";
+import LazySwiper from "@/Components/ReuseableComponent/Swiper/LazySwiper";
 import { Autoplay, Pagination } from "swiper/modules";
 
 const CategoryCard = ({ item }) => (
@@ -45,7 +46,7 @@ const Category = ({ categoriesData = [] }) => {
 
   return (
     <div className="relative w-full overflow-hidden circle-pagination-container pb-2">
-      <Swiper
+      <LazySwiper
         modules={[Autoplay, Pagination]}
         slidesPerView={1}
         spaceBetween={20}
@@ -71,7 +72,7 @@ const Category = ({ categoriesData = [] }) => {
             </div>
           </SwiperSlide>
         ))}
-      </Swiper>
+      </LazySwiper>
     </div>
   );
 };
