@@ -196,7 +196,7 @@ const CardMain = ({
               priority={false}
               sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 20vw"
               onLoad={() => setImageLoaded(true)}
-              className={`${from === "preOwned" ? "w-full" : "w-[90%] xl:w-[70%] "} h-auto object-contain transition-all duration-300 ease-in-out group-hover:scale-105 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              className={`${from === "preOwned" ? "w-full" : "w-[90%] xl:w-[70%] "} h-auto object-contain transition-[transform,opacity] duration-300 ease-in-out group-hover:scale-105 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
             />
           </PreFetchLink>
           {/* tekzo care */}
