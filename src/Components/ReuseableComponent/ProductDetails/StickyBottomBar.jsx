@@ -1,5 +1,6 @@
 "use client";
 
+import { isStockOut } from "@/utils/stock";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -110,7 +111,7 @@ export default function StickyBottomBar({
     setIsEmiOpen(true);
   };
 
-  const isOutOfStock = !(selectedVariant?.stock === true || selectedVariant?.stock === 1) && !selectedVariant?.is_prebook && !productDetails?.is_prebook;
+  const isOutOfStock = isStockOut(selectedVariant?.stock, Boolean(selectedVariant?.is_prebook || productDetails?.is_prebook));
 
   const emiProduct = {
     ...(productDetails || {}),

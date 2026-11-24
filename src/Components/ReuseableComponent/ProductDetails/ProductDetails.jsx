@@ -1,4 +1,5 @@
 "use client";
+import { isStockOut as isVariantStockOut } from "@/utils/stock";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { formatHtml } from "@/lib/formatHtml";
 import Image from "next/image";
@@ -349,7 +350,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   };
 
   // Stock-out: selected variant has no stock and nothing is pre-bookable.
-  const isStockOut = !(selectedVariant?.stock === true || selectedVariant?.stock === 1) && !selectedVariant?.is_prebook && !productDetails?.is_prebook;
+  const isStockOut = isVariantStockOut(selectedVariant?.stock, Boolean(selectedVariant?.is_prebook || productDetails?.is_prebook));
 
   const handleBuyNow = async () => {
     if (isStockOut) return;

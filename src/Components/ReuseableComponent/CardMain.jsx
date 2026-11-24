@@ -1,5 +1,6 @@
 "use client";
 
+import { isStockOut } from "@/utils/stock";
 import Image from "next/image";
 import { MdArrowForwardIos } from "react-icons/md";
 import { ShoppingBag } from "lucide-react";
@@ -116,6 +117,10 @@ const CardMain = ({
   const preOrderPrice = hasPreOrderPrice ? Math.trunc(Number(rawPreOrderPrice)) : 0;
 
   const showPreOrderPrice = isPreOrder === true && hasPreOrderPrice;
+
+  // Same rule as the PDP (utils/stock). A card with no stock data at all keeps "Buy".
+  const stockFlag = isStock ?? product?.is_stock ?? productData?.is_stock;
+  const cardStockOut = stockFlag !== undefined && stockFlag !== null && isStockOut(stockFlag, isPreOrder);
 
   const calculateDiscount = (original, current) => {
     if (!original || !current || original <= current) return null;
@@ -366,12 +371,14 @@ const CardMain = ({
           {/* Buy action: solid gradient pill = primary action; opens the cart modal. */}
           <button
             type="button"
-            onClick={openCartModal}
-            aria-label={`Buy ${name}`}
-            className={`${ROW_HEIGHT} shrink-0 gradient rounded-full flex items-center justify-center gap-1.5 lg:gap-2 px-4 lg:px-7 xl:px-9 text-white text-xs lg:text-base 2xl:text-lg font-semibold whitespace-nowrap cursor-pointer shadow-sm hover:brightness-110 hover:shadow-md`}
+            onClick={cardStockOut ? undefined : openCartModal}
+            disabled={cardStockOut}
+            aria-disabled={cardStockOut}
+            aria-label={cardStockOut ? `${name} is stock out` : `Buy ${name}`}
+            className={`${ROW_HEIGHT} shrink-0 rounded-full flex items-center justify-center gap-1.5 lg:gap-2 text-xs lg:text-base 2xl:text-lg font-semibold whitespace-nowrap ${cardStockOut ? "px-3 lg:px-5 xl:px-6 bg-gray-300 text-gray-600 cursor-not-allowed" : "px-4 lg:px-7 xl:px-9 text-white gradient cursor-pointer shadow-sm hover:brightness-110 hover:shadow-md"}`}
           >
-            <span>Buy</span>
-            <ShoppingBag className="size-3.5 lg:size-5 2xl:size-6" strokeWidth={2.25} />
+            <span>{cardStockOut ? "Stock Out" : "Buy"}</span>
+            {!cardStockOut && <ShoppingBag className="size-3.5 lg:size-5 2xl:size-6" strokeWidth={2.25} />}
           </button>
         </div>
       </div>
