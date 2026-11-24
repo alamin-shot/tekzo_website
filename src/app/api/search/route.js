@@ -6,6 +6,7 @@ import { normalizeSearchResponse } from "@/lib/search/mapSearchProduct";
 // { data: SearchProduct[], total } so the UI never has to guess the shape.
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
 const MAX_QUERY_LENGTH = 100;
 const UPSTREAM_TIMEOUT_MS = 8000;
 const CACHE_HEADERS = {
@@ -55,7 +56,10 @@ export async function GET(request) {
     upstream = await fetch(
       `${API_URL}/search-products?query=${encodeURIComponent(query)}`,
       {
-        headers: { Accept: "application/json" },
+        headers: {
+          Accept: "application/json",
+          ...(INTERNAL_API_TOKEN && { "X-Internal-Token": INTERNAL_API_TOKEN }),
+        },
         signal,
         next: { revalidate: 60 }, // identical queries within 60s hit the cache
       },

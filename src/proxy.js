@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
 const PROTECTED_ROUTES = ['/dashboard'];
 const PUBLIC_ROUTES = ['/login', '/register'];
 
@@ -68,6 +69,7 @@ export async function proxy(request) {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: 'application/json',
+                    ...(INTERNAL_API_TOKEN && { 'X-Internal-Token': INTERNAL_API_TOKEN }),
                 },
             });
             if (response.status === 401) return redirectToLogin(request);

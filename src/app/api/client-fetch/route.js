@@ -2,6 +2,7 @@ import {cookies} from "next/headers";
 import {NextResponse} from "next/server";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
 
 // these work for guests during checkout — no auth_token yet
 const GUEST_ENDPOINTS = [
@@ -30,6 +31,7 @@ export async function POST(request) {
             method: "POST",
             headers: {
                 ...(token && {Authorization: `Bearer ${token}`}),
+                ...(INTERNAL_API_TOKEN && {"X-Internal-Token": INTERNAL_API_TOKEN}),
             },
             body: formData,
         });
@@ -50,6 +52,7 @@ export async function POST(request) {
             "Content-Type": "application/json",
             Accept: "application/json",
             ...(token && {Authorization: `Bearer ${token}`}),
+            ...(INTERNAL_API_TOKEN && {"X-Internal-Token": INTERNAL_API_TOKEN}),
         },
         ...(body && {body: JSON.stringify(body)}),
     });
