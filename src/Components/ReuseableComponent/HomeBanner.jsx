@@ -42,9 +42,9 @@ const HomeBanner = ({ slidersData }) => {
                   src={hero?.image || "/placeholder.jpg"}
                   alt={hero?.heading || "banner image"}
                   className="w-full h-full object-cover rounded-2xl lg:rounded-[40px]"
-                  height={3000}
-                  width={4000}
-                  sizes="100vw"
+                  height={450}
+                  width={1200}
+                  sizes="(max-width: 768px) 100vw, 1200px"
                   priority={index === 0}
                   fetchPriority={index === 0 ? "high" : "auto"}
                 />

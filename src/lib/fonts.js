@@ -6,10 +6,6 @@ export const switzer = localFont({
       path: "../fonts/Switzer/Fonts/WEB/fonts/Switzer-Variable.woff2",
       style: "normal",
     },
-    {
-      path: "../fonts/Switzer/Fonts/WEB/fonts/Switzer-VariableItalic.woff2",
-      style: "italic",
-    },
   ],
   variable: "--font-switzer",
   display: "swap",
