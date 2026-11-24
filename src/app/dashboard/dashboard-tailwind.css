@@ -1,0 +1,10 @@
+/* Dashboard-only stylesheet (PR 12). globals.css excludes the dashboard
+   folders from its Tailwind scan, so the storefront's render-blocking CSS
+   no longer carries dashboard utilities. This sheet compiles the theme +
+   utilities for the whole project (no preflight, which globals.css already
+   ships). It is a full set rather than "dashboard classes only" because it
+   loads after globals.css: a partial set would let e.g. `p-4` here override
+   `md:p-6` from globals.css on shared components. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "../styles/theme.css";

@@ -4,7 +4,7 @@ import DashboardLayoutClient from "@/Components/Dashboard/DashboardLayoutClient"
 import { DashboardThemeProvider } from "@/context/DashboardThemeContext";
 import { getAuthUser } from "@/fetch-API/getAuthUser";
 import { switzer } from "@/lib/fonts";
-import "@/app/styles/theme.css";
+import "./dashboard-tailwind.css";
 import "./dashboard.css";
 
 export const metadata = {

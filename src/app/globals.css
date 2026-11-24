@@ -1,4 +1,10 @@
 @import "tailwindcss";
+/* Dashboard-only utilities are compiled into src/app/dashboard/dashboard-tailwind.css
+   instead, so storefront pages don't block rendering on them (PR 12).
+   AddAddressPopup is also used by checkout, so it stays in this sheet. */
+@source not "./dashboard";
+@source not "../Components/Dashboard";
+@source "../Components/Dashboard/AddressBook/AddAddressPopup.jsx";
 @import "swiper/css";
 @import "swiper/css/pagination";
 @import "swiper/css/navigation";
