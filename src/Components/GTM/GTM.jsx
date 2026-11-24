@@ -7,11 +7,10 @@ export default function GTM() {
     const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
     const [shouldLoad, setShouldLoad] = useState(false);
 
-    // GTM currently competes with LCP for bandwidth/CPU under throttled
-    // mobile conditions. Loading on first interaction keeps it out of the
-    // critical rendering window for every visitor who so much as scrolls
-    // or taps. For the rest (bots, crawlers, Lighthouse — anyone who never
-    // interacts), we used a flat setTimeout fallback (2.5s, then 5s), but
+    // GTM competes with LCP for bandwidth/CPU under throttled mobile
+    // conditions, so it loads after window "load" + idle (see below; the
+    // former first-interaction trigger was removed for INP). Before that,
+    // we used a flat setTimeout fallback (2.5s, then 5s), but
     // that's a guess: too short and it competes with LCP on slow
     // connections, too long and it just delays tracking for no reason on
     // fast ones. Worse, Lighthouse's simulated (Lantern) throttling doesn't
@@ -54,13 +53,17 @@ export default function GTM() {
         // hung request) so a passive visitor is still eventually tracked.
         const safetyTimer = setTimeout(load, 15000);
 
-        const events = ["scroll", "mousemove", "touchstart", "keydown", "click"];
-        events.forEach((e) => window.addEventListener(e, load, { once: true, passive: true }));
+        // No scroll/touch/click triggers: loading GTM on the first gesture
+        // ran the whole container (then every tag) right where the user's
+        // next tap lands, adding 260–508 ms to that interaction in lab
+        // traces (docs/perf-audit/PERF_AUDIT_FINDINGS.md §9.3). Every visit
+        // still reaches "load" (or the 15 s safety net), so tracking
+        // coverage is unchanged; dataLayer pushes made before GTM loads are
+        // queued and processed when it does.
 
         return () => {
             window.removeEventListener("load", onWindowLoad);
             clearTimeout(safetyTimer);
-            events.forEach((e) => window.removeEventListener(e, load));
         };
     }, [shouldLoad]);
 
