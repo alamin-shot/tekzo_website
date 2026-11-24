@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN;
 
 const fetchAPI = async (endpoint, options = {}) => {
     const url = `${BASE_API_URL}${endpoint}`;
@@ -14,6 +15,7 @@ const fetchAPI = async (endpoint, options = {}) => {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
+                ...(INTERNAL_API_TOKEN && { "X-Internal-Token": INTERNAL_API_TOKEN }),
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 ...options.headers,
             },

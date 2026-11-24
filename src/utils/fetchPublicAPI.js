@@ -1,6 +1,8 @@
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INTERNAL_API_TOKEN = process.env.INTERNAL_API_TOKEN; // undefined in the browser bundle
 
 const fetchPublicAPI = async (endpoint, options = {}) => {
+  const isServer = typeof window === "undefined";
   const url = `${BASE_API_URL}${endpoint}`;
 
   const { tags, revalidate, next, headers, ...rest } = options;
@@ -17,6 +19,7 @@ const fetchPublicAPI = async (endpoint, options = {}) => {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        ...(isServer && INTERNAL_API_TOKEN && { "X-Internal-Token": INTERNAL_API_TOKEN }),
         ...headers,
       },
       ...(Object.keys(nextOptions).length > 0 && { next: nextOptions }),
