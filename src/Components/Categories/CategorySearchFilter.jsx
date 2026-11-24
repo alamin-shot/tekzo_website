@@ -1,37 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import Image from "next/image";
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 export default function CategorySearchFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const timerRef = useRef(null);
+  // The URL value this component last wrote; lets the sync below tell our
+  // own (debounced) update apart from an external one such as back/forward.
+  const lastWrittenRef = useRef(searchParams.get("search") || "");
 
-  // Update search query when URL changes
+  // Update search query when URL changes externally
   useEffect(() => {
     const search = searchParams.get("search") || "";
-    setSearchQuery(search);
+    if (search !== lastWrittenRef.current) {
+      lastWrittenRef.current = search;
+      setSearchQuery(search);
+    }
   }, [searchParams]);
 
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  // The input updates on every keystroke; the URL (a server round trip) only
+  // once typing pauses, as a non-urgent transition, and without adding a
+  // history entry per letter (same pattern as SingleCategory).
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
 
-    // Update URL with search query
-    const params = new URLSearchParams(searchParams.toString());
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const trimmed = value.trim();
 
-    if (value.trim()) {
-      params.set("search", value.trim());
-    } else {
-      params.delete("search");
-    }
+      if (trimmed) {
+        params.set("search", trimmed);
+      } else {
+        params.delete("search");
+      }
 
-    // Keep category filter if exists
-    router.push(`/categories?${params.toString()}`, { scroll: false });
+      lastWrittenRef.current = trimmed;
+      // Keep category filter if exists
+      startTransition(() => {
+        router.replace(`/categories?${params.toString()}`, { scroll: false });
+      });
+    }, SEARCH_DEBOUNCE_MS);
   };
 
   return (

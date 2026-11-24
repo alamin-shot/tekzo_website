@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import Image from "next/image";
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 export default function FeaturedProductsSearchFilter() {
   const router = useRouter();
@@ -12,27 +14,44 @@ export default function FeaturedProductsSearchFilter() {
   const currentSearch = searchParams.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(currentSearch);
   const [prevSearch, setPrevSearch] = useState(currentSearch);
+  const timerRef = useRef(null);
+  // The URL value this component last wrote, so our own debounced update
+  // doesn't overwrite what the user has typed since.
+  const lastWrittenRef = useRef(currentSearch);
 
   // Sync state if searchParams change externally (React recommended state adjustment during render)
   if (prevSearch !== currentSearch) {
     setPrevSearch(currentSearch);
-    setSearchQuery(currentSearch);
+    if (currentSearch !== lastWrittenRef.current) {
+      setSearchQuery(currentSearch);
+    }
   }
 
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  // The input updates on every keystroke; the URL (a server round trip) only
+  // once typing pauses, as a non-urgent transition, without a history entry
+  // per letter (same pattern as SingleCategory).
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
 
-    // Update URL with search query
-    const params = new URLSearchParams(searchParams.toString());
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const trimmed = value.trim();
 
-    if (value.trim()) {
-      params.set("search", value.trim());
-    } else {
-      params.delete("search");
-    }
+      if (trimmed) {
+        params.set("search", trimmed);
+      } else {
+        params.delete("search");
+      }
 
-    router.push(`/featured-products?${params.toString()}`, { scroll: false });
+      lastWrittenRef.current = trimmed;
+      startTransition(() => {
+        router.replace(`/featured-products?${params.toString()}`, { scroll: false });
+      });
+    }, SEARCH_DEBOUNCE_MS);
   };
 
   return (
