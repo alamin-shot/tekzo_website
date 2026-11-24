@@ -110,7 +110,7 @@ export default function StickyBottomBar({
     setIsEmiOpen(true);
   };
 
-  const isOutOfStock = !selectedVariant?.stock && selectedVariant?.stock !== 1 && !selectedVariant?.is_prebook && !productDetails?.is_prebook;
+  const isOutOfStock = !(selectedVariant?.stock === true || selectedVariant?.stock === 1) && !selectedVariant?.is_prebook && !productDetails?.is_prebook;
 
   const emiProduct = {
     ...(productDetails || {}),
@@ -386,8 +386,9 @@ export default function StickyBottomBar({
 
               <button
                 type="button"
-                onClick={onBuyNow}
+                onClick={isOutOfStock ? undefined : onBuyNow}
                 disabled={buyingNow || isOutOfStock}
+                aria-disabled={buyingNow || isOutOfStock}
                 className="bg-secondary hover:bg-[#0b6b71] active:bg-[#095b60] text-white font-semibold text-xs xl:text-[13.5px] px-6 xl:px-8 py-2.5 xl:py-3 rounded-full transition-all duration-200 active:scale-[0.98] shadow-xs hover:shadow flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-50 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
               >
                 {buyingNow ? (
@@ -396,7 +397,7 @@ export default function StickyBottomBar({
                     <span>Processing...</span>
                   </>
                 ) : isOutOfStock ? (
-                  <span>Out of Stock</span>
+                  <span>Stock Out</span>
                 ) : isPreOrder ? (
                   <span>Pre-Order Now</span>
                 ) : (
@@ -490,12 +491,13 @@ export default function StickyBottomBar({
 
                 <button
                   type="button"
-                  onClick={onBuyNow}
+                  onClick={isOutOfStock ? undefined : onBuyNow}
                   disabled={buyingNow || isOutOfStock}
+                  aria-disabled={buyingNow || isOutOfStock}
                   className="flex-1 max-w-[150px] bg-secondary hover:bg-[#0b6b71] text-white font-semibold text-xs sm:text-sm py-2 px-3.5 rounded-full transition-all active:scale-[0.98] shadow-xs flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 disabled:bg-slate-300 disabled:text-slate-500"
                 >
                   {buyingNow ? <Loader2 className="w-3.5 h-3.5 animate-spin text-white" /> : null}
-                  <span className="truncate">{isOutOfStock ? "Out of Stock" : isPreOrder ? "Pre-Order" : "Buy Now"}</span>
+                  <span className="truncate">{isOutOfStock ? "Stock Out" : isPreOrder ? "Pre-Order" : "Buy Now"}</span>
                 </button>
               </div>
             </div>

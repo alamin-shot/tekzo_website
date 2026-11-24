@@ -348,7 +348,11 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
     localStorage.setItem("cart", JSON.stringify(cart));
   };
 
+  // Stock-out: selected variant has no stock and nothing is pre-bookable.
+  const isStockOut = !(selectedVariant?.stock === true || selectedVariant?.stock === 1) && !selectedVariant?.is_prebook && !productDetails?.is_prebook;
+
   const handleBuyNow = async () => {
+    if (isStockOut) return;
     if (buyingNow) return;
     setBuyingNow(true);
 
@@ -627,7 +631,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
               )}
 
               {/* Action Buttons - Desktop */}
-              {selectedVariant?.stock || selectedVariant?.is_prebook || productDetails?.is_prebook ? (
+              {!isStockOut ? (
                 <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4 ">
                   <button
                     onClick={handleBuyNow}
@@ -649,8 +653,8 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
                 </div>
               ) : (
                 <div className="mb-4 hidden lg:block">
-                  <button disabled className="w-full bg-gray-300 text-gray-600 py-2.5 lg:py-4 2xl:py-7 rounded-xl lg:rounded-[20px] font-bold cursor-not-allowed">
-                    Out of Stock
+                  <button type="button" disabled aria-disabled="true" className="w-full bg-gray-300 text-gray-600 py-2.5 lg:py-4 2xl:py-7 rounded-xl lg:rounded-[20px] font-bold cursor-not-allowed">
+                    Stock Out
                   </button>
                 </div>
               )}
@@ -925,7 +929,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
                 {/* Exchange and Rating Cards */}
                 <ProductRatingReviewsCards productDetails={productDetails} />
                 {/* buy now button - Mobile */}
-                {selectedVariant?.stock || selectedVariant?.is_prebook || productDetails?.is_prebook ? (
+                {!isStockOut ? (
                   <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-4">
                     <button
                       onClick={handleBuyNow}
@@ -947,8 +951,8 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
                   </div>
                 ) : (
                   <div className="lg:hidden">
-                    <button disabled className="w-full bg-gray-300 text-gray-600 py-3 rounded-xl font-semibold text-sm cursor-not-allowed flex items-center justify-center">
-                      Out of Stock
+                    <button type="button" disabled aria-disabled="true" className="w-full bg-gray-300 text-gray-600 py-3 rounded-xl font-semibold text-sm cursor-not-allowed flex items-center justify-center">
+                      Stock Out
                     </button>
                   </div>
                 )}
