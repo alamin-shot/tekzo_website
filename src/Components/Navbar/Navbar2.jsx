@@ -9,8 +9,7 @@ import PreFetchLink from "../ReuseableComponent/CustomUIComponent/PreFetchLink";
 import { getCategories, getBrands } from "@/lib/api";
 
 const Navbar2 = async ({ companySetting }) => {
-  const categories = await getCategories();
-  const brands = await getBrands();
+  const [categories, brands] = await Promise.all([getCategories(), getBrands()]);
   const ecommerceType = process.env.NEXT_PUBLIC_ECOMMERCE_TYPE;
 
   return (

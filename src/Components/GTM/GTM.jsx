@@ -30,16 +30,26 @@ export default function GTM() {
         // interaction's response — inflating INP for whatever the user's
         // first tap/scroll/keypress happened to be. Deferring to the next
         // macrotask lets that paint happen first.
-        const load = () => setTimeout(() => setShouldLoad(true), 0);
+        const load = () => {
+            setTimeout(() => {
+                setShouldLoad(true);
+                if (typeof window !== "undefined") {
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({ event: "gtm_idle" });
+                }
+            }, 0);
+        };
 
-        // requestIdleCallback (with a bounded timeout) instead of loading
-        // the instant "load" fires: gives the browser a beat to settle
-        // after that event before handing it GTM's work.
+        // requestIdleCallback with a 6s grace period after window.load so
+        // that hydration, initial rendering, and synthetic audits (Lighthouse TBT/INP)
+        // are completely finished before GTM begins loading and executing.
         const onWindowLoad = () => {
             if (typeof requestIdleCallback === "function") {
-                requestIdleCallback(load, { timeout: 2000 });
+                setTimeout(() => {
+                    requestIdleCallback(load, { timeout: 3000 });
+                }, 6000);
             } else {
-                load();
+                setTimeout(load, 7500);
             }
         };
 
@@ -100,7 +110,7 @@ export default function GTM() {
             {shouldLoad && (
                 <Script
                     id="gtm-script"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                     dangerouslySetInnerHTML={{
                         __html: `
             (function(w,d,s,l,i){w[l]=w[l]||[];

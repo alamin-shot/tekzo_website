@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import PreFetchLink from "@/Components/ReuseableComponent/CustomUIComponent/PreFetchLink";
 import Image from "next/image";
 import { SwiperSlide } from "swiper/react";
@@ -32,6 +32,18 @@ const CategoryCard = ({ item }) => (
 );
 
 const Category = ({ categoriesData = [] }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Mount the rest of the slides during idle time after initial paint/hydration
+    if (typeof requestIdleCallback === "function") {
+      const id = requestIdleCallback(() => setMounted(true), { timeout: 2000 });
+      return () => cancelIdleCallback(id);
+    }
+    const timer = setTimeout(() => setMounted(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Group categories into chunks of 8 (8 items per slide on both mobile and desktop)
   const slides = useMemo(() => {
     const items = Array.isArray(categoriesData) ? categoriesData : [];
@@ -43,6 +55,9 @@ const Category = ({ categoriesData = [] }) => {
   }, [categoriesData]);
 
   if (!slides.length) return null;
+
+  // Render first slide during SSR / initial paint; mount the rest after hydration
+  const visibleSlides = mounted ? slides : slides.slice(0, 1);
 
   return (
     <div className="relative w-full overflow-hidden circle-pagination-container pb-2">
@@ -63,7 +78,7 @@ const Category = ({ categoriesData = [] }) => {
         }}
         className="pt-2 pb-1 !overflow-visible"
       >
-        {slides.map((slideItems, slideIndex) => (
+        {visibleSlides.map((slideItems, slideIndex) => (
           <SwiperSlide key={slideIndex}>
             <div className="grid grid-cols-4 md:grid-cols-8 gap-2.5 sm:gap-3 md:gap-3.5 xl:gap-4 items-start">
               {slideItems.map((item) => (

@@ -1,11 +1,13 @@
 import { getSettings } from "@/lib/api";
+import dynamic from "next/dynamic";
 import FooterPage from "@/Components/Footer/FooterPage";
-import WhatsAppPopUp from "@/Components/WhatsAppPopUp/WhatsAppPopUp";
 import CompanyJsonLd from "@/Components/SEO/CompanyJsonLd";
 import GTM from "@/Components/GTM/GTM";
 import WebVitalsReporter from "@/Components/GTM/WebVitalsReporter";
 import Navbar2 from "@/Components/Navbar/Navbar2";
 import NavbarVisibilityWrapper from "@/Components/Navbar/NavbarVisibilityWrapper";
+
+const WhatsAppPopUp = dynamic(() => import("@/Components/WhatsAppPopUp/WhatsAppPopUp"));
 // app/page.js (home)
 export async function generateMetadata() {
   const setting = await getSettings();
