@@ -81,22 +81,19 @@ const Navbar2 = async ({ companySetting }) => {
         <Image
           src="/navbar/navbar-middle.svg"
           alt="navbar middle shape svg"
-          width={0}
+          width={70}
           height={46}
-          sizes="100vw"
           className="w-auto h-[64px] lg:h-[53px]"
-          priority
-          fetchPriority="high"
+          loading="lazy"
         />
         <PreFetchLink prefetch={false} href={"/"}>
           <Image
             src={companySetting?.company_logo}
             alt="logo"
-            width={300}
-            height={250}
-            className="absolute left-1/2 -translate-x-1/2 -top-[0px] lg:top-1 ml-0.5 w-10 lg:w-9  "
-            priority
-            fetchPriority="high"
+            width={40}
+            height={40}
+            className="absolute left-1/2 -translate-x-1/2 -top-[0px] lg:top-1 ml-0.5 w-10 lg:w-9"
+            loading="lazy"
           />
         </PreFetchLink>
 
