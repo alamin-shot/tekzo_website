@@ -1,6 +1,6 @@
 import { getJobDetails } from "@/lib/api";
 import Banner from "@/Components/ReuseableComponent/Banner";
-import Image from "next/image";
+import JobRichText from "@/Components/Careers/JobRichText";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -60,17 +60,7 @@ export default async function JobDetails({ params }) {
               <h2 className="text-primary text-xl font-bold mb-6">
                 Job Description
               </h2>
-              <ul className="space-y-4">
-                {job.description?.map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex gap-3 text-slate-600 leading-relaxed"
-                  >
-                    <span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-secondary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <JobRichText items={job.description} className="" gap="space-y-4" />
             </div>
 
             <div className="aspect-5/3 overflow-hidden rounded-3xl hidden lg:block">
@@ -129,17 +119,7 @@ export default async function JobDetails({ params }) {
               {job.qualification?.length > 0 && (
                 <div className="mb-8">
                   <h3 className="text-primary font-bold mb-4">Requirements</h3>
-                  <ul className="space-y-3">
-                    {job.qualification.map((req, i) => (
-                      <li
-                        key={i}
-                        className="flex gap-2 text-sm text-slate-600 leading-relaxed"
-                      >
-                        <span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-secondary flex-shrink-0" />
-                        {req}
-                      </li>
-                    ))}
-                  </ul>
+                  <JobRichText items={job.qualification} className="text-sm" gap="space-y-3" />
                 </div>
               )}
 
@@ -147,34 +127,14 @@ export default async function JobDetails({ params }) {
               {job.benefits?.length > 0 && (
                 <div className="mb-10">
                   <h3 className="text-primary font-bold mb-4">Benefits</h3>
-                  <ul className="space-y-3">
-                    {job.benefits.map((benefit, i) => (
-                      <li
-                        key={i}
-                        className="flex gap-2 text-sm text-slate-600 leading-relaxed"
-                      >
-                        <span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-secondary flex-shrink-0" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
+                  <JobRichText items={job.benefits} className="text-sm" gap="space-y-3" />
                 </div>
               )}
 
               {/* Job Description — mobile only */}
               <div className="mb-10 lg:hidden">
                 <h3 className="text-primary font-bold mb-4">Job Description</h3>
-                <ul className="space-y-3">
-                  {job.description?.map((item, i) => (
-                    <li
-                      key={i}
-                      className="flex gap-3 text-slate-600 leading-relaxed"
-                    >
-                      <span className="mt-2.5 h-1.5 w-1.5 rounded-full bg-secondary flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                <JobRichText items={job.description} className="" gap="space-y-4" />
               </div>
 
               {/* Apply Button */}

@@ -1,6 +1,6 @@
 // app/(main)/careers/page.jsx  ← SERVER COMPONENT ONLY
 
-import { getCareers, getTeamMembers } from "@/lib/api";
+import { getCareers } from "@/lib/api";
 import Banner from "@/Components/ReuseableComponent/Banner";
 import Breadcrumbs from "@/Components/ReuseableComponent/Breadcrumbs";
 import CareersClient from "@/Components/Careers/CareersClient";
@@ -51,13 +51,13 @@ export async function generateMetadata() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function CareersPage() {
-  const [careersData, teams] = await Promise.all([getCareers(), getTeamMembers()]);
+  const careersData = await getCareers();
 
   return (
     <div>
       <Banner h1="Careers at TEKZO" image={"/all-product-banner.webp"} title={"careers"} />
       <Breadcrumbs />
-      <CareersClient jobs={careersData?.jobs} teams={teams} />
+      <CareersClient jobs={careersData?.jobs} />
     </div>
   );
 }
