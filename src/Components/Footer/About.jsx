@@ -10,9 +10,10 @@ const About = () => {
     ...(ecommerceType && ecommerceType === "salamat"
       ? [{ title: "News", link: "/news" }]
       : [{ title: "Blog", link: "/blog" }]),
-    ...(ecommerceType && ecommerceType === "salamat"
-      ? [{ title: "Careers", link: "/careers" }]
-      : []),
+    // Careers hidden for now (see src/app/(main)/careers/layout.jsx)
+    // ...(ecommerceType && ecommerceType === "salamat"
+    //   ? [{ title: "Careers", link: "/careers" }]
+    //   : []),
     { title: "TEKZO Care", link: "/tekzo-care" },
     { title: "Claim Your Warranty", link: "/claim-your-warranty" },
     { title: "How to Claim Your Warranty", link: "/how-to-claim" },
