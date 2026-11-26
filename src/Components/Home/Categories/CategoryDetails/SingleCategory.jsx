@@ -179,6 +179,20 @@ const SingleCategory = ({
                 <p className="mt-px italic text-xs font-medium uppercase tracking-widest text-slate-500">
                   {product?.tagline}
                 </p>
+                {(product?.android_app || product?.ios_app) && (
+                  <div className="flex gap-2 mt-2">
+                    {product?.android_app && (
+                      <a href={product.android_app} target="_blank" rel="noopener noreferrer" className="inline-block">
+                        <Image src="/play-store.png" alt={`Get ${product?.name} on Google Play`} width={4000} height={3000} className="object-contain w-20 lg:w-25 h-auto" />
+                      </a>
+                    )}
+                    {product?.ios_app && (
+                      <a href={product.ios_app} target="_blank" rel="noopener noreferrer" className="inline-block">
+                        <Image src="/app-store.png" alt={`Download ${product?.name} on the App Store`} width={4000} height={3000} className="object-contain w-20 lg:w-25 h-auto" />
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
               {/* Desktop tabs */}
               <div className="hidden lg:flex flex-wrap gap-2 overflow-x-auto no-scrollbar">
