@@ -368,7 +368,8 @@ const CardMain = ({
             </button>
           )}
 
-          {/* Buy action: solid gradient pill = primary action; opens the cart modal. */}
+          {/* Buy action: solid gradient pill = primary action; opens the cart modal. Used-device model cards show only "View all Products". */}
+          {from !== "preOwned" && (
           <button
             type="button"
             onClick={cardStockOut ? undefined : openCartModal}
@@ -380,6 +381,7 @@ const CardMain = ({
             <span>{cardStockOut ? "Stock Out" : "Buy"}</span>
             {!cardStockOut && <ShoppingBag className="size-3.5 lg:size-5 2xl:size-6" strokeWidth={2.25} />}
           </button>
+          )}
         </div>
       </div>
       {hasOpenedCart && <CartModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} name={name} currentPrice={currentPrice} image={image} slug={link} />}
