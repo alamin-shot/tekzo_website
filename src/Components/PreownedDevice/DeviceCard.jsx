@@ -255,30 +255,14 @@ export default function DeviceCard({ listing, from, className }) {
             </div>
           </div>
 
-          {/* Buttons with 50/50 width split */}
-
-          {isStock ? (
-            <div className="mt-auto flex gap-2">
-              <button
-                onClick={handleBuyNow}
-                disabled={buyingNow}
-                className={`${from === "homePage" ? "rounded-full" : "rounded-lg"} flex-1 bg-primary text-white py-1.5 text-xs 2xl:text-sm whitespace-nowrap font-semibold cursor-pointer disabled:opacity-70 transition-all`}
-              >
-                {buyingNow ? "Processing..." : "Buy Now"}
-              </button>
-              <Link
-                prefetch={false}
-                href={`/used-device/product/${listing?.slug}?preOwnedId=${listing?.id}`}
-                className={`${from === "homePage" ? "rounded-full" : "rounded-lg"}  flex-1 bg-secondary text-white py-1.5 text-xs 2xl:text-sm whitespace-nowrap cursor-pointer inline-block text-center`}
-              >
-                View Details
-              </Link>
-            </div>
-          ) : (
-            <button className="mt-auto bg-gray-400 text-white rounded-lg py-1.5 text-xs lg:text-sm cursor-pointer">
-              Sold
-            </button>
-          )}
+          {/* Single full-width action */}
+          <Link
+            prefetch={false}
+            href={`/used-device/product/${listing?.slug}?preOwnedId=${listing?.id}`}
+            className={`${from === "homePage" ? "rounded-full" : "rounded-lg"} mt-auto w-full bg-secondary text-white py-1.5 text-xs 2xl:text-sm whitespace-nowrap cursor-pointer inline-block text-center`}
+          >
+            View all Products
+          </Link>
         </div>
       </div>
 
