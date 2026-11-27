@@ -1,0 +1,180 @@
+{
+  "generated": "2026-11-25T11:56:53.411Z",
+  "commit": "622a1f9",
+  "totals": {
+    "errors": 93,
+    "warnings": 12,
+    "files": 48
+  },
+  "byRule": {
+    "error:react/no-unescaped-entities": 29,
+    "error:react-hooks/set-state-in-effect": 49,
+    "error:@next/next/no-html-link-for-pages": 1,
+    "warn:@next/next/no-before-interactive-script-outside-document": 1,
+    "warn:@next/next/no-img-element": 3,
+    "error:react-hooks/immutability": 5,
+    "warn:react-hooks/exhaustive-deps": 7,
+    "error:react-hooks/static-components": 5,
+    "error:react-hooks/preserve-manual-memoization": 2,
+    "warn:parse": 1,
+    "error:react/jsx-no-duplicate-props": 1,
+    "error:react-hooks/rules-of-hooks": 1
+  },
+  "files": {
+    "src/Components/AboutUs/DynamicPill/AboutStores/AboutStores.jsx": {
+      "error:react/no-unescaped-entities": 4
+    },
+    "src/Components/AboutUs/DynamicPill/AboutUs/OurPartners.jsx": {
+      "error:react/no-unescaped-entities": 2
+    },
+    "src/Components/AboutUs/DynamicPill/AboutUs/SocialMediaPresence.jsx": {
+      "error:react/no-unescaped-entities": 16
+    },
+    "src/Components/Dashboard/AddressBook/AddAddressPopup.jsx": {
+      "error:react-hooks/set-state-in-effect": 3
+    },
+    "src/Components/Dashboard/DashboardMobileDrawer.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Dashboard/DashboardTopNavbar.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Dashboard/Sidebar.jsx": {
+      "error:react-hooks/set-state-in-effect": 2
+    },
+    "src/Components/ErrorFallback/ErrorFallback.jsx": {
+      "error:@next/next/no-html-link-for-pages": 1
+    },
+    "src/Components/GTM/GTM.jsx": {
+      "warn:@next/next/no-before-interactive-script-outside-document": 1
+    },
+    "src/Components/Home/Categories/CategoryDetails/CategoryProducts.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Home/Categories/CategoryDetails/SingleCategory.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Home/FeaturesProduct/FeatureProducts.jsx": {
+      "error:react/no-unescaped-entities": 1
+    },
+    "src/Components/Home/FlashSale/FlashSaleCountdown.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Home/LiveSection/LiveProductModal.jsx": {
+      "error:react-hooks/set-state-in-effect": 2
+    },
+    "src/Components/Navbar/NavAuthClient.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Navbar/NavFunction/SidebarFunction.jsx": {
+      "error:react-hooks/set-state-in-effect": 2
+    },
+    "src/Components/Navbar/NavbarAuthSection.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/OrderTracking/OrderTracking.jsx": {
+      "warn:@next/next/no-img-element": 1
+    },
+    "src/Components/PreownedDevice/ImageModal.jsx": {
+      "error:react-hooks/set-state-in-effect": 2,
+      "error:react-hooks/immutability": 5,
+      "warn:react-hooks/exhaustive-deps": 1
+    },
+    "src/Components/PreownedDevice/PreOwnedFilter.jsx": {
+      "error:react-hooks/set-state-in-effect": 1,
+      "error:react-hooks/static-components": 1
+    },
+    "src/Components/ReuseableComponent/CartModal.jsx": {
+      "error:react-hooks/set-state-in-effect": 2
+    },
+    "src/Components/ReuseableComponent/ProductDetails/ProductDetails.jsx": {
+      "error:react-hooks/preserve-manual-memoization": 1,
+      "error:react-hooks/set-state-in-effect": 4,
+      "warn:react-hooks/exhaustive-deps": 2
+    },
+    "src/Components/ReuseableComponent/ProductDetails/ShareDetails.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/ReuseableComponent/SearchBar.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/SellYourDevice/SellYourDevice.jsx": {
+      "warn:@next/next/no-img-element": 2
+    },
+    "src/Components/SellYourDevice/SellYourDeviceContent.jsx": {
+      "error:react/no-unescaped-entities": 1
+    },
+    "src/Components/Shop/Products.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/Shop/ShopHeaderWithFilter.jsx": {
+      "error:react-hooks/set-state-in-effect": 1,
+      "warn:react-hooks/exhaustive-deps": 1
+    },
+    "src/Components/Shop/ShopProducts.jsx": {
+      "error:react-hooks/preserve-manual-memoization": 1
+    },
+    "src/Components/Skeleton/CategoryPageSkeleton.jsx": {
+      "error:react-hooks/static-components": 3
+    },
+    "src/Components/UsedDevice/UsedDeviceClient.jsx": {
+      "error:react-hooks/set-state-in-effect": 1,
+      "warn:parse": 1,
+      "error:react/jsx-no-duplicate-props": 1
+    },
+    "src/Components/UsedDevice/UsedDeviceFilter.jsx": {
+      "error:react-hooks/set-state-in-effect": 1,
+      "error:react-hooks/static-components": 1
+    },
+    "src/Components/UsedDevice/UsedDeviceProductDetails/ProductDetails/ProductDetails.jsx": {
+      "error:react-hooks/set-state-in-effect": 2,
+      "warn:react-hooks/exhaustive-deps": 2
+    },
+    "src/Components/UsedDevice/UsedDeviceProductDetails/ProductDetails/ShareDetails.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/WelcomePopup.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/Components/news/NewsHomePage.jsx": {
+      "error:react-hooks/rules-of-hooks": 1
+    },
+    "src/app/(main)/checkout/AuthorizeUserAddress.jsx": {
+      "error:react-hooks/set-state-in-effect": 1,
+      "warn:react-hooks/exhaustive-deps": 1
+    },
+    "src/app/(main)/checkout/page.jsx": {
+      "error:react-hooks/set-state-in-effect": 5
+    },
+    "src/app/(main)/discovery/page.jsx": {
+      "error:react/no-unescaped-entities": 4
+    },
+    "src/app/(main)/login/reset-password/page.jsx": {
+      "error:react/no-unescaped-entities": 1
+    },
+    "src/app/(main)/shop/offer/OfferCard.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/app/(main)/shop/offer/[slug]/CountdownTimer.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/app/dashboard/(address)/address-book/page.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/app/dashboard/(orders)/wishlist/page.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/app/dashboard/to-reviews/[id]/page.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/context/CompareContext.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/context/CounterContext.jsx": {
+      "error:react-hooks/set-state-in-effect": 1
+    },
+    "src/hooks/useProductSearch.js": {
+      "error:react-hooks/set-state-in-effect": 1
+    }
+  }
+}
