@@ -1,0 +1,159 @@
+import { getJobDetails } from "@/lib/api";
+import Banner from "@/Components/ReuseableComponent/Banner";
+import JobRichText from "@/Components/Careers/JobRichText";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import type { ParamsOnlyProps } from "@/types/route";
+import { fieldsOf, lengthOpt, rec } from "@/lib/json";
+import { nodeOf, str } from "@/lib/render";
+import { tagsOr } from "@/lib/seo/metadata";
+
+// ─── Dynamic SEO Metadata ─────────────────────────────────────────────────────
+export async function generateMetadata({ params }: ParamsOnlyProps): Promise<Metadata> {
+  const { slug } = await params;
+  const job = await getJobDetails(slug);
+  const seoData = rec(rec(job)?.seoData);
+
+  if (!seoData) return {};
+
+  const ogImage = str(seoData.ogImage) || "/loginPage/contact-about-bg.webp";
+
+  return {
+    title: str(seoData.title),
+    description: str(seoData.description),
+    keywords: tagsOr(seoData.tags, []),
+    openGraph: {
+      title: str(seoData.title),
+      description: str(seoData.description),
+      url: str(seoData.canonicalUrl),
+      siteName: str(seoData.siteName),
+      images: [{ url: ogImage, width: 1200, height: 630, alt: str(seoData.title) }],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: str(seoData.title),
+      description: str(seoData.description),
+      images: [ogImage],
+    },
+    alternates: {
+      canonical: str(seoData.canonicalUrl),
+    },
+  };
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default async function JobDetails({ params }: ParamsOnlyProps) {
+  const { slug } = await params;
+  const job = await getJobDetails(slug);
+
+  if (!job) return notFound();
+  const j = fieldsOf(job);
+
+  return (
+    <div>
+      <Banner
+        image={"/loginPage/contact-about-bg.webp"}
+        title={"apply to Tekzo"}
+      />
+
+      <main className="max-w-7xl mx-auto pt-4 lg:pt-16">
+        <div className="lg:flex gap-8 lg:gap-16">
+          {/* LEFT COLUMN: Description + Image */}
+          <div className="lg:w-3/5 hidden lg:block">
+            <div className="lg:mb-10">
+              <h2 className="text-primary text-xl font-bold mb-6">
+                Job Description
+              </h2>
+              <JobRichText items={j.description} className="" gap="space-y-4" />
+            </div>
+
+            <div className="aspect-5/3 overflow-hidden rounded-3xl hidden lg:block">
+              {/* <Image
+                src={imageSrc}
+                alt={job.heading}
+                height={3000}
+                width={4000}
+                className="w-full object-cover"
+              /> */}
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: Sidebar */}
+          <div className="lg:w-2/5">
+            <div className="bg-white border border-slate-100 rounded-3xl p-4 lg:p-8 shadow-xl shadow-slate-100/50 sticky top-8">
+              <h1 className="text-2xl lg:text-3xl font-extrabold text-secondary mb-8">
+                {nodeOf(j.heading)}
+              </h1>
+
+              {/* Quick Info Grid */}
+              <div className="grid grid-cols-2 gap-8 mb-10">
+                <div>
+                  <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
+                    Vacancy
+                  </p>
+                  <p className="text-slate-700 font-semibold">
+                    {nodeOf(j.vacancies)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
+                    Salary
+                  </p>
+                  <p className="text-slate-700 font-semibold text-sm">
+                    {nodeOf(j.salary)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
+                    Job Type
+                  </p>
+                  <p className="text-slate-700 font-semibold">{nodeOf(j.type)}</p>
+                </div>
+                <div>
+                  <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
+                    Deadline
+                  </p>
+                  <p className="text-slate-700 font-semibold text-sm">
+                    {nodeOf(j.deadline)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Qualification */}
+              {Number(lengthOpt(j.qualification)) > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-primary font-bold mb-4">Requirements</h3>
+                  <JobRichText items={j.qualification} className="text-sm" gap="space-y-3" />
+                </div>
+              )}
+
+              {/* Benefits */}
+              {Number(lengthOpt(j.benefits)) > 0 && (
+                <div className="mb-10">
+                  <h3 className="text-primary font-bold mb-4">Benefits</h3>
+                  <JobRichText items={j.benefits} className="text-sm" gap="space-y-3" />
+                </div>
+              )}
+
+              {/* Job Description — mobile only */}
+              <div className="mb-10 lg:hidden">
+                <h3 className="text-primary font-bold mb-4">Job Description</h3>
+                <JobRichText items={j.description} className="" gap="space-y-4" />
+              </div>
+
+              {/* Apply Button */}
+              <Link
+                href={`/careers/application-form?job=${slug}`}
+                className="block w-full bg-secondary hover:bg-[#008d77] text-white text-center py-4 rounded-xl font-bold transition-all active:scale-[0.98]"
+              >
+                Apply Now
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

@@ -88,7 +88,7 @@ Types: `OrderSummaryView`, `OrderSummaryLine`, `InvoiceButtonsProps` in `types/p
 
 Types: `src/types/props/checkout.ts`; `Window.__CHECKOUT_BANNER__` in `types/global.d.ts`.
 
-**Still JS (intentional):** careers stubs — `app/(main)/careers/{page,application-form/page,apply/[slug]/page}.jsx`, `Components/Careers/{CareersClient,JobCircular,TeamMembers}.jsx` (P5d: left untouched). **Still JS (no importers, dead code):** `ReuseableComponent/{Card2,DropdownModal,MyButton,PreOwnedCard,PreOwnedCard2,SectionTitle,Text}.jsx`, `SEO/MetadataDebugger.jsx`, `Skeleton/{BrandSkeleton,CategoryPageSkeleton,CategorySkeleton}.jsx`, `fetch-API/getCategories.jsx`, `hooks/useModalScrollbar.js`, `library/{getBrands,getCart}.js(x)`. Delete or convert in the clean-up pass.
+**Careers (ported from `main` b3b9ecf / af7e9eb, 28 Nov 2026):** `app/(main)/careers/{layout,page,application-form/page,apply/[slug]/page}.tsx`, `Components/Careers/{CareersClient,JobCircular,JobRichText}.tsx`; the whole section 404s via `CAREERS_ENABLED = false` in `careers/layout.tsx`. `Components/Careers/TeamMembers.jsx` stays JS (no importers; unchanged on `main`). **Still JS (no importers, dead code):** `ReuseableComponent/{Card2,DropdownModal,MyButton,PreOwnedCard,PreOwnedCard2,SectionTitle,Text}.jsx`, `SEO/MetadataDebugger.jsx`, `Skeleton/{BrandSkeleton,CategoryPageSkeleton,CategorySkeleton}.jsx`, `fetch-API/getCategories.jsx`, `hooks/useModalScrollbar.js`, `library/{getBrands,getCart}.js(x)`. Delete or convert in the clean-up pass.
 
 ## Dashboard (P7)
 

@@ -42,7 +42,10 @@ export default function DeviceCard({ listing, from, className }: DeviceCardProps
   const router = useRouter();
 
   // If from homepage, treat is_stock as always true
-  const isStock = from === "homePage" ? true : lst?.is_stock;
+  // Same out-of-stock rule as the listing modal (DeviceSidebar): a listing is
+  // out of stock when is_stock is false or its stock is false / 0.
+  const isOutOfStock = lst?.stock === false || lst?.stock === 0;
+  const isStock = from === "homePage" ? true : Boolean(lst?.is_stock) && !isOutOfStock;
 
   // Extract quality level from condition (e.g., "Excellent - Pre-Owned" -> "Excellent")
   const getQualityLevel = () => {
@@ -280,7 +283,7 @@ export default function DeviceCard({ listing, from, className }: DeviceCardProps
             </div>
           ) : (
             <button className="mt-auto bg-gray-400 text-white rounded-lg py-1.5 text-xs lg:text-sm cursor-pointer">
-              Sold
+              Out of Stock
             </button>
           )}
         </div>

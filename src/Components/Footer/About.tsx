@@ -10,7 +10,8 @@ const About = () => {
     { title: "Contact Us", link: "/contact-us" },
     ...(ecommerceType && ecommerceType === "salamat" ? [{ title: "News", link: "/news" }] : [{ title: "Blog", link: "/blog" }]),
     // (salamat variant only; /careers is hidden behind notFound() — AUDIT_NOTES N12)
-    ...(ecommerceType && ecommerceType === "salamat" ? [{ title: "Careers", link: "/careers" }] : []),
+    // Careers hidden for now (see src/app/(main)/careers/layout.tsx)
+    // ...(ecommerceType && ecommerceType === "salamat" ? [{ title: "Careers", link: "/careers" }] : []),
     { title: "TEKZO Care", link: "/tekzo-care" },
     { title: "Claim Your Warranty", link: "/claim-your-warranty" },
     { title: "How to Claim Your Warranty", link: "/how-to-claim" },

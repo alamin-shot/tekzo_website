@@ -207,3 +207,36 @@ export type LoginToggleProps = {
   isLogin: boolean;
   setIsLogin: (isLogin: boolean) => void;
 };
+
+// ─── Careers (ported from main b3b9ecf / af7e9eb) ──────────────────────────────
+
+/** Components/Careers/CareersClient: the job list from getCareers(). */
+export type CareersClientProps = {
+  jobs?: unknown;
+};
+
+export type JobCircularProps = {
+  jobs?: unknown;
+};
+
+export type CareerCardProps = {
+  job: unknown;
+};
+
+/** Components/Careers/JobRichText: description / qualification / benefits strings. */
+export type JobRichTextProps = {
+  items?: unknown;
+  className?: string;
+  gap?: string;
+};
+
+export type JobBulletProps = {
+  children: ReactNode;
+  className?: string;
+};
+
+/** Plain-text job field split back into a subheading + bullet points. */
+export type JobTextBlock = {
+  heading: string | null;
+  items: string[];
+};
