@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { ProductSidebarProps } from "@/types/props/product";
-import { addJs, fieldsOf, isList, isRecord, itemAt, itemOpt, lengthStrict, mapOpt, rec } from "@/lib/json";
+import type { GuestCartItem } from "@/types/cart";
+import { incrementOrAddGuestItem, readGuestCartList, writeGuestCart } from "@/lib/guestCart";
+import { fieldsOf, itemAt, itemOpt, lengthStrict, mapOpt, rec } from "@/lib/json";
 import { idKey, nodeOf, str } from "@/lib/render";
 import { useRouter } from "next/navigation";
 import clientFetchAPI from "@/utils/clientFetchAPI";
@@ -52,29 +54,14 @@ export default function ProductSidebar({ products }: ProductSidebarProps) {
 
   const saveToLocalCart = (quantity = 1) => {
     if (!selectedProduct) return;
-    const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
-    if (!isList(cart)) throw new TypeError("cart.findIndex is not a function");
+    const cart = readGuestCartList("findIndex");
     const sp = fieldsOf(selectedProduct);
     // Use product.id as slug if slug doesn't exist (for pre-owned products)
     const slug = sp.slug || (sp.id === null || sp.id === undefined ? undefined : String(sp.id));
-    const existingIndex = cart.findIndex(
-      (item) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === sp.id,
-    );
-    if (existingIndex !== -1) {
-      {
-        // `+=` (JS `+`); assigning on a non-object entry threw in strict mode
-        const entry = cart[existingIndex];
-        if (!isRecord(entry)) throw new TypeError("Cannot create property 'quantity' on a primitive cart entry");
-        entry.quantity = addJs(entry.quantity, quantity);
-      }
-    } else {
-      cart.push({
-        slug: slug,
-        variantId: sp.id,
-        quantity,
-      });
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
+    const matchesItem = (item: unknown) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === sp.id;
+    incrementOrAddGuestItem(cart, matchesItem, quantity, (): GuestCartItem => ({
+}));
+    writeGuestCart(cart);
   };
 
   const handleBuyNow = async () => {
@@ -116,7 +103,11 @@ export default function ProductSidebar({ products }: ProductSidebarProps) {
         fireCartAdded();
         setTimeout(() => setIsAdded(false), 2000);
       } else {
-        router.push("/login");
+        // F1: guests add to the guest cart instead of being sent to /login
+        saveToLocalCart(1);
+        setIsAdded(true);
+        fireCartAdded();
+        setTimeout(() => setIsAdded(false), 2000);
       }
     } catch (err) {
       console.error("Add to Cart Error:", err);

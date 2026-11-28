@@ -34,7 +34,7 @@ export function NavCountBadgesLg({ isLoggedIn, user }: NavBadgesProps) {
         <span className="absolute -bottom-1 -right-1.5 bg-white text-black w-4 h-4 rounded-full text-[10px] flex justify-center items-center">{wishlistCount}</span>
       </PreFetchLink>
 
-      <PreFetchLink prefetch={false} href={isLoggedIn ? "/dashboard/my-bag" : "/login"} className="relative nav-item" aria-label={`Shopping bag, ${cartCount} items`}>
+      <PreFetchLink prefetch={false} href={isLoggedIn ? "/dashboard/my-bag" : "/checkout"} className="relative nav-item" aria-label={`Shopping bag, ${cartCount} items`}>
         <BsBag className="nav-icon" />
         <span className="absolute -bottom-1 -right-1.5 bg-white text-black w-4 h-4 rounded-full text-[10px] flex justify-center items-center">{cartCount}</span>
       </PreFetchLink>
@@ -47,7 +47,7 @@ export function NavCartBadgeSm({ isLoggedIn }: NavBadgesProps) {
   const { cartCount } = useCounter();
 
   return (
-    <PreFetchLink prefetch={false} href={isLoggedIn ? "/dashboard/my-bag" : "/login"} className="relative nav-item" aria-label={`Shopping cart, ${cartCount} items`}>
+    <PreFetchLink prefetch={false} href={isLoggedIn ? "/dashboard/my-bag" : "/checkout"} className="relative nav-item" aria-label={`Shopping cart, ${cartCount} items`}>
       <BsBag className="nav-icon" />
       <p>Cart</p>
       <span className="absolute bottom-4 -right-1.5 bg-primary text-white w-4 h-4 rounded-full text-[9px] flex justify-center items-center">{cartCount}</span>

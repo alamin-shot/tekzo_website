@@ -155,3 +155,34 @@ export type CompareOverviewField = {
   label: string;
   get: (product: unknown) => unknown;
 };
+
+/** One line of the order-success summary (safe fields only). */
+export type OrderSummaryLine = {
+  name: unknown;
+  variant: string;
+  quantity: unknown;
+  price: unknown;
+};
+
+/**
+ * What /order/successful shows from GET /customer/recent-order: invoice,
+ * totals, payment method/status and items. Customer PII (phone, email,
+ * address, transaction_id, paymentId) is never read.
+ */
+export type OrderSummaryView = {
+  invoiceNumber: unknown;
+  subTotal: unknown;
+  shippingCharge: unknown;
+  discountAmount: unknown;
+  grandTotal: unknown;
+  paymentMethod: unknown;
+  paymentStatus: unknown;
+  /** Payment still "Initiated" (gateway confirmation can lag a few seconds). */
+  paymentPending: boolean;
+  lines: OrderSummaryLine[];
+};
+
+/** Invoice download / preview button on the order result pages. */
+export type InvoiceButtonsProps = {
+  invoiceNumber: string;
+};

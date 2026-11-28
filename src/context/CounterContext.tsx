@@ -43,21 +43,30 @@ export function CounterProvider({ children }: CounterProviderProps) {
     return () => window.removeEventListener("focus", onFocus);
   }, [refreshCart, refreshWishlist]);
 
-  // Listen for custom events fired from anywhere in the app
-  // (KNOWN BUG #2: optimistic ±1 without server reconciliation — preserved).
+  // Cart / wishlist events fired from anywhere in the app (bug #2 fixed):
+  // apply the optimistic ±1 right away, then re-sync from the source of truth
+  // (server for signed-in users, localStorage for guests) so the badge never
+  // drifts. `storage` covers the guest cart changing in another tab.
   useEffect(() => {
-    window.addEventListener("cart:added", incrementCart);
-    window.addEventListener("cart:removed", decrementCart);
-    window.addEventListener("wishlist:added", incrementWishlist);
-    window.addEventListener("wishlist:removed", decrementWishlist);
+    const onCartAdded = () => { incrementCart(); refreshCart(); };
+    const onCartRemoved = () => { decrementCart(); refreshCart(); };
+    const onWishlistAdded = () => { incrementWishlist(); refreshWishlist(); };
+    const onWishlistRemoved = () => { decrementWishlist(); refreshWishlist(); };
+    const onStorage = (e: StorageEvent) => { if (e.key === "cart") refreshCart(); };
+    window.addEventListener("cart:added", onCartAdded);
+    window.addEventListener("cart:removed", onCartRemoved);
+    window.addEventListener("wishlist:added", onWishlistAdded);
+    window.addEventListener("wishlist:removed", onWishlistRemoved);
+    window.addEventListener("storage", onStorage);
 
     return () => {
-      window.removeEventListener("cart:added", incrementCart);
-      window.removeEventListener("cart:removed", decrementCart);
-      window.removeEventListener("wishlist:added", incrementWishlist);
-      window.removeEventListener("wishlist:removed", decrementWishlist);
+      window.removeEventListener("cart:added", onCartAdded);
+      window.removeEventListener("cart:removed", onCartRemoved);
+      window.removeEventListener("wishlist:added", onWishlistAdded);
+      window.removeEventListener("wishlist:removed", onWishlistRemoved);
+      window.removeEventListener("storage", onStorage);
     };
-  }, [incrementCart, decrementCart, incrementWishlist, decrementWishlist]);
+  }, [incrementCart, decrementCart, incrementWishlist, decrementWishlist, refreshCart, refreshWishlist]);
 
   return <CounterProviderMarker.Provider value={true}>{children}</CounterProviderMarker.Provider>;
 }

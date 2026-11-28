@@ -13,6 +13,8 @@ const GUEST_ENDPOINTS = [
     "/customer/gust-phone-verify-request",
     "/customer/gust-phone-verify",
     "/customer/gust-buy-now",
+    "/customer/gust-check-coupon",
+    "/order-tracking",
     "/customer/warranty-claims",
 ];
 

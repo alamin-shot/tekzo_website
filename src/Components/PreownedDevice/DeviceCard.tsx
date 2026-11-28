@@ -3,12 +3,14 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { DeviceCardProps } from "@/types/props/product";
-import { addJs, fieldsOf, filterList, findList, isList, isRecord, rec, requireString } from "@/lib/json";
+import { fieldsOf, filterList, findList, rec, requireString } from "@/lib/json";
 import { nodeOf, str } from "@/lib/render";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import PreFetchLink from "../ReuseableComponent/CustomUIComponent/PreFetchLink";
 import { useRouter } from "next/navigation";
+import type { GuestCartItem } from "@/types/cart";
+import { hasPreOwnedItem, incrementOrAddGuestItem, readGuestCartList, writeGuestCart } from "@/lib/guestCart";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import { getAuthUser } from "@/utils/getAuthUser";
 
@@ -63,33 +65,22 @@ export default function DeviceCard({ listing, from, className }: DeviceCardProps
     Number(lst?.discount_amount) > 0 && !!lst?.discount_label;
 
   const saveToLocalCart = (quantity = 1) => {
-    const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
-    // `cart.some` threw for a non-array cart; kept
-    if (!isList(cart)) throw new TypeError("cart.some is not a function");
+    const cart = readGuestCartList("some");
     // `id?.toString()` (String() for a non-nullish id)
     const slug = lst?.slug || (lst?.id === null || lst?.id === undefined ? undefined : String(lst.id));
 
     // Check if pre_owned_id already exists in cart
-    const preOwnedExists = cart.some(
-      (item) => fieldsOf(item).pre_owned_id === lst?.id,
-    );
+    const preOwnedExists = hasPreOwnedItem(cart, lst?.id);
 
     // If pre_owned_id already exists, don't add it again
     if (preOwnedExists) {
       return;
     }
 
-    const existingIndex = cart.findIndex(
-      (item) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === lst?.id,
-    );
-    if (existingIndex !== -1) {
-      // `cart[i].quantity += quantity` (JS `+`); assigning on a non-object entry threw in strict mode
-      const entry = cart[existingIndex];
-      if (!isRecord(entry)) throw new TypeError("Cannot create property 'quantity' on a primitive cart entry");
-      entry.quantity = addJs(entry.quantity, quantity);
-    } else {
+    const matchesItem = (item: unknown) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === lst?.id;
+    incrementOrAddGuestItem(cart, matchesItem, quantity, (): GuestCartItem => {
       const productImage = lst?.product_image || "";
-      cart.push({
+      return {
         slug: slug,
         productId: lst?.product_id || 0,
         variantId: lst?.id,
@@ -100,9 +91,9 @@ export default function DeviceCard({ listing, from, className }: DeviceCardProps
         productImage,
         variantPrice: lst?.final_price ?? lst?.regular_price ?? 0,
         regularPrice: lst?.regular_price ?? lst?.final_price ?? 0,
-      });
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
+      };
+    });
+    writeGuestCart(cart);
   };
 
   const handleBuyNow = async () => {

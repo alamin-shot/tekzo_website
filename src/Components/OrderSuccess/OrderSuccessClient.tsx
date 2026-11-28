@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { CheckCircle, Download, Eye, Home, ShoppingBag } from "lucide-react";
 import PurchaseTracker from "@/Components/Tracker/PurchaseTracker";
 import Link from "next/link";
-import type { OrderSuccessClientProps } from "@/types/props/checkout";
+import type { OrderSuccessClientProps, TimerHandle } from "@/types/props/checkout";
+import { readOrderSummary } from "@/lib/orderSummary";
 import { rec } from "@/lib/json";
 import { nodeOf } from "@/lib/render";
 
@@ -15,6 +16,11 @@ const OrderSuccessClient = ({ invoiceNumber }: OrderSuccessClientProps) => {
 
   useEffect(() => {
     if (!invoiceNumber) return;
+    // F1: online / bKash payments can stay "Initiated" for a few seconds after the
+    // gateway returns; re-check a few times before showing the final state.
+    let attempts = 0;
+    let timer: TimerHandle | undefined;
+    let cancelled = false;
 
     const fetchOrder = async () => {
       try {
@@ -28,13 +34,23 @@ const OrderSuccessClient = ({ invoiceNumber }: OrderSuccessClientProps) => {
           },
         );
         const result: unknown = await res.json();
-        setOrder(rec(result)?.data || null);
+        const data = rec(result)?.data || null;
+        if (cancelled) return;
+        setOrder(data);
+        if (data && readOrderSummary(data).paymentPending && attempts < 5) {
+          attempts += 1;
+          timer = setTimeout(fetchOrder, 3000);
+        }
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchOrder();
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [apiBase, invoiceNumber]);
 
   const handleInvoiceAction = async (isPreview = true) => {
@@ -65,6 +81,8 @@ const OrderSuccessClient = ({ invoiceNumber }: OrderSuccessClientProps) => {
     }
   };
 
+  const summary = order ? readOrderSummary(order) : null;
+
   return (
     <>
       <PurchaseTracker order={order} />
@@ -92,6 +110,44 @@ const OrderSuccessClient = ({ invoiceNumber }: OrderSuccessClientProps) => {
               </span>{" "}
               has been successfully processed.
             </p>
+
+            {summary?.paymentPending && (
+              <p className="text-amber-600 text-sm">Confirming your payment… this can take a few seconds.</p>
+            )}
+
+            {summary && summary.lines.length > 0 && (
+              <div className="w-full max-w-2xl mx-auto text-left border border-gray-100 rounded-2xl overflow-hidden">
+                <div className="divide-y divide-gray-100">
+                  {summary.lines.map((line, i) => (
+                    <div key={i} className="flex items-center justify-between gap-4 px-5 py-3 text-sm">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-gray-800 truncate">{nodeOf(line.name)}</p>
+                        {line.variant && <p className="text-xs text-gray-500">{line.variant}</p>}
+                      </div>
+                      <div className="text-right shrink-0 text-gray-700">
+                        <span className="text-gray-500">×{nodeOf(line.quantity)}</span>{" "}
+                        <span className="font-semibold">৳{Number(line.price || 0).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-gray-50 px-5 py-3 text-sm space-y-1">
+                  {Number(summary.shippingCharge) > 0 && (
+                    <div className="flex justify-between text-gray-600"><span>Shipping</span><span>৳{Number(summary.shippingCharge).toLocaleString()}</span></div>
+                  )}
+                  {Number(summary.discountAmount) > 0 && (
+                    <div className="flex justify-between text-gray-600"><span>Discount</span><span>-৳{Number(summary.discountAmount).toLocaleString()}</span></div>
+                  )}
+                  <div className="flex justify-between font-bold text-gray-900"><span>Total</span><span>৳{Number(summary.grandTotal || 0).toLocaleString()}</span></div>
+                  {nodeOf(summary.paymentMethod && (
+                    <div className="flex justify-between text-gray-500 text-xs pt-1">
+                      <span>Payment</span>
+                      <span className="uppercase">{nodeOf(summary.paymentMethod)}{summary.paymentStatus ? " · " : ""}{nodeOf(summary.paymentStatus)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {invoiceNumber ? (
               <div className="pt-6 border-t border-gray-50">

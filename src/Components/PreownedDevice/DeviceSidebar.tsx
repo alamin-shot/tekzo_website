@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { DeviceSidebarProps } from "@/types/props/product";
-import { addJs, fieldsOf, isList, isRecord, lengthStrict, mapList, mapOpt, rec } from "@/lib/json";
+import { fieldsOf, lengthStrict, mapList, mapOpt, rec } from "@/lib/json";
 import { nodeOf, str } from "@/lib/render";
 
 // `listing.images.length > 0` (throws without images; `>` converts to a number)
@@ -12,6 +12,8 @@ import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import { X, ShoppingCart, Heart } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import type { GuestCartItem } from "@/types/cart";
+import { hasPreOwnedItem, incrementOrAddGuestItem, readGuestCartList, writeGuestCart } from "@/lib/guestCart";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import clientFetchAPI from "@/utils/clientFetchAPI";
@@ -80,40 +82,27 @@ export default function DeviceSidebar({
   }, [isOpen, onClose]);
 
   const saveToLocalCart = (quantity = 1) => {
-    const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
-    // `cart.some` threw for a non-array cart; kept
-    if (!isList(cart)) throw new TypeError("cart.some is not a function");
+    const cart = readGuestCartList("some");
     const item0 = fieldsOf(listing);
     // `id?.toString()` (String() for a non-nullish id)
     const slug = item0.slug || (item0.id === null || item0.id === undefined ? undefined : String(item0.id));
 
     // Check if pre_owned_id already exists in cart
-    const preOwnedExists = cart.some(
-      (item) => fieldsOf(item).pre_owned_id === item0.id,
-    );
+    const preOwnedExists = hasPreOwnedItem(cart, item0.id);
 
     // If pre_owned_id already exists, don't add it again
     if (preOwnedExists) {
       return;
     }
 
-    const existingIndex = cart.findIndex(
-      (item) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === item0.id,
-    );
-    if (existingIndex !== -1) {
-      // `cart[i].quantity += quantity` (JS `+`); assigning on a non-object entry threw in strict mode
-      const entry = cart[existingIndex];
-      if (!isRecord(entry)) throw new TypeError("Cannot create property 'quantity' on a primitive cart entry");
-      entry.quantity = addJs(entry.quantity, quantity);
-    } else {
-      cart.push({
+    const matchesItem = (item: unknown) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === item0.id;
+    incrementOrAddGuestItem(cart, matchesItem, quantity, (): GuestCartItem => ({
         slug: slug,
         variantId: item0.id,
         quantity,
         pre_owned_id: item0.id,
-      });
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
+      }));
+    writeGuestCart(cart);
   };
 
   const handleBuyNow = async () => {
@@ -148,10 +137,12 @@ export default function DeviceSidebar({
     try {
       const user = await getAuthUser();
 
+      // F1: guests add to the guest cart instead of being sent to /login
       if (!user) {
-        // User is not logged in - redirect to login
-        router.push("/login");
-        setAddingToCart(false);
+        saveToLocalCart(quantity);
+        setIsAdded(true);
+        fireCartAdded();
+        setTimeout(() => setIsAdded(false), 2000);
         return;
       }
 

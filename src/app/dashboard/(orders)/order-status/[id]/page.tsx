@@ -16,7 +16,7 @@ import {
   FiRotateCcw,
 } from "react-icons/fi";
 import type { OrderDetailView, OrderStepperProps, OrderSummaryProps, OrderTimelineEntry, OrderTimelineProps } from "@/types/props/dashboard";
-import { addJs, errMessage, rec } from "@/lib/json";
+import { errMessage, rec } from "@/lib/json";
 import { nodeOf } from "@/lib/render";
 
 // --- Status Steps (stepper bar) ---
@@ -281,7 +281,8 @@ function OrderTimeline({ timeline }: OrderTimelineProps) {
 
 // --- Your Order Summary ---
 function OrderSummary({ subtotal, shipping }: OrderSummaryProps) {
-  const total = addJs(subtotal, shipping);
+  // N23 fixed: amounts may arrive as strings; add them as numbers
+  const total = Number(subtotal || 0) + Number(shipping || 0);
   return (
     <div className="mt-6 p-6 bg-slate-50/70 dark:bg-white/[0.02] rounded-2xl border border-slate-100 dark:border-white/[0.04]">
       <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4">

@@ -28,3 +28,42 @@ export type GuestCartStorageItem = {
 
 /** localStorage keys owned by the cart/checkout flow (values unchanged). */
 export type CartStorageKey = "cart" | "guestCouponCode" | "guestCouponDiscount";
+
+/**
+ * Canonical guest cart item (bug #1): every key any writer stores in
+ * localStorage["cart"], in the order the writers emit them. Writers keep their
+ * own subsets and key order (DeviceSidebar / ProductSidebar store only slug,
+ * variantId, quantity[, pre_owned_id]); checkout reads all of them. Values stay
+ * `unknown` because they are copied from API payloads as given.
+ * Not stored here: purchase_point / care_id / gift_id (they go only in the
+ * signed-in /customer/carts request bodies; checkout maps giftId → gift_id and
+ * tekzoCareId → care_id when it builds the order).
+ */
+export type GuestCartItem = {
+  slug?: unknown;
+  productId?: unknown;
+  variantId?: unknown;
+  productVariantId?: unknown;
+  quantity?: unknown;
+  pre_owned_id?: unknown;
+  productName?: unknown;
+  productImage?: unknown;
+  variantPrice?: unknown;
+  regularPrice?: unknown;
+  maxRetailPrice?: unknown;
+  variantAttr?: unknown;
+  variantSku?: unknown;
+  productBrand?: unknown;
+  productCategory?: unknown;
+  bookingAmount?: unknown;
+  is_prebook?: boolean;
+  giftId?: unknown;
+  giftProductName?: unknown;
+  giftProductImage?: unknown;
+  tekzoCareId?: unknown;
+  tekzoCareAmount?: unknown;
+  tekzoCarePlanName?: unknown;
+};
+
+/** Which existing entry a new item updates (checked against the raw stored entry). */
+export type GuestCartMatch = (entry: unknown) => boolean;

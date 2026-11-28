@@ -15,6 +15,7 @@ import { fireCartRemoved } from "@/context/CounterContext";
 import type { ChangeEvent, FormEvent } from "react";
 import type { JsonRecord } from "@/types/json";
 import type { CheckoutCartLine, CheckoutForm, CheckoutPayload, GuestCouponCartEntry, PhoneNormalizeResult, TimerHandle, TimerMap } from "@/types/props/checkout";
+import { clearGuestCart, readGuestCart, toStorageItem, writeGuestCart } from "@/lib/guestCart";
 import { errMessage, fieldsOf, filterList, findList, isList, itemOpt, lengthOpt, lengthStrict, mapList, mapOpt, rec, requireString } from "@/lib/json";
 import { idKey, inputValue, keyFrom, nodeOf, str } from "@/lib/render";
 
@@ -22,38 +23,7 @@ const inputClass =
   "w-full px-3.5 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:border-secondary focus:bg-dark focus:ring-2 focus:ring-secondary focus:ring-opacity-20 transition-all";
 const labelClass = "block text-[11px] font-semibold tracking-widest uppercase text-gray-400 mb-1.5";
 
-// Serialize a cart item back to localStorage format — preserves all fields
-function toStorageItem(i: JsonRecord): JsonRecord {
-  return {
-    slug: i.slug,
-    productId: i.productId || i.product_id || 0,
-    variantId: i.variantId,
-    productVariantId: i.productVariantId || i.product_variant_id || 0,
-    quantity: i.quantity,
-    ...(i.pre_owned_id ? { pre_owned_id: i.pre_owned_id } : {}),
-    productName: i.productName || rec(i.product)?.product_name || "",
-    productImage: i.productImage || rec(i.product)?.product_image || rec(itemOpt(rec(i.product)?.images, 0))?.image_path || "",
-    variantPrice: i.variantPrice ?? rec(i.variant)?.final_price ?? 0,
-    regularPrice: i.regularPrice ?? rec(i.variant)?.final_price ?? 0,
-    variantAttr: i.variantAttr || rec(i.variant)?.attribute_value || "",
-    bookingAmount: i.bookingAmount ?? rec(i.product)?.booking_amount ?? 0,
-    ...(i.maxRetailPrice ? { maxRetailPrice: i.maxRetailPrice } : {}),
-    ...(i.giftId
-      ? {
-          giftId: i.giftId,
-          giftProductName: i.giftProductName || "",
-          giftProductImage: i.giftProductImage || "",
-        }
-      : {}),
-    ...(i.tekzoCareId
-      ? {
-          tekzoCareId: i.tekzoCareId,
-          tekzoCareAmount: i.tekzoCareAmount,
-          tekzoCarePlanName: i.tekzoCarePlanName,
-        }
-      : {}),
-  };
-}
+// toStorageItem (cart line → stored guest item) lives in lib/guestCart.
 
 function normalizeApiCartItem(item: unknown): JsonRecord {
   const it = fieldsOf(item);
@@ -467,7 +437,7 @@ export default function CheckoutPage() {
         }
         return;
       }
-      const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
+      const cart = readGuestCart();
       const items = await Promise.all(
         mapList(cart, async (entry): Promise<JsonRecord | null> => {
           // a null entry threw on `item.pre_owned_id`, as fieldsOf() does
@@ -581,7 +551,7 @@ export default function CheckoutPage() {
       if (!user) {
         // Guest user - update localStorage, preserve all fields including gift/care
         const updatedCart = cartItems.filter((item) => String(item.variantId) !== String(variantId));
-        localStorage.setItem("cart", JSON.stringify(updatedCart.map(toStorageItem)));
+        writeGuestCart(updatedCart.map(toStorageItem));
         fireCartRemoved();
 
         // Re-validate coupon against the updated cart
@@ -664,7 +634,7 @@ export default function CheckoutPage() {
     if (!user) {
       // update localStorage for guest, preserve all fields including gift/care
       const updatedCart = cartItems.map((i) => (String(i.variantId) === String(variantId) ? { ...i, quantity: newQty } : i)).map(toStorageItem);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      writeGuestCart(updatedCart);
       return;
     }
 
@@ -782,14 +752,14 @@ export default function CheckoutPage() {
       payload.note = String(note).trim();
     }
 
-    payload.booking_amount_only = payOption === "booking" ? 1 : 0;
+    payload.booking_amount_only = payOption === "booking" && bookingTotal > 0 ? 1 : 0;
 
     // carts.* — backend validates: product_id, product_variant_id, pre_owned_id, quantity, care_id, gift_id
     payload.carts = cartItems.map((item) => {
       const cartItem: CheckoutCartLine = {
         product_id: item.product_id || item.productId || rec(item.variant)?.product_id,
         product_variant_id: rec(item.variant)?.id || item.variantId,
-        quantity: item.pre_owned_id ? 1 : Number(item.quantity) || 1,
+        quantity: item.pre_owned_id ? 1 : Math.min(10, Number(item.quantity) || 1),
       };
 
       if (item.pre_owned_id) {
@@ -861,7 +831,7 @@ export default function CheckoutPage() {
       const response = await clientFetchAPI(endpoint, "POST", payload);
 
       if (!user) {
-        localStorage.removeItem("cart");
+        clearGuestCart();
         localStorage.removeItem("guestCouponCode");
         localStorage.removeItem("guestCouponDiscount");
         setCartItems([]);
@@ -870,7 +840,7 @@ export default function CheckoutPage() {
         window.location.href = String(rec(response)?.url);
       } else {
         const invoiceNumber = rec(rec(response)?.data)?.invoice_number;
-        router.push(`/order/successful?invoice_number=${encodeURIComponent(String(invoiceNumber))}`);
+        router.push(`/order/successful?invoice=${encodeURIComponent(String(invoiceNumber))}`);
       }
       // Keep the button locked while the browser leaves for the payment
       // gateway / success page, so it can't be tapped again meanwhile.
@@ -966,6 +936,11 @@ export default function CheckoutPage() {
                   </p>
                 ))}
               </div>
+            )}
+            {!user && !loading && (
+              <p className="mb-4 text-sm text-gray-500">
+                Checking out as a guest. <Link href="/login?redirect=/checkout" className="text-secondary font-semibold underline">Log in for saved addresses</Link>
+              </p>
             )}
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col-reverse lg:flex-row gap-6 lg:gap-8 pb-20">

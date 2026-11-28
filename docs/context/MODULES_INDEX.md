@@ -56,6 +56,25 @@ Where things live and how big they are, measured at commit `622a1f9`. Counts cov
 
 Planned type files, created in the batch that first needs them: `checkout.ts`, `order.ts`, `auth.ts`, `dashboard.ts`, `store.ts`, `ui.ts`, `props/<domain>.ts`.
 
+## Guest checkout (F1, Step 2)
+
+| Area | Files | Notes |
+|---|---|---|
+| Guest endpoints | `app/api/client-fetch/route.ts` | `GUEST_ENDPOINTS` + `gust-check-coupon`, `order-tracking` |
+| Guest add to cart | `CartModal`, both `ProductDetails`, `PreownedDevice/{DeviceSidebar,ProductSidebar}` | Guests → `lib/guestCart`; no `/login` redirect |
+| Badges | `stores/counter.store.ts`, `context/CounterContext.tsx`, `Navbar/NavCountBadges.tsx` | Guest count from `guestCartCount()`; event re-sync; guest bag → `/checkout` |
+| Order results | `lib/orderSummary.ts`, `OrderSuccess/{OrderSuccessClient,InvoiceDownloadButton}.tsx`, `Tracker/PurchaseTracker.tsx`, `app/(main)/order/{successful,failed,canceled}/page.tsx` | Safe summary (no PII), Initiated re-check, purchase once per invoice |
+
+Types: `OrderSummaryView`, `OrderSummaryLine`, `InvoiceButtonsProps` in `types/props/checkout.ts`.
+
+## Guest cart (bug #1, Step 1)
+
+| Area | Files | Notes |
+|---|---|---|
+| Storage module | `lib/guestCart.ts`, types `GuestCartItem` / `GuestCartMatch` in `types/cart.ts` | Only place that touches `localStorage["cart"]`. Verified byte-identical to P0 (differential 123/123, browser 10/10) |
+| Writers | `ReuseableComponent/ProductDetails/ProductDetails.tsx` (replace), `ReuseableComponent/CartModal.tsx` (merge), `PreownedDevice/{DeviceCard,DeviceSidebar,ProductSidebar}.tsx`, `UsedDevice/.../ProductDetails.tsx` (increment / pre-owned skip) | `DeviceSidebar` is never opened and `ProductSidebar` has no importers; both still migrated |
+| Reader / writer | `app/(main)/checkout/page.tsx` | `readGuestCart`, `writeGuestCart(... toStorageItem)`, `clearGuestCart` after a guest order |
+
 ## Checkout, orders, login & remaining routes (P8)
 
 | Area | Files | Notes |

@@ -3,6 +3,7 @@ import type { BadgeCount, CountUpdate, CounterStore } from "@/types/store";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import hasAuthCookie from "@/utils/hasAuthCookie";
 import { isList, rec } from "@/lib/json";
+import { guestCartCount } from "@/lib/guestCart";
 
 // Cart / wishlist badge counts (was React state inside CounterProvider).
 //
@@ -42,7 +43,8 @@ export const useCounterStore = create<CounterStore>()((set) => ({
 
   refreshCart: async () => {
     if (!hasAuthCookie()) {
-      set({ cartCount: 0 });
+      // F1 / bug #2: guests have a cart too (localStorage)
+      set({ cartCount: guestCartCount() });
       return;
     }
     try {

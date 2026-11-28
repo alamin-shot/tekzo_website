@@ -113,8 +113,8 @@ const Label = ({ children, required }: SellLabelProps) => (
   </label>
 );
 
-// Shadows the global Error in this module (see handleImages).
-const Error = ({ msg }: SellErrorProps) =>
+// (N22 fixed: was named `Error`, which shadowed the global Error.)
+const FieldError = ({ msg }: SellErrorProps) =>
   msg ? (
     <p className="text-xs mt-1" style={{ color: PRIMARY }}>
       {nodeOf(msg)}
@@ -297,9 +297,7 @@ export default function SellYourDevice({
       })
         .then((path: unknown) => {
           if (typeof path !== "string" || !path) {
-            // Bug kept (N22): `Error` here is the component above, so `new Error(...)` threw
-            // "Error is not a constructor" and that is the message the photo shows.
-            throw new TypeError("Error is not a constructor");
+            throw new Error("Upload failed. Please try again.");
           }
           setImages((prev) =>
             prev.map((p) =>
@@ -543,7 +541,7 @@ export default function SellYourDevice({
                 maxLength={120}
               />
               <div className="flex justify-between">
-                <Error msg={errors.ad_title} />
+                <FieldError msg={errors.ad_title} />
                 <span className="text-xs text-gray-300 mt-1 ml-auto">
                   {nodeOf(lengthStrict(form.ad_title))}/120
                 </span>
@@ -572,7 +570,7 @@ export default function SellYourDevice({
                     ▼
                   </span>
                 </div>
-                <Error msg={errors.category_id} />
+                <FieldError msg={errors.category_id} />
               </div>
               <div id="field-new_district_id">
                 <Label>Location</Label>
@@ -595,7 +593,7 @@ export default function SellYourDevice({
                     ▼
                   </span>
                 </div>
-                <Error msg={errors.new_district_id} />
+                <FieldError msg={errors.new_district_id} />
               </div>
             </div>
           </div>
@@ -624,7 +622,7 @@ export default function SellYourDevice({
                     ▼
                   </span>
                 </div>
-                <Error msg={errors.brand_id} />
+                <FieldError msg={errors.brand_id} />
               </div>
               <div id="field-model">
                 <Label required>Model</Label>
@@ -635,7 +633,7 @@ export default function SellYourDevice({
                   value={inputValue(form.model)}
                   onChange={(e) => handleChange("model", e.target.value)}
                 />
-                <Error msg={errors.model} />
+                <FieldError msg={errors.model} />
               </div>
             </div>
 
@@ -666,7 +664,7 @@ export default function SellYourDevice({
                   </button>
                 ))}
               </div>
-              <Error msg={errors.condition} />
+              <FieldError msg={errors.condition} />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
@@ -948,7 +946,7 @@ export default function SellYourDevice({
                   ))}
               </div>
             )}
-            <Error msg={errors.images} />
+            <FieldError msg={errors.images} />
           </div>
         </SectionCard>
 
@@ -996,7 +994,7 @@ export default function SellYourDevice({
                   }
                 />
               </div>
-              <Error msg={errors.asking_price} />
+              <FieldError msg={errors.asking_price} />
             </div>
 
             <label className="flex items-center gap-3 cursor-pointer select-none">
@@ -1050,7 +1048,7 @@ export default function SellYourDevice({
               maxLength={1000}
             />
             <div className="flex justify-between">
-              <Error msg={errors.description} />
+              <FieldError msg={errors.description} />
               <span className="text-xs text-gray-300 mt-1 ml-auto">
                 {nodeOf(lengthStrict(form.description))}/1000
               </span>
@@ -1080,14 +1078,14 @@ export default function SellYourDevice({
                 }
               />
             </div>
-            <Error msg={errors.phone_number} />
+            <FieldError msg={errors.phone_number} />
             <p className="text-xs text-gray-400 mt-1.5">
               Buyers will contact you on this number
             </p>
           </div>
         </SectionCard>
 
-        <Error msg={submitError} />
+        <FieldError msg={submitError} />
 
         <button
           onClick={handleSubmit}

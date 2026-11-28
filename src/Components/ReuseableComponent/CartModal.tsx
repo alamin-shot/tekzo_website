@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import type { GuestCartItem } from "@/types/cart";
+import { GUEST_CART_MAX_QUANTITY, mergeGuestItem, readGuestCartList, writeGuestCart } from "@/lib/guestCart";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import { getAuthUser } from "@/utils/getAuthUser";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +14,7 @@ import { fireCartAdded } from "@/context/CounterContext";
 import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import type { CartColorOption, CartModalProps } from "@/types/props/product";
 import type { AddToCartEvent } from "@/types/tracking";
-import { addJs, fieldsOf, filterList, findList, isList, itemAt, itemOpt, localeOpt, rec, requireString } from "@/lib/json";
+import { fieldsOf, filterList, findList, isList, itemAt, itemOpt, localeOpt, rec, requireString } from "@/lib/json";
 import { idKey, keyFrom, nodeOf, str } from "@/lib/render";
 import { pushDataLayer } from "@/tracking/dataLayer";
 
@@ -189,8 +191,41 @@ export default function CartModal({
 
   const handleQuantity = (direction: "down" | "up") => {
     setQuantity((prev) =>
-      direction === "down" ? Math.max(1, prev - 1) : prev + 1,
+      direction === "down" ? Math.max(1, prev - 1) : Math.min(GUEST_CART_MAX_QUANTITY, prev + 1),
     );
+  };
+
+  // Guest cart line for the selected variant (F1: used by Add To Cart and Buy Now).
+  const saveGuestCartItem = () => {
+    const cart = readGuestCartList("findIndex");
+    const variant = fieldsOf(selectedVariant);
+    const product = fieldsOf(productData);
+    const matchesItem = (item: unknown) => fieldsOf(item).variantId === variant.id;
+    // `x > 0` and `-` convert to numbers, as Number() does
+    const offerPrice =
+      variant.final_price ||
+      (Number(variant.discount_amount) > 0
+        ? Math.max(0, Number(variant.regular_price || 0) - Number(variant.discount_amount || 0))
+        : variant.regular_price) ||
+      0;
+    const cartItem: GuestCartItem = {
+      slug: product.slug,
+      productId: product.id,
+      variantId: variant.id,
+      quantity,
+      productName: product.product_name,
+      productImage: rec(variant.attribute)?.image || product.product_image || rec(itemOpt(product.images, 0))?.image_path || "",
+      variantPrice: offerPrice,
+      regularPrice: variant.regular_price || 0,
+      maxRetailPrice: product.max_retail_price || product.regular_price || variant.regular_price || 0,
+      variantAttr: variant.attribute_value || "",
+      variantSku: sv?.sku || "",
+      productBrand: rec(pdx?.brand)?.name || "",
+      productCategory: rec(pdx?.category)?.name || "",
+      bookingAmount: product.booking_amount || 0,
+    };
+    mergeGuestItem(cart, matchesItem, cartItem, quantity);
+    writeGuestCart(cart);
   };
 
   const handleAddToCart = async () => {
@@ -203,6 +238,10 @@ export default function CartModal({
           variant_id: fieldsOf(selectedVariant).id,
           quantity,
         });
+      } else {
+        saveGuestCartItem();
+      }
+      {
         const gtmPayload: AddToCartEvent = {
           event: "add_to_cart",
           ecommerce: {
@@ -226,9 +265,6 @@ export default function CartModal({
         setIsAdded(true);
         fireCartAdded();
         setTimeout(() => setIsAdded(false), 2000);
-      } else {
-        setIsModalOpen(false);
-        router.push("/login");
       }
     } catch (error) {
       console.error(error);
@@ -248,51 +284,7 @@ export default function CartModal({
           quantity,
         });
       } else {
-        const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
-        // `cart.findIndex` threw for a non-array cart; kept
-        if (!isList(cart)) throw new TypeError("cart.findIndex is not a function");
-        const variant = fieldsOf(selectedVariant);
-        const product = fieldsOf(productData);
-        const existingIndex = cart.findIndex(
-          (item) => fieldsOf(item).variantId === variant.id,
-        );
-        // `x > 0` and `-` convert to numbers, as Number() does
-        const offerPrice =
-          variant.final_price ||
-          (Number(variant.discount_amount) > 0
-            ? Math.max(0, Number(variant.regular_price || 0) - Number(variant.discount_amount || 0))
-            : variant.regular_price) ||
-          0;
-        const cartItem = {
-          slug: product.slug,
-          productId: product.id,
-          variantId: variant.id,
-          quantity,
-          productName: product.product_name,
-          productImage:
-            rec(variant.attribute)?.image ||
-            product.product_image ||
-            rec(itemOpt(product.images, 0))?.image_path ||
-            "",
-          variantPrice: offerPrice,
-          regularPrice: variant.regular_price || 0,
-          maxRetailPrice:
-            product.max_retail_price ||
-            product.regular_price ||
-            variant.regular_price ||
-            0,
-          variantAttr: variant.attribute_value || "",
-          variantSku: sv?.sku || "",
-          productBrand: rec(pdx?.brand)?.name || "",
-          productCategory: rec(pdx?.category)?.name || "",
-          bookingAmount: product.booking_amount || 0,
-        };
-        if (existingIndex !== -1) {
-          cart[existingIndex] = { ...Object.assign({}, cart[existingIndex]), ...cartItem, quantity: addJs(fieldsOf(cart[existingIndex]).quantity, quantity) };
-        } else {
-          cart.push(cartItem);
-        }
-        localStorage.setItem("cart", JSON.stringify(cart));
+        saveGuestCartItem();
       }
       setIsModalOpen(false);
       router.push("/checkout");

@@ -1,8 +1,15 @@
 import React from "react";
 import {CircleX} from "lucide-react";
 import Banner from "@/Components/ReuseableComponent/Banner";
+import Link from "next/link";
+import InvoiceDownloadButton from "@/Components/OrderSuccess/InvoiceDownloadButton";
+import type { SearchPageProps } from "@/types/route";
+import { str } from "@/lib/render";
 
-const OrderCanceled = () => {
+const OrderCanceled = async ({ searchParams }: SearchPageProps) => {
+    // F1: gateways return here with ?invoice=<invoice_number> (older links: invoice_number)
+    const params = await searchParams;
+    const invoice = str(params?.invoice) || str(params?.invoice_number) || "";
     return (
         <div className="">
             <Banner image={"/all-product-banner.webp"} title={"Order Payment Canceled"}/>
@@ -27,15 +34,19 @@ const OrderCanceled = () => {
                             payment has been canceled.
                         </p>
 
-                        <div className="pt-4">
-                            <p className="text-gray-500 mb-6">To download your invoice, simply click the button
-                                below:</p>
-
-                            <button
-                                className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-10 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-md">
-                                Download Invoice
-                            </button>
-                        </div>
+                        {invoice ? (
+                            <div className="pt-4">
+                                <p className="text-gray-500 mb-2">Order <span className="font-mono font-medium text-gray-800">#{invoice}</span></p>
+                                <p className="text-gray-500 mb-6">To download your invoice, simply click the button
+                                    below:</p>
+                                <InvoiceDownloadButton invoiceNumber={invoice}/>
+                            </div>
+                        ) : (
+                            <div className="pt-4 flex flex-wrap justify-center gap-3">
+                                <Link href="/checkout" className="bg-secondary text-white font-medium py-3 px-8 rounded-lg">Back to checkout</Link>
+                                <Link href="/shop" className="border border-gray-200 text-gray-700 font-medium py-3 px-8 rounded-lg">Continue shopping</Link>
+                            </div>
+                        )}
 
                         <p className="text-gray-400 text-sm mt-10 italic">
                             We hope you enjoy your new gadgets, and if you have any questions or need assistance, feel

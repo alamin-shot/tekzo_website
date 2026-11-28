@@ -1,11 +1,19 @@
 import React from "react";
 import {CircleX} from "lucide-react";
 import Banner from "@/Components/ReuseableComponent/Banner";
+import Link from "next/link";
+import InvoiceDownloadButton from "@/Components/OrderSuccess/InvoiceDownloadButton";
+import type { SearchPageProps } from "@/types/route";
+import { str } from "@/lib/render";
 
-const OrderFailed = () => {
+const OrderFailed = async ({ searchParams }: SearchPageProps) => {
+    // F1: gateways return here with ?invoice=<invoice_number> (older links: invoice_number)
+    const params = await searchParams;
+    const invoice = str(params?.invoice) || str(params?.invoice_number) || "";
+    const canceled = params?.cancel !== undefined;
     return (
         <div className="">
-            <Banner image={"/all-product-banner.webp"} title={"Order Place Failed"}/>
+            <Banner image={"/all-product-banner.webp"} title={canceled ? "Order Payment Canceled" : "Order Place Failed"}/>
             <div className=" md:bg-gray-50 flex flex-col items-center md:py-10 md:px-4 my-rounded my-mt">
                 {/* Main Content Card */}
                 <div
@@ -23,19 +31,22 @@ const OrderFailed = () => {
                     <div className="space-y-6 max-w-3xl">
                         <p className="text-gray-600 text-lg leading-relaxed">
                             We appreciate your trust in <span
-                            className="font-bold text-gray-800">Unfortunately!</span>your order
-                            payment has failed.
+                            className="font-bold text-gray-800">{canceled ? "Unfortunately" : "Unfortunately!"}</span>{canceled ? "Your order payment has been canceled." : "your order payment has failed."}
                         </p>
 
-                        <div className="pt-4">
-                            <p className="text-gray-500 mb-6">To download your invoice, simply click the button
-                                below:</p>
-
-                            <button
-                                className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-10 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-md">
-                                Download Invoice
-                            </button>
-                        </div>
+                        {invoice ? (
+                            <div className="pt-4">
+                                <p className="text-gray-500 mb-2">Order <span className="font-mono font-medium text-gray-800">#{invoice}</span></p>
+                                <p className="text-gray-500 mb-6">To download your invoice, simply click the button
+                                    below:</p>
+                                <InvoiceDownloadButton invoiceNumber={invoice}/>
+                            </div>
+                        ) : (
+                            <div className="pt-4 flex flex-wrap justify-center gap-3">
+                                <Link href="/checkout" className="bg-secondary text-white font-medium py-3 px-8 rounded-lg">Back to checkout</Link>
+                                <Link href="/shop" className="border border-gray-200 text-gray-700 font-medium py-3 px-8 rounded-lg">Continue shopping</Link>
+                            </div>
+                        )}
 
                         <p className="text-gray-400 text-sm mt-10 italic">
                             We hope you enjoy your new gadgets, and if you have any questions or need assistance, feel

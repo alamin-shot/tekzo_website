@@ -10,6 +10,8 @@ import DynamicPills from "@/Components/ReuseableComponent/ProductDetails/Dynamic
 import RelatedProducts from "./RelatedProducts";
 import StickyBottomBar from "./StickyBottomBar";
 import { useRouter } from "next/navigation";
+import type { GuestCartItem } from "@/types/cart";
+import { readGuestCartList, replaceGuestItem, writeGuestCart } from "@/lib/guestCart";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import fetchPublicAPI from "@/utils/fetchPublicAPI";
 import { getAuthUser } from "@/utils/getAuthUser";
@@ -324,10 +326,8 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
   }, [productDetails, selectedGiftId]);
 
   const saveToLocalCart = (quantity = 1) => {
-    const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
-    // `cart.findIndex` threw for a non-array cart; kept
-    if (!isList(cart)) throw new TypeError("cart.findIndex is not a function");
-    const existingIndex = cart.findIndex((item) => fieldsOf(item).slug === fieldsOf(productDetails).slug && fieldsOf(item).variantId === fieldsOf(selectedVariant).id);
+    const cart = readGuestCartList("findIndex");
+    const matchesItem = (item: unknown) => fieldsOf(item).slug === fieldsOf(productDetails).slug && fieldsOf(item).variantId === fieldsOf(selectedVariant).id;
 
     const giftList = pd?.gift_products;
     const selectedGiftObj = rec(selectedGiftId ? (giftList === null || giftList === undefined ? undefined : findList(giftList, (g) => String(fieldsOf(g).gift_id) === String(selectedGiftId))) : null);
@@ -337,7 +337,7 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
     const product = fieldsOf(productDetails);
     const variant = fieldsOf(selectedVariant);
 
-    const cartItem = {
+    const cartItem: GuestCartItem = {
       slug: product.slug,
       productId: product.id,
       variantId: variant.id,
@@ -374,12 +374,9 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
         : {}),
     };
 
-    if (existingIndex !== -1) {
-      cart[existingIndex] = cartItem;
-    } else {
-      cart.push(cartItem);
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
+    replaceGuestItem(cart, matchesItem, cartItem);
+
+    writeGuestCart(cart);
   };
 
   // Stock-out: selected variant has no stock and nothing is pre-bookable.
@@ -425,14 +422,11 @@ export default function ProductDetails({ productDetails, relatedProductsData, re
     setAddingToCart(true);
     try {
       const user = await getAuthUser();
-      if (!user) {
-        router.push("/login");
-        return;
-      }
-
       const isPrebook = sv?.is_prebook || pd?.is_prebook;
 
-      const response = await clientFetchAPI(`/customer/carts`, "POST", {
+      // F1: guests add to the guest cart instead of being sent to /login
+      if (!user) saveToLocalCart(quantity);
+      else await clientFetchAPI(`/customer/carts`, "POST", {
         variant_id: fieldsOf(selectedVariant).id,
         quantity: quantity, // Use actual quantity for pre-booking
         ...(isPrebook || pd?.booking_amount ? { booking_amount: fieldsOf(productDetails).booking_amount || 0 } : {}),

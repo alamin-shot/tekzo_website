@@ -7,6 +7,8 @@ import PricingSelector from "./PricingSelector";
 
 import NoProductFound from "@/Components/ReuseableComponent/NoProductFound";
 import { useRouter } from "next/navigation";
+import type { GuestCartItem } from "@/types/cart";
+import { hasPreOwnedItem, incrementOrAddGuestItem, readGuestCartList, writeGuestCart } from "@/lib/guestCart";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import { getAuthUser } from "@/utils/getAuthUser";
 import ShareDetails from "./ShareDetails";
@@ -31,7 +33,7 @@ import UsedWarrantyInfo from "../UsedWarrantyInfo";
 import ProductBenefitsFooter from "@/Components/ReuseableComponent/ProductDetails/ProductBenefitsFooter";
 import type { CareSelection, UsedProductDetailsProps } from "@/types/props/product";
 import type { JsonRecord } from "@/types/json";
-import { addJs, fieldsOf, filterList, findIndexList, findList, isList, isRecord, itemAt, itemOpt, lengthOpt, lengthStrict, lowerOpt, mapList, mapOpt, rec } from "@/lib/json";
+import { fieldsOf, filterList, findIndexList, findList, isList, itemAt, itemOpt, lengthOpt, lengthStrict, lowerOpt, mapList, mapOpt, rec } from "@/lib/json";
 import { idKey, nodeOf, str } from "@/lib/render";
 
 // `v.stock === true || v.stock === 1` / `x.attribute?.id` — throw for a null item, as before.
@@ -132,29 +134,22 @@ export default function ProductDetails({ productDetails, supportPhone, relatedPr
   }, [selectedVariant]);
 
   const saveToLocalCart = (quantity = 1) => {
-    const cart: unknown = JSON.parse(localStorage.getItem("cart") || "[]");
-    // `cart.some` threw for a non-array cart; kept
-    if (!isList(cart)) throw new TypeError("cart.some is not a function");
+    const cart = readGuestCartList("some");
     // `id?.toString()` (String() for a non-nullish id)
     const slug = pd?.slug || (pd?.id === null || pd?.id === undefined ? undefined : String(pd.id));
 
     // Check if pre_owned_id already exists in cart
-    const preOwnedExists = cart.some((item) => fieldsOf(item).pre_owned_id === pd?.id);
+    const preOwnedExists = hasPreOwnedItem(cart, pd?.id);
 
     // If pre_owned_id already exists, don't add it again
     if (preOwnedExists) {
       return;
     }
 
-    const existingIndex = cart.findIndex((item) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === pd?.id);
-    if (existingIndex !== -1) {
-      // `cart[i].quantity += quantity` (JS `+`); assigning on a non-object entry threw in strict mode
-      const entry = cart[existingIndex];
-      if (!isRecord(entry)) throw new TypeError("Cannot create property 'quantity' on a primitive cart entry");
-      entry.quantity = addJs(entry.quantity, quantity);
-    } else {
+    const matchesItem = (item: unknown) => fieldsOf(item).slug === slug && fieldsOf(item).variantId === pd?.id;
+    incrementOrAddGuestItem(cart, matchesItem, quantity, (): GuestCartItem => {
       const productImage = rec(itemOpt(pd?.images, 0))?.image_path || pd?.product_image || "";
-      cart.push({
+      return {
         slug: slug,
         productId: pd?.product_id || 0,
         variantId: pd?.id,
@@ -185,9 +180,9 @@ export default function ProductDetails({ productDetails, supportPhone, relatedPr
               tekzoCareAmount: selectedCare.amount ?? 0,
             }
           : {}),
-      });
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
+      };
+    });
+    writeGuestCart(cart);
   };
 
   const handleBuyNow = async () => {
@@ -227,12 +222,6 @@ export default function ProductDetails({ productDetails, supportPhone, relatedPr
     try {
       const user = await getAuthUser();
 
-      if (!user) {
-        // User is not logged in - redirect to login
-        router.push("/login");
-        return;
-      }
-
       const cartPayload: JsonRecord = {
         variant_id: pd?.product_variant_id,
         pre_owned_id: pd?.id,
@@ -243,7 +232,9 @@ export default function ProductDetails({ productDetails, supportPhone, relatedPr
       if (selectedGift) cartPayload.gift_id = selectedGift;
       if (selectedCare?.care_id) cartPayload.care_id = selectedCare.care_id;
 
-      const response = await clientFetchAPI(`/customer/carts`, "POST", cartPayload);
+      // F1: guests add to the guest cart instead of being sent to /login
+      if (!user) saveToLocalCart(quantity);
+      else await clientFetchAPI(`/customer/carts`, "POST", cartPayload);
 
       setIsAdded(true);
       fireCartAdded();

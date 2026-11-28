@@ -10,10 +10,15 @@ const money = (val: unknown): string => (Number(val) || 0).toFixed(2);
 
 export default function PurchaseTracker({ order }: PurchaseTrackerProps) {
   useEffect(() => {
-    if (!order || window.__purchase_fired) return;
-
-    window.__purchase_fired = true;
+    if (!order) return;
     const o = rec(order);
+    // F1: fire `purchase` once per invoice (survives reloads and the "Initiated"
+    // re-checks on the success page); without an invoice, once per page as before.
+    const invoice = o?.invoice_number;
+    const key = invoice ? `purchase_fired:${String(invoice)}` : "";
+    if (key ? sessionStorage.getItem(key) : window.__purchase_fired) return;
+    if (key) sessionStorage.setItem(key, "1");
+    else window.__purchase_fired = true;
 
     const items =
       mapOpt(o?.order_lists, (entry, index) => {
