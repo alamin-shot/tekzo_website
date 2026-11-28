@@ -13,6 +13,8 @@ export type AuthActionState = {
 
 /** Login / register form fields kept in LoginPage state. */
 export type AuthFormFields = {
+  /** Email or mobile number (login mode). */
+  login: string;
   name: string;
   email: string;
   phone: string;

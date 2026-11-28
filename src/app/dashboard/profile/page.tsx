@@ -8,17 +8,13 @@ export default async function ProfilePage() {
 
   if (!user) redirect("/login");
 
-  // Add static verification status for demo purposes
-  const userWithVerification = {
-    ...user,
-    email_verified: true, // Static verification status for email
-    phone_verified: false, // Static verification status for phone
-  };
+  // UPD-002: verification status now comes from GET /customer/profile
+  // (is_phone_verified / phone_verified_at / is_email_verified / email_verified_at).
 
   return (
     <div className="w-full">
       <title>Profile - Tekzo Dashboard</title>
-      <ProfileView user={userWithVerification} />
+      <ProfileView user={user} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Home, Briefcase, MapPin, Plus, Check, Loader2 } from "lucide-react";
 import clientFetchAPI from "@/utils/clientFetchAPI";
 import AddAddressPopup from "@/Components/Dashboard/AddressBook/AddAddressPopup";
+import RecipientLine from "@/Components/Dashboard/AddressBook/RecipientLine";
 import type { LucideIcon } from "lucide-react";
 import type { AuthorizeUserAddressProps } from "@/types/props/checkout";
 import type { AddressSavePayload } from "@/types/props/dashboard";
@@ -212,6 +213,7 @@ export default function AuthorizeUserAddress({ onAddressSelect }: AuthorizeUserA
                       >
                         {formatAddress(addr)}
                       </span>
+                      <RecipientLine address={addr} />
 
                       {/* Badges */}
                       <div className="flex gap-1.5 mt-2 flex-wrap">

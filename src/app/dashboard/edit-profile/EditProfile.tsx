@@ -51,6 +51,8 @@ export default function EditProfile({ user }: EditProfileProps) {
     name: rec(user)?.name || "",
     birthday: rec(user)?.date_of_birth || "",
     gender: rec(user)?.gender || "male",
+    secondaryPhone: rec(user)?.secondary_phone || "",
+    address: rec(user)?.address || "",
   });
 
   useEffect(() => {
@@ -90,6 +92,8 @@ export default function EditProfile({ user }: EditProfileProps) {
         form.append("name", String(formData.name));
         form.append("date_of_birth", String(formData.birthday));
         form.append("gender", String(formData.gender));
+        form.append("secondary_phone", String(formData.secondaryPhone || ""));
+        form.append("address", String(formData.address || ""));
         form.append("profile_picture", profileImage);
         const response = await clientFetchAPI(
           "/customer/profile",
@@ -113,6 +117,8 @@ export default function EditProfile({ user }: EditProfileProps) {
           name: formData.name,
           date_of_birth: formData.birthday,
           gender: formData.gender,
+          secondary_phone: formData.secondaryPhone || null,
+          address: formData.address || null,
         });
         const updatedData = rec(response)?.data || response || {};
         window.dispatchEvent(
@@ -275,6 +281,61 @@ export default function EditProfile({ user }: EditProfileProps) {
                 />
               </div>
               <FieldError errors={fieldErrors} field="name" />
+            </div>
+
+            {/* Secondary Phone (UPD-004) */}
+            <div className="flex flex-col gap-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">
+                Secondary Phone
+              </label>
+              <div
+                className={`flex items-center gap-3.5 px-4 py-3 bg-slate-50/70 dark:bg-white/[0.02] rounded-2xl border transition-all ${
+                  rec(fieldErrors)?.secondary_phone
+                    ? "border-rose-400 bg-rose-50/20"
+                    : "border-slate-200/80 dark:border-white/[0.06] focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20"
+                }`}
+              >
+                <FiPhone size={18} className="text-slate-400 dark:text-slate-500" />
+                <input
+                  type="tel"
+                  placeholder="Optional second phone number"
+                  value={inputValue(formData.secondaryPhone)}
+                  onChange={(e) => {
+                    setFormData({ ...formData, secondaryPhone: e.target.value });
+                    setFieldErrors({ ...Object.assign({}, fieldErrors), secondary_phone: null });
+                  }}
+                  className="bg-transparent w-full text-sm font-semibold text-slate-900 dark:text-white outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                />
+              </div>
+              <FieldError errors={fieldErrors} field="secondary_phone" />
+            </div>
+
+            {/* Address (UPD-004) */}
+            <div className="flex flex-col gap-2">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">
+                Address
+              </label>
+              <div
+                className={`flex items-center gap-3.5 px-4 py-3 bg-slate-50/70 dark:bg-white/[0.02] rounded-2xl border transition-all ${
+                  rec(fieldErrors)?.address
+                    ? "border-rose-400 bg-rose-50/20"
+                    : "border-slate-200/80 dark:border-white/[0.06] focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20"
+                }`}
+              >
+                <FiUser size={18} className="text-slate-400 dark:text-slate-500" />
+                <input
+                  type="text"
+                  placeholder="House, road, area"
+                  maxLength={191}
+                  value={inputValue(formData.address)}
+                  onChange={(e) => {
+                    setFormData({ ...formData, address: e.target.value });
+                    setFieldErrors({ ...Object.assign({}, fieldErrors), address: null });
+                  }}
+                  className="bg-transparent w-full text-sm font-semibold text-slate-900 dark:text-white outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                />
+              </div>
+              <FieldError errors={fieldErrors} field="address" />
             </div>
 
             {/* Email */}

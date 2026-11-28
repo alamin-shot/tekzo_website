@@ -231,3 +231,11 @@ The three stores stay as built. As decided, no placeholder stores are created fo
 | `server-only` not installed | Next 16 handles `import "server-only"` internally (`node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md`) |
 | `env.server.ts` never throws | Parity: today a missing `INTERNAL_API_TOKEN` only drops the header, and a missing `REVALIDATION_SECRET` makes `/api/revalidate` reject. `reportServerEnvIssues()` only logs (once) |
 | `pushDataLayer()` returns early when `window` is undefined | Every current push runs in an effect or event handler (client only), so this never changes behavior. It only makes an accidental server call a no-op instead of a crash |
+
+## Customer API updates UPD-001…007 (28 Nov 2026, uncommitted on `alamin`)
+- Login accepts email or mobile: the server action sends `{ login, password }`; 422 errors for `login` and `password` show inline; 429 shows `RATE_LIMIT_MESSAGE` (`lib/http/apiErrorMessage.ts`).
+- Social login (`lib/socialAuth.ts`, `Components/Login/SocialLoginButtons.tsx`): the browser SDK token goes to `socialLoginAction`, then `POST /auth/social/{provider}`, and the cookies are set exactly as for a password login. A button shows only when its `NEXT_PUBLIC_*` id is set (inlined at build time).
+- Profile: `PhoneVerifyInline` (request code, then verify, then re-fetch the profile); `secondary_phone` and `address` fields; `ConnectedAccounts` (`GET/POST/DELETE /customer/social-accounts[/{provider}]`).
+- Address: "for someone else" toggle with `recipient_name` and `recipient_phone` (sent as null when off); `RecipientLine` appears in the address book, default address pages, checkout and the dashboard overview.
+- Dashboard overview uses `GET /customer/dashboard`, falling back to the four older calls when it fails.
+- `client-fetch` multipart requests now send `Accept: application/json`.

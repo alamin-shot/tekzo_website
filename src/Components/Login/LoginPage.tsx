@@ -8,6 +8,7 @@ import type { ChangeEvent, Dispatch, FormEvent, MouseEvent, RefObject, SetStateA
 import { Eye, EyeOff } from "lucide-react";
 import type { AuthActionState, AuthFormFields } from "@/types/auth";
 import { loginAction, registerAction } from "./actions";
+import SocialLoginButtons from "./SocialLoginButtons";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { firstOf, rec } from "@/lib/json";
@@ -32,6 +33,7 @@ const LoginPage = () => {
 
   const [fields, setFields] = useState<AuthFormFields>({
     name: "",
+    login: "",
     email: "",
     phone: "",
     password: "",
@@ -78,6 +80,7 @@ const LoginPage = () => {
 
   const nameError = fieldError(state?.errors, "name");
   const emailError = fieldError(state?.errors, "email");
+  const loginError = fieldError(state?.errors, "login");
   const phoneError = fieldError(state?.errors, "phone");
   const passwordError = fieldError(state?.errors, "password");
 
@@ -125,6 +128,23 @@ const LoginPage = () => {
                 </div>
               )}
 
+              {isLogin ? (
+                <div className="flex flex-col space-y-2">
+                  <label htmlFor="login" className="text-gray-500 text-sm ml-1">Email or mobile number</label>
+                  <input
+                    id="login"
+                    name="login"
+                    type="text"
+                    autoComplete="username"
+                    required
+                    value={fields.login}
+                    onChange={handleChange}
+                    className="bg-white lg:bg-[#f3f2f7] rounded-xl px-4 py-3 focus:outline outline-[#18c5a8] duration-200"
+                    placeholder="john@doe.com or 01XXXXXXXXX"
+                  />
+                  {loginError ? <p className="text-xs text-red-500">{nodeOf(loginError)}</p> : nodeOf(loginError)}
+                </div>
+              ) : (
               <div className="flex flex-col space-y-2">
                 <label className="text-gray-500 text-sm ml-1">Your Email</label>
                 <input
@@ -138,6 +158,7 @@ const LoginPage = () => {
                 />
                 {emailError ? <p className="text-xs text-red-500">{nodeOf(emailError)}</p> : nodeOf(emailError)}
               </div>
+              )}
 
               {!isLogin && (
                 <div className="flex flex-col space-y-2">
@@ -219,6 +240,8 @@ const LoginPage = () => {
                 {isPending ? (isLogin ? "Logging in..." : "Registering...") : isLogin ? "Login" : "Register"}
               </button>
             </form>
+
+            <SocialLoginButtons redirectTo={redirectTo} />
 
             {/*{isLogin && (*/}
             {/*    <>*/}

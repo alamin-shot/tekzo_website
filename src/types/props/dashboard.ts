@@ -162,6 +162,10 @@ export type AddressForm = {
   postcode: unknown;
   street: unknown;
   label: unknown;
+  /** UPD-005: "This order is for someone else" toggle. */
+  forSomeoneElse: boolean;
+  recipient_name: unknown;
+  recipient_phone: unknown;
 };
 
 /** Body AddAddressPopup hands to onSave (POST / PUT /customer/addresses). */
@@ -172,6 +176,9 @@ export type AddressSavePayload = {
   postcode: unknown;
   street: unknown;
   label: unknown;
+  /** UPD-005: null when the order is for the account holder. */
+  recipient_name: unknown;
+  recipient_phone: unknown;
 };
 
 export type AddAddressPopupProps = {
@@ -319,6 +326,8 @@ export type ProfileFieldProps = {
   label: ReactNode;
   value: unknown;
   isVerified?: unknown;
+  /** Rendered next to the value (e.g. the phone-verified badge / Verify button). */
+  extra?: ReactNode;
   onAction?: () => void;
   isExpanded?: boolean;
   children?: ReactNode;
@@ -343,6 +352,10 @@ export type EditProfileForm = {
   name: unknown;
   birthday: unknown;
   gender: unknown;
+  /** UPD-004: optional second phone; cleared → null. */
+  secondaryPhone: unknown;
+  /** UPD-004: postal address, up to 191 characters. */
+  address: unknown;
 };
 
 /** Field-level message from a 422 `errors` map (string or string[]). */
@@ -377,4 +390,21 @@ export type AddressFieldProps = {
   label: ReactNode;
   required?: boolean;
   children: ReactNode;
+};
+
+/** PhoneVerifyInline step: Verify button, or the OTP input. */
+export type PhoneVerifyStep = "idle" | "code";
+
+/** Profile: verify the account phone (UPD-002). */
+export type PhoneVerifyInlineProps = {
+  phone: unknown;
+  verified: boolean;
+  verifiedAt: unknown;
+  onVerified: () => void;
+};
+
+/** A "Deliver to" line for an address with a recipient (UPD-005 / UPD-007). */
+export type RecipientLineProps = {
+  address: unknown;
+  className?: string;
 };

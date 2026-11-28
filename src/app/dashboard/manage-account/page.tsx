@@ -2,20 +2,25 @@ import React from "react";
 import { Package, ShoppingBag, Heart, Edit2, MapPin, User, ArrowRight, Sparkles, Calendar, CheckCircle2, Clock, Truck, XCircle, ShieldCheck, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { getAuthUser } from "@/fetch-API/getAuthUser";
-import { getRecentOrder, getStatistics, getDefaultShippingAndBillingAddress } from "@/fetch-API/getRecentOrder";
+import { getDashboard, getRecentOrder, getStatistics, getDefaultShippingAndBillingAddress } from "@/fetch-API/getRecentOrder";
+import RecipientLine from "@/Components/Dashboard/AddressBook/RecipientLine";
 import DashboardStatCard from "@/Components/Dashboard/DashboardStatCard";
 import { fieldsOf, lengthOpt, lowerOpt, mapOpt, rec, toDateInput } from "@/lib/json";
 import { idKey, nodeOf } from "@/lib/render";
 
 const AccountDashboard = async () => {
-  const user = await getAuthUser();
-  const recentOrders = await getRecentOrder();
-  const statistics = await getStatistics();
-  const defaultShippingAndBillingAddress = await getDefaultShippingAndBillingAddress();
+  // UPD-001: one GET /customer/dashboard; the four older calls stay as the fallback
+  // while the endpoint rolls out (any failure there returns null).
+  const dashboard = rec(await getDashboard());
+  const user = dashboard ? dashboard.profile : await getAuthUser();
+  const recentOrders = dashboard ? dashboard.recent_orders : await getRecentOrder();
+  const statistics = dashboard ? dashboard.statistics : await getStatistics();
+  const defaultShippingAndBillingAddress = dashboard ? dashboard.default_addresses : await getDefaultShippingAndBillingAddress();
   const u = rec(user);
   const st = rec(statistics);
-  const ship = rec(rec(defaultShippingAndBillingAddress)?.shippingAddress);
-  const bill = rec(rec(defaultShippingAndBillingAddress)?.billingAddress);
+  const defaults = rec(defaultShippingAndBillingAddress);
+  const ship = rec(defaults?.shippingAddress ?? defaults?.shipping_address ?? defaults?.shipping);
+  const bill = rec(defaults?.billingAddress ?? defaults?.billing_address ?? defaults?.billing);
 
   // Status badge styling helper
   const getStatusBadge = (status: unknown) => {
@@ -68,7 +73,7 @@ const AccountDashboard = async () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <DashboardStatCard
           label="Total Orders"
-          value={st?.totalOrder || 0}
+          value={st?.totalOrder || st?.total_orders || 0}
           icon={Package}
           gradient="from-[#007AFF] to-[#5856D6]"
           shadow="shadow-[0_4px_14px_rgba(0,122,255,0.25)]"
@@ -78,7 +83,7 @@ const AccountDashboard = async () => {
         />
         <DashboardStatCard
           label="Products in Bag"
-          value={st?.totalCart || 0}
+          value={st?.totalCart || st?.total_cart || 0}
           icon={ShoppingBag}
           gradient="from-[#FF9500] to-[#FF5E3A]"
           shadow="shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
@@ -88,7 +93,7 @@ const AccountDashboard = async () => {
         />
         <DashboardStatCard
           label="Products in Wishlist"
-          value={st?.totalWishlist || 0}
+          value={st?.totalWishlist || st?.total_wishlist || 0}
           icon={Heart}
           gradient="from-[#FF2D55] to-[#E11D48]"
           shadow="shadow-[0_4px_14px_rgba(255,45,85,0.25)]"
@@ -132,7 +137,10 @@ const AccountDashboard = async () => {
               </div>
               <div className="space-y-1">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500">Phone Number</span>
-                <p className="text-xs font-medium text-slate-600 dark:text-slate-300 truncate">{nodeOf(u?.phone || "No phone on record")}</p>
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-300 truncate">
+                  {nodeOf(u?.phone || "No phone on record")}
+                  {u?.phone && u?.is_phone_verified === true ? <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Verified ✓</span> : null}
+                </p>
               </div>
             </div>
           </div>
@@ -181,6 +189,7 @@ const AccountDashboard = async () => {
                     ? `${rec(ship?.district)?.name} - ${rec(ship?.area)?.name || ""} - ${ship?.street || ""}`
                     : "No shipping address configured"}
                 </p>
+                <RecipientLine address={ship} className="mt-1" />
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04]">
@@ -191,6 +200,7 @@ const AccountDashboard = async () => {
                     ? `${rec(bill?.district)?.name} - ${rec(bill?.area)?.name || ""} - ${bill?.street || ""}`
                     : "Same as shipping address"}
                 </p>
+                <RecipientLine address={bill} className="mt-1" />
               </div>
             </div>
           </div>

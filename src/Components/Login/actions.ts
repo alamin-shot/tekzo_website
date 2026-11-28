@@ -3,12 +3,37 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { AuthActionState } from "@/types/auth";
+import type { SocialAuthResult } from "@/types/social";
+import { RATE_LIMIT_MESSAGE, apiStatus, socialErrorMessage } from "@/lib/http/apiErrorMessage";
+import { isSocialProvider } from "@/lib/socialAuth";
 import fetchAPI from "@/utils/fetchAPI";
 import { errMessage, rec, requireString } from "@/lib/json";
 
+// Same cookies for every sign-in path (password, register, social).
+async function setAuthCookies(token: unknown): Promise<void> {
+  const cookieStore = await cookies();
+  // (cookies().set stringifies the value; tokens are strings from the API)
+  cookieStore.set("auth_token", String(token), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: "/",
+  });
+  // readable (non-httpOnly) marker so client components can skip
+  // authenticated calls without needing a round trip
+  cookieStore.set("has_auth", "1", {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+}
+
 export async function loginAction(prevState: AuthActionState, formData: FormData): Promise<AuthActionState> {
   const payload = {
-    email: formData.get("email"),
+    login: formData.get("login"),
     password: formData.get("password"),
   };
 
@@ -26,24 +51,7 @@ export async function loginAction(prevState: AuthActionState, formData: FormData
       return { success: false, message: "Invalid response from server." };
     }
 
-    const cookieStore = await cookies();
-    // (cookies().set stringifies the value; tokens are strings from the API)
-    cookieStore.set("auth_token", String(token), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: "/",
-    });
-    // readable (non-httpOnly) marker so client components can skip
-    // authenticated calls without needing a round trip
-    cookieStore.set("has_auth", "1", {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-    });
+    await setAuthCookies(token);
 
     const redirectParam = formData.get("redirect");
     // `.startsWith` on a non-string (a File) threw inside this try before; kept.
@@ -53,7 +61,7 @@ export async function loginAction(prevState: AuthActionState, formData: FormData
   } catch (error) {
     return {
       success: false,
-      message: errMessage(error) || "Login failed. Please try again.",
+      message: apiStatus(error) === 429 ? RATE_LIMIT_MESSAGE : errMessage(error) || "Login failed. Please try again.",
       errors: rec(error)?.errors || null,
     };
   }
@@ -89,28 +97,36 @@ export async function registerAction(prevState: AuthActionState, formData: FormD
       return { success: false, message: "Invalid response from server." };
     }
 
-    const cookieStore = await cookies();
-    cookieStore.set("auth_token", String(token), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-    });
-    cookieStore.set("has_auth", "1", {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-    });
+    await setAuthCookies(token);
   } catch (error) {
     return {
       success: false,
-      message: errMessage(error) || "Registration failed. Please try again.",
+      message: apiStatus(error) === 429 ? RATE_LIMIT_MESSAGE : errMessage(error) || "Registration failed. Please try again.",
       errors: rec(error)?.errors || null,
     };
   }
 
   redirect("/");
+}
+
+// Social sign-in (UPD-003): exchange a provider token for our access token.
+// Returns instead of redirecting so the client can do a full navigation
+// (the navbar re-reads the new cookie).
+export async function socialLoginAction(provider: unknown, token: unknown, name: unknown, redirectParam: unknown): Promise<SocialAuthResult> {
+  if (!isSocialProvider(provider) || typeof token !== "string" || !token) {
+    return { success: false, message: "Sign-in failed. Please try again." };
+  }
+  try {
+    const data = await fetchAPI(`/auth/social/${provider}`, {
+      method: "POST",
+      body: JSON.stringify(typeof name === "string" && name ? { token, name } : { token }),
+    });
+    const accessToken = rec(rec(data)?.data)?.access_token;
+    if (!accessToken) return { success: false, message: "Invalid response from server." };
+    await setAuthCookies(accessToken);
+    const redirectTo = typeof redirectParam === "string" && redirectParam.startsWith("/") ? redirectParam : "/";
+    return { success: true, message: "", redirectTo };
+  } catch (error) {
+    return { success: false, message: socialErrorMessage(error, provider) };
+  }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import RecipientLine from "@/Components/Dashboard/AddressBook/RecipientLine";
 import AddAddressPopup from "@/Components/Dashboard/AddressBook/AddAddressPopup";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -46,6 +47,7 @@ export default function AddressBook() {
       setEditData(null);
     } catch (err) {
       console.error("Failed to save address:", err);
+      throw err;
     }
   };
 
@@ -167,6 +169,7 @@ export default function AddressBook() {
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     {nodeOf(fieldsOf(addr).area_detail || "—")}
                   </p>
+                  <RecipientLine address={addr} className="mt-1" />
                 </div>
 
                 {/* Phone */}

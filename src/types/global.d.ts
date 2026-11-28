@@ -1,6 +1,7 @@
 // Globals the app reads or writes on `window`.
 import type { DataLayerEntry } from "./tracking";
 import type { SpeechRecognitionCtor } from "./search";
+import type { AppleIdSdk, FacebookSdk, GoogleIdentity } from "./social";
 
 declare global {
   interface Window {
@@ -15,6 +16,10 @@ declare global {
     /** Web Speech API (useVoiceSearch); either may be missing. */
     SpeechRecognition?: SpeechRecognitionCtor;
     webkitSpeechRecognition?: SpeechRecognitionCtor;
+    /** Social sign-in SDKs, loaded on demand by lib/socialAuth.ts (UPD-003). */
+    google?: GoogleIdentity;
+    FB?: FacebookSdk;
+    AppleID?: AppleIdSdk;
   }
 }
 

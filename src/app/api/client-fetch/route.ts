@@ -39,6 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const response = await fetch(`${BASE_API_URL}${endpoint}`, {
             method: "POST",
             headers: {
+                Accept: "application/json",
                 ...(token && {Authorization: `Bearer ${token}`}),
                 ...(INTERNAL_API_TOKEN && {"X-Internal-Token": INTERNAL_API_TOKEN}),
             },

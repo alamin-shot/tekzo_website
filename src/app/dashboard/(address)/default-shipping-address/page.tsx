@@ -1,5 +1,6 @@
 "use client";
 
+import RecipientLine from "@/Components/Dashboard/AddressBook/RecipientLine";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import clientFetchAPI from "@/utils/clientFetchAPI";
@@ -176,6 +177,7 @@ export default function DefaultShippingAddress() {
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {nodeOf(a.area_detail || "—")}
                     </p>
+                    <RecipientLine address={addr} className="mt-1" />
                   </div>
                 </div>
 

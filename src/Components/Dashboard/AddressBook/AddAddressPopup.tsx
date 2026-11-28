@@ -7,6 +7,7 @@ import type { ChangeEvent } from "react";
 import type { AddAddressPopupProps, AddressFieldProps, AddressForm } from "@/types/props/dashboard";
 import { fieldsOf, findList, lengthStrict, mapList, rec } from "@/lib/json";
 import { idKey, inputValue, nodeOf } from "@/lib/render";
+import { apiErrorMessage, fieldErrorOf } from "@/lib/http/apiErrorMessage";
 
 const LABELS = [
   { key: "office", icon: "💼", display: "OFFICE" },
@@ -23,6 +24,9 @@ const initialForm: AddressForm = {
   postcode: "",
   street: "",
   label: "office",
+  forSomeoneElse: false,
+  recipient_name: "",
+  recipient_phone: "",
 };
 
 function Field({ label, required, children }: AddressFieldProps) {
@@ -130,6 +134,9 @@ export default function AddAddressPopup({
       postcode: rec(ini.area)?.postcode || "",
       street: ini.street || "",
       label: ini.label || "office",
+      forSomeoneElse: Boolean(ini.recipient_name),
+      recipient_name: ini.recipient_name || "",
+      recipient_phone: ini.recipient_phone || "",
     });
   }, [initialData]);
 
@@ -173,8 +180,12 @@ export default function AddAddressPopup({
       area_id: "Upazila / Area",
       street: "Street Address",
     };
+    // UPD-005: a recipient is required when the order is for someone else
+    const forOther = form.forSomeoneElse
+      ? { recipient_name: "Recipient name", recipient_phone: "Recipient phone" }
+      : {};
     const next: Record<string, string> = {};
-    Object.entries(required).forEach(([k, label]) => {
+    Object.entries({ ...required, ...forOther }).forEach(([k, label]) => {
       const value = fieldsOf(form)[k];
       if (!(value === null || value === undefined ? undefined : String(value).trim())) next[k] = `${label} is required`;
     });
@@ -193,7 +204,17 @@ export default function AddAddressPopup({
         postcode: form.postcode,
         street: form.street,
         label: form.label,
+        recipient_name: form.forSomeoneElse ? form.recipient_name : null,
+        recipient_phone: form.forSomeoneElse ? form.recipient_phone : null,
       });
+    } catch (err) {
+      // 422: show the backend's field messages next to their inputs
+      const fieldMessages: Record<string, string> = {};
+      for (const key of ["recipient_name", "recipient_phone", "street", "area_id", "new_district_id"]) {
+        const message = fieldErrorOf(err, key);
+        if (message) fieldMessages[key === "new_district_id" ? "district_id" : key] = message;
+      }
+      setErrors((p) => ({ ...p, ...fieldMessages, general: Object.keys(fieldMessages).length ? null : apiErrorMessage(err, "Failed to save the address.") }));
     } finally {
       setSaveLoading(false);
     }
@@ -334,6 +355,50 @@ export default function AddAddressPopup({
               </Field>
             </div>
           </div>
+
+          {/* Deliver to someone else (UPD-005) */}
+          <label className="flex items-center gap-2.5 mb-4 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={form.forSomeoneElse}
+              onChange={(e) => {
+                set("forSomeoneElse", e.target.checked);
+                setErrors((p) => ({ ...p, recipient_name: null, recipient_phone: null }));
+              }}
+              className="w-4 h-4 accent-emerald-500"
+            />
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">This order is for someone else</span>
+          </label>
+          {form.forSomeoneElse && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <Field label="Recipient Name" required>
+                <input
+                  className={`${inputCls} ${errors.recipient_name ? "border-rose-400 focus:ring-rose-100" : ""}`}
+                  placeholder="Who will receive the order"
+                  value={inputValue(form.recipient_name)}
+                  onChange={(e) => {
+                    set("recipient_name", e.target.value);
+                    setErrors((p) => ({ ...p, recipient_name: null }));
+                  }}
+                />
+                {nodeOf(errors.recipient_name && <p className="text-xs text-rose-500 mt-0.5">{nodeOf(errors.recipient_name)}</p>)}
+              </Field>
+              <Field label="Recipient Phone" required>
+                <input
+                  type="tel"
+                  className={`${inputCls} ${errors.recipient_phone ? "border-rose-400 focus:ring-rose-100" : ""}`}
+                  placeholder="01XXXXXXXXX"
+                  value={inputValue(form.recipient_phone)}
+                  onChange={(e) => {
+                    set("recipient_phone", e.target.value);
+                    setErrors((p) => ({ ...p, recipient_phone: null }));
+                  }}
+                />
+                {nodeOf(errors.recipient_phone && <p className="text-xs text-rose-500 mt-0.5">{nodeOf(errors.recipient_phone)}</p>)}
+              </Field>
+            </div>
+          )}
+          {nodeOf(errors.general && <p className="text-xs text-rose-500 mb-4">{nodeOf(errors.general)}</p>)}
 
           <div className="h-px bg-slate-100 dark:bg-white/5 mb-5" />
 

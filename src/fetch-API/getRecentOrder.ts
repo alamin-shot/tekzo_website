@@ -17,3 +17,5 @@ async function fetchWithAuth(endpoint: string): Promise<unknown> {
 export const getRecentOrder = async () => fetchWithAuth("/customer/recent-orders");
 export const getStatistics = async () => fetchWithAuth("/customer/statistics");
 export const getDefaultShippingAndBillingAddress = async () => fetchWithAuth("/customer/default-address");
+// UPD-001: one call for the dashboard overview — { profile, statistics, recent_orders, default_addresses }
+export const getDashboard = async () => fetchWithAuth("/customer/dashboard");

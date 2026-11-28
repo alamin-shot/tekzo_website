@@ -21,6 +21,8 @@ import type { ChangeEvent, KeyboardEvent } from "react";
 import type { AvatarDisplayProps, PasswordFormField, ProfileFieldProps, ProfileViewProps, ProfileWorkflowProps } from "@/types/props/dashboard";
 import { errMessage, fieldsOf, rec, requireString } from "@/lib/json";
 import { nodeOf, str } from "@/lib/render";
+import PhoneVerifyInline from "@/Components/Dashboard/Profile/PhoneVerifyInline";
+import ConnectedAccounts from "@/Components/Dashboard/Profile/ConnectedAccounts";
 
 function AvatarDisplay({
   sizeClass,
@@ -53,7 +55,21 @@ function AvatarDisplay({
   );
 }
 
-export default function ProfileView({ user }: ProfileViewProps) {
+export default function ProfileView({ user: initialUser }: ProfileViewProps) {
+  const [user, setUser] = useState<unknown>(initialUser);
+  // UPD-002: re-read GET /customer/profile (e.g. after verifying the phone)
+  const refreshProfile = async () => {
+    try {
+      const res = await clientFetchAPI("/customer/profile", "GET");
+      const fresh = rec(res)?.data;
+      if (fresh) {
+        setUser(fresh);
+        window.dispatchEvent(new CustomEvent("userProfileUpdated", { detail: fresh }));
+      }
+    } catch (err) {
+      console.error("Profile refresh failed:", err);
+    }
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [step, setStep] = useState(1);
@@ -219,7 +235,7 @@ export default function ProfileView({ user }: ProfileViewProps) {
               icon={<FiMail />}
               label="Email Address"
               value={rec(user)?.email || "—"}
-              isVerified={rec(user)?.email_verified}
+              isVerified={rec(user)?.is_email_verified}
               onAction={() => handleTabToggle("email")}
               isExpanded={activeTab === "email"}
             >
@@ -234,7 +250,15 @@ export default function ProfileView({ user }: ProfileViewProps) {
               icon={<FiPhone />}
               label="Mobile Number"
               value={rec(user)?.phone || "—"}
-              isVerified={rec(user)?.phone_verified}
+              isVerified={rec(user)?.is_phone_verified}
+              extra={
+                <PhoneVerifyInline
+                  phone={rec(user)?.phone}
+                  verified={rec(user)?.is_phone_verified === true}
+                  verifiedAt={rec(user)?.phone_verified_at}
+                  onVerified={refreshProfile}
+                />
+              }
               onAction={() => handleTabToggle("mobile")}
               isExpanded={activeTab === "mobile"}
             >
@@ -269,8 +293,20 @@ export default function ProfileView({ user }: ProfileViewProps) {
                   : "—"
               }
             />
+            <ProfileField
+              icon={<FiPhone />}
+              label="Secondary Phone"
+              value={rec(user)?.secondary_phone || "—"}
+            />
+            <ProfileField
+              icon={<FiUser />}
+              label="Address"
+              value={rec(user)?.address || "—"}
+            />
           </div>
         </section>
+
+        <ConnectedAccounts />
       </div>
     </div>
   );
@@ -281,6 +317,7 @@ function ProfileField({
   label,
   value,
   onAction,
+  extra,
   isExpanded,
   children,
 }: ProfileFieldProps) {
@@ -308,6 +345,7 @@ function ProfileField({
         <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 flex-1 truncate">
           {nodeOf(value)}
         </p>
+        {extra}
       </div>
       <AnimatePresence>
         {isExpanded && (
