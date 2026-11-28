@@ -295,7 +295,7 @@ export default function Sidebar({ user, onClose }: SidebarProps) {
               <div className="w-7 h-7 rounded-[8px] bg-gradient-to-tr from-[#007AFF] via-[#5856D6] to-[#AF52DE] flex items-center justify-center text-white shadow-xs shrink-0">
                 <Sparkles className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className={`font-bold text-[13px] tracking-tight truncate ${isLight ? "text-slate-900" : "text-white"}`}>TEKZO Dashboard</span>
+              <span className={`font-bold text-[13px] tracking-tight truncate ${isLight ? "text-slate-900" : "text-white"}`}>TEKZO</span>
             </div>
 
             {/* Collapse Sidebar Button */}
